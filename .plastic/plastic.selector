@@ -1,3 +1,0 @@
-repository "default@local"
-  path "/"
-    smartbranch "/main"
