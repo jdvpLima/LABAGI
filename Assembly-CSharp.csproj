@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
