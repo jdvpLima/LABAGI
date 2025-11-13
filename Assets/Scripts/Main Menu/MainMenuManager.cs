@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private GameObject playScenePanel;
     public void Play()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -23,6 +25,13 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("Workshop!");
         //SceneManager.LoadScene("Workshop");
+    }
+
+    public void Shop()
+    {
+        playScenePanel.SetActive(false);
+        shopPanel.SetActive(true);
+
     }
 
     public void Quit()
