@@ -62,10 +62,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\AuthBootstrapper.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\DevicePollResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\MeResponseDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
