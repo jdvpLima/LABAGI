@@ -1,5 +1,4 @@
 using Assets.Scripts.CreateDeck;
-using Assets.Scripts.Model;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;

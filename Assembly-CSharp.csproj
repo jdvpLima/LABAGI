@@ -65,9 +65,14 @@
     <Compile Include="Assets\Scripts\CreateDeck\CreateDeckManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthBootstrapper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DevicePollResponseDTO.cs" />
+    <Compile Include="Assets\Scripts\CreateDeck\DecksDto.cs" />
+    <Compile Include="Assets\Scripts\CreateDeck\DeckCards.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
+    <Compile Include="Assets\Scripts\CreateDeck\DeckService.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
+    <Compile Include="Assets\Scripts\CreateDeck\CardView.cs" />
+    <Compile Include="Assets\Scripts\JsonHelper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />
