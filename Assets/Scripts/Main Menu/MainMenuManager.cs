@@ -6,6 +6,7 @@ public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject playScenePanel;
+
     public void Play()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -36,6 +37,12 @@ public class MainMenuManager : MonoBehaviour
 
     public void Quit()
     {
+        // Logout simples: limpar token guardado
+        Debug.Log("[MainMenuManager] Logout()");
+        PlayerPrefs.DeleteKey(AuthBootstrapper.SessionTokenKey);
+        PlayerPrefs.Save();
+        Debug.Log("[MainMenuManager] Session token cleared on Quit.");
+
         Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

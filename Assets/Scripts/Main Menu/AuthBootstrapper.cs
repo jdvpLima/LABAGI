@@ -7,10 +7,10 @@ public class AuthBootstrapper : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AuthApiClient apiClient;
     [SerializeField] private GameObject loginPanel;
-    [SerializeField] private GameObject mainPanel; // menu principal / shop
+    [SerializeField] private GameObject mainPanel; 
     [SerializeField] private TMP_Text statusText;
 
-    private const string SessionTokenKey = "sessionToken";
+    public const string SessionTokenKey = "sessionToken";
 
     private void Start()
     {
@@ -19,9 +19,6 @@ public class AuthBootstrapper : MonoBehaviour
         // No arranque, escondemos tudo e decidimos a seguir
         if (loginPanel != null) loginPanel.SetActive(false);
         if (mainPanel != null) mainPanel.SetActive(false);
-
-        if (statusText != null)
-            statusText.text = "Checking login status...";
 
         var token = PlayerPrefs.GetString(SessionTokenKey, null);
 
@@ -96,4 +93,5 @@ public class AuthBootstrapper : MonoBehaviour
         if (loginPanel != null) loginPanel.SetActive(false);
         if (mainPanel != null) mainPanel.SetActive(true);
     }
+
 }
