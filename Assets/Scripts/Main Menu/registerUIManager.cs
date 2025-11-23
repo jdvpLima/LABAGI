@@ -25,17 +25,6 @@ public class RegisterUIManager : MonoBehaviour
     {
         if (infoText != null)
             infoText.text = "Click the button to login with Google.";
-
-        // Se quiseres tentar auto-login no futuro:
-        if (PlayerPrefs.HasKey(SessionTokenKey))
-        {
-            _sessionToken = PlayerPrefs.GetString(SessionTokenKey);
-            Debug.Log("[RegisterUIManager] Found existing sessionToken in PlayerPrefs.");
-        }
-        else
-        {
-            Debug.Log("[RegisterUIManager] No existing sessionToken found.");
-        }
     
     }
 
@@ -100,9 +89,6 @@ public class RegisterUIManager : MonoBehaviour
             yield return new WaitForSeconds(intervalSeconds);
             Debug.Log("[RegisterUIManager] PollLoop tick. Requesting status for loginRequestId=" + _loginRequestId);
 
-            if (infoText != null)
-                infoText.text = "\nChecking login status...";
-
             yield return apiClient.PollGoogleDeviceFlow(
                 _loginRequestId,
                 onSuccess: OnPollResult,
@@ -138,7 +124,8 @@ public class RegisterUIManager : MonoBehaviour
                 }
 
                 _sessionToken = resp.sessionToken;
-                PlayerPrefs.SetString(SessionTokenKey, _sessionToken);
+                PlayerPrefs.SetString(AuthBootstrapper.SessionTokenKey, resp.sessionToken);
+                PlayerPrefs.SetString(AuthBootstrapper.UserIdKey, resp.userId.ToString());
                 PlayerPrefs.Save();
 
                 if (infoText != null)
@@ -147,6 +134,12 @@ public class RegisterUIManager : MonoBehaviour
                         ? "Player"
                         : resp.displayName;
                     infoText.text = $"Logged in as {name}.";
+                }
+
+                var bootstrapper = Object.FindAnyObjectByType<AuthBootstrapper>();
+                if (bootstrapper != null)
+                {
+                    bootstrapper.OnLoginCompleted(resp.sessionToken, resp.userId, resp.displayName, resp.email);
                 }
 
                 playScenePanel.SetActive(true);
