@@ -1,14 +1,16 @@
 using Assets.Scripts.CreateDeck;
-using Assets.Scripts.Model;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEditor.Timeline.Actions.MenuPriority;
 
 public class CreateDeckManager : MonoBehaviour
 {
-    private AuthApiClient apiClient;
+    public GameObject endPanel;
+
     private DeckService _deckService = new DeckService();
     public GameObject cardPrefab;
 
@@ -16,7 +18,7 @@ public class CreateDeckManager : MonoBehaviour
 
     public Transform cardOfDeckView;
 
-    public TextMeshProUGUI deckName;
+    public TMP_InputField deckName;
 
     [SerializeField]
     private int totalCards = 10;
@@ -28,38 +30,17 @@ public class CreateDeckManager : MonoBehaviour
     private bool deckFull = false;
 
 
-    private const string tokenKey = "sessionToken";
-
-    private long userID = 7;
-
-    //id=7
+    private long userID;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     async void Start()
     {
         totalCardUi.text = totalCards.ToString();
+        endPanel.SetActive(false);
+        
 
-        DecksDto novoDeck = new DecksDto
-        {
-            name = "Collection",
-            cards = new List<DeckCards>
-            {
-                new DeckCards { cardId = 1, qty = 1 },
-                new DeckCards { cardId = 2, qty = 1 },
-                new DeckCards { cardId = 3, qty = 1 },
-                new DeckCards { cardId = 4, qty = 1 },
-                new DeckCards { cardId = 5, qty = 1 },
-                new DeckCards { cardId = 6, qty = 1 },
-                new DeckCards { cardId = 7, qty = 1 },
-                new DeckCards { cardId = 8, qty = 1 },
-                new DeckCards { cardId = 9, qty = 1 },
-                new DeckCards { cardId = 10, qty = 1 }
-            }
-        };
-
-        //var token = PlayerPrefs.GetString(tokenKey);
-        //apiClient.GetMe(token, onSuccess: me => userID = me.id,onUnauthorized: null, onError: err => { Debug.LogError("ERROOOO"); } );
+        userID = AuthBootstrapper.CurrentUserId != 0 ? AuthBootstrapper.CurrentUserId : 7 ;
 
         List<DecksDto> decks = await _deckService.GetDecksAsync(userID);
 
@@ -71,8 +52,7 @@ public class CreateDeckManager : MonoBehaviour
             }
         }
 
-        //foreach(DeckCards card  in decks[0].cards) // usar o primeiro deck de cada utilizador como o que guarda toda a coleção de cartas obtidas
-        foreach (DeckCards card in novoDeck.cards)
+        foreach(DeckCards card  in decks[0].cards) // usar o primeiro deck de cada utilizador como o que guarda toda a coleção de cartas obtidas
         {
             SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
         }
@@ -107,8 +87,13 @@ public class CreateDeckManager : MonoBehaviour
         };
 
         bool enviado = await _deckService.PostDeckAsync(userID, novoDeck);
-
+        
         Debug.Log(enviado ? "Deck enviado com sucesso." : "Falha ao enviar deck.");
+        if (enviado) { 
+            endPanel.SetActive(true);
+        
+        }
+
 
     }
 
@@ -120,9 +105,12 @@ public class CreateDeckManager : MonoBehaviour
 
     public void CreateDeck()
     {
-        Debug.Log("creating deck with name: " + deckName.text);
-        //createDeck(deckName.text, GetItems()); --- Descomentar quando estiver tudo integrado
-        
+        List<DeckCards> cards = GetItems();
+        if (!string.IsNullOrEmpty(deckName.text) && cards.Count > 0)
+        {
+            Debug.Log("creating deck with name: " + deckName.text);
+            createDeck(deckName.text, GetItems()); // Descomentar quando estiver tudo integrado
+        }
     }
 
 
@@ -178,6 +166,40 @@ public class CreateDeckManager : MonoBehaviour
             if (btn != null)
                 btn.interactable = active; // ativa/desativa
         }
+    }
+
+    private DecksDto defaultDeck()
+    {
+        return new DecksDto
+        {
+            name = "Collection",
+            cards = new List<DeckCards>
+            {
+                new DeckCards { cardId = 1, qty = 1 },
+                new DeckCards { cardId = 2, qty = 1 },
+                new DeckCards { cardId = 3, qty = 1 },
+                new DeckCards { cardId = 4, qty = 1 },
+                new DeckCards { cardId = 5, qty = 1 },
+                new DeckCards { cardId = 6, qty = 1 },
+                new DeckCards { cardId = 7, qty = 1 },
+                new DeckCards { cardId = 8, qty = 1 },
+                new DeckCards { cardId = 9, qty = 1 },
+                new DeckCards { cardId = 10, qty = 1 }
+            }
+        };
+    }
+
+    public void OkButton()
+    {
+        endPanel.SetActive(false);
+        BackButton();
+
+    }
+
+    public void BackButton()
+    {
+        Debug.Log("BACK2BACK2BACK");
+        SceneManager.UnloadSceneAsync("DeckCreation");
     }
 
 }

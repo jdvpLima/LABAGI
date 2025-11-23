@@ -11,14 +11,14 @@ namespace Assets.Scripts.CreateDeck
    
     public class DeckService
     {
-        private const string BaseUrl = "https://lagabi-group2-backend.onrender.com/api/decks";
+        private const string BaseUrl = "https://lagabi-group2-backend.onrender.com/api/Decks";
 
         //---------------------------------------------------------------------
         // GET /api/decks  (com header do user)
         //---------------------------------------------------------------------
         public async Task<List<DecksDto>> GetDecksAsync(long userId)
         {
-            using (UnityWebRequest req = UnityWebRequest.Get(BaseUrl))
+            using (UnityWebRequest req = UnityWebRequest.Get(BaseUrl+ "/UserDeckList?userId=" + userId.ToString()))
             {
                 req.SetRequestHeader("X-User", userId.ToString());
 
