@@ -7,10 +7,19 @@ public class AuthBootstrapper : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AuthApiClient apiClient;
     [SerializeField] private GameObject loginPanel;
-    [SerializeField] private GameObject mainPanel; // menu principal / shop
+    [SerializeField] private GameObject mainPanel; 
     [SerializeField] private TMP_Text statusText;
 
-    private const string SessionTokenKey = "sessionToken";
+    public const string SessionTokenKey = "sessionToken";
+    public const string UserIdKey = "userId";
+
+    public static long CurrentUserId { get; private set; }
+
+    private void Awake()
+    {
+        // para este objeto sobreviver a troca de cenas
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
@@ -20,67 +29,78 @@ public class AuthBootstrapper : MonoBehaviour
         if (loginPanel != null) loginPanel.SetActive(false);
         if (mainPanel != null) mainPanel.SetActive(false);
 
-        if (statusText != null)
-            statusText.text = "Checking login status...";
-
         var token = PlayerPrefs.GetString(SessionTokenKey, null);
 
         if (string.IsNullOrEmpty(token))
         {
-            Debug.Log("[AuthBootstrapper] No sessionToken in PlayerPrefs. Showing login.");
-
-            // Nunca fez login → mostrar painel de login
+            Debug.Log("[AuthBootstrapper] No saved session token. Showing login.");
+            if (statusText != null)
+                statusText.text = "Please login with Google.";
             ShowLogin();
+            return;
         }
         else
         {
             Debug.Log("[AuthBootstrapper] Found sessionToken in PlayerPrefs. Validating with backend...");
 
             // Já tem token guardado → validar no backend
-            StartCoroutine(CheckExistingToken(token));
+            StartCoroutine(CheckExistingSession(token));
         }
     }
 
-    private IEnumerator CheckExistingToken(string token)
+    
+    private IEnumerator CheckExistingSession(string sessionToken)
     {
+        Debug.Log("[AuthBootstrapper] Checking existing session...");
+
         yield return apiClient.GetMe(
-            token,
+            sessionToken,
             onSuccess: me =>
             {
-                Debug.Log("[AuthBootstrapper] /me success. UserId=" + me.id + " Handle=" + me.handle);
+                Debug.Log("[AuthBootstrapper] /api/Me OK. User id = " + me.id);
 
-                // Token válido
+                CurrentUserId = me.id;
+
+                PlayerPrefs.SetString(SessionTokenKey, sessionToken);
+                PlayerPrefs.SetString(UserIdKey, me.id.ToString());
+                PlayerPrefs.Save();
+
                 if (statusText != null)
-                    statusText.text = $"Welcome back, {me.displayName ?? me.handle}!";
+                    statusText.text = $"Welcome back, {me.displayName}!";
 
                 ShowMain();
             },
             onUnauthorized: () =>
             {
-                Debug.LogWarning("[AuthBootstrapper] /me unauthorized. Clearing token and showing login.");
-
-                // Token inválido/expirado → limpar e pedir login de novo
-                PlayerPrefs.DeleteKey(SessionTokenKey);
-                PlayerPrefs.Save();
-
+                Debug.LogWarning("[AuthBootstrapper] Session invalid/expired.");
                 if (statusText != null)
                     statusText.text = "Session expired. Please login with Google.";
-
                 ShowLogin();
             },
             onError: err =>
             {
-                Debug.LogError("[AuthBootstrapper] Error calling /me: " + err);
-
-                // Erro de rede ou outra coisa → podes decidir o que fazer
+                Debug.LogError("[AuthBootstrapper] Error calling /api/Me: " + err);
                 if (statusText != null)
                     statusText.text = "Error checking session: " + err;
-
-                // Em caso de dúvida, mostra login
                 ShowLogin();
-            });
+            }
+        );
     }
+    public void OnLoginCompleted(string sessionToken, long userId, string displayName, string email)
+    {
+        Debug.Log("[AuthBootstrapper] OnLoginCompleted() userId=" + userId);
 
+        CurrentUserId = userId;
+
+        PlayerPrefs.SetString(SessionTokenKey, sessionToken);
+        PlayerPrefs.SetString(UserIdKey, userId.ToString());
+        PlayerPrefs.Save();
+
+        if (statusText != null)
+            statusText.text = $"Welcome, {displayName}!";
+
+        ShowMain();
+    }
     private void ShowLogin()
     {
         Debug.Log("[AuthBootstrapper] ShowLogin()");
@@ -96,4 +116,5 @@ public class AuthBootstrapper : MonoBehaviour
         if (loginPanel != null) loginPanel.SetActive(false);
         if (mainPanel != null) mainPanel.SetActive(true);
     }
+
 }

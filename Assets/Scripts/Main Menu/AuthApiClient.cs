@@ -71,39 +71,21 @@ public class AuthApiClient : MonoBehaviour
         onSuccess?.Invoke(resp);
     }
 
-    public IEnumerator GetMe(string sessionToken, Action<MeResponseDTO> onSuccess,Action onUnauthorized,Action<string> onError)
+    public IEnumerator GetUserById(long userId, Action<MeResponseDTO> onSuccess, Action<string> onError)
     {
-        var url = $"{baseUrl}/me";
+        var url = $"{baseUrl}/User/GetById?userId={userId}";
         Debug.Log("[AuthApiClient] GET " + url);
 
-
         using var req = UnityWebRequest.Get(url);
-
-        if (!string.IsNullOrEmpty(sessionToken))
-        {
-            Debug.Log("[AuthApiClient] Using sessionToken (len=" + sessionToken.Length + ")");
-            req.SetRequestHeader("Authorization", "Bearer " + sessionToken);
-        }
-        else
-        {
-            Debug.LogWarning("[AuthApiClient] No sessionToken provided to GetMe().");
-        }
 
         yield return req.SendWebRequest();
         Debug.Log("[AuthApiClient] Response code: " + req.responseCode);
 
-        // 401/403 = token inválido/expirado
-        if (req.responseCode == 401 || req.responseCode == 403)
-        {
-            Debug.LogWarning("[AuthApiClient] Unauthorized/Forbidden. Token invalid or expired.");
-
-            onUnauthorized?.Invoke();
-            yield break;
-        }
-
         if (req.result != UnityWebRequest.Result.Success)
         {
-            onError?.Invoke(req.error + " | " + req.downloadHandler.text);
+            // Se vier 204 (NoContent) ? user não existe
+            var extra = req.downloadHandler != null ? req.downloadHandler.text : "";
+            onError?.Invoke(req.error + " | " + extra);
             yield break;
         }
 
@@ -118,12 +100,41 @@ public class AuthApiClient : MonoBehaviour
         catch (System.Exception ex)
         {
             Debug.LogError("[AuthApiClient] Invalid JSON: " + ex.Message);
-
             onError?.Invoke("Invalid JSON: " + ex.Message);
             yield break;
         }
 
         onSuccess?.Invoke(resp);
     }
+    public IEnumerator GetMe(string sessionToken,
+    Action<MeResponseDTO> onSuccess,
+    Action onUnauthorized,
+    Action<string> onError)
+    {
+        var url = $"{baseUrl}/Me";
+        Debug.Log("[AuthApiClient] GET " + url);
 
+        using var req = UnityWebRequest.Get(url);
+
+        if (!string.IsNullOrEmpty(sessionToken))
+            req.SetRequestHeader("Authorization", "Bearer " + sessionToken);
+
+        yield return req.SendWebRequest();
+
+        if (req.responseCode == 401 || req.responseCode == 403)
+        {
+            onUnauthorized?.Invoke();
+            yield break;
+        }
+
+        if (req.result != UnityWebRequest.Result.Success)
+        {
+            onError?.Invoke(req.error + " | " + req.downloadHandler.text);
+            yield break;
+        }
+
+        var json = req.downloadHandler.text;
+        var resp = JsonUtility.FromJson<MeResponseDTO>(json);
+        onSuccess?.Invoke(resp);
+    }
 }
