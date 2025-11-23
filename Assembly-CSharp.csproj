@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
+    <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CreateDeckManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthBootstrapper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DevicePollResponseDTO.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckService.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
+    <Compile Include="Assets\Scripts\AuthContext.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CardView.cs" />
     <Compile Include="Assets\Scripts\JsonHelper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />

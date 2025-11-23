@@ -1310,40 +1310,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2bcf8f7692f5944a56ddb4d6481c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopUIManager
+  baseApiUrl: https://lagabi-group2-backend.onrender.com/api
   contentRoot: {fileID: 1866608455}
   dlcItemPrefab: {fileID: 7458821152581221224, guid: fbddf4ddeca1dc04ea3c34ede450ff9f,
     type: 3}
   closeButton: {fileID: 1987273512}
   playScenePanel: {fileID: 1029716219}
-  dlcs:
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
-  - id: 
-    displayName: 
-    image: {fileID: 0}
-    downloadUrl: 
+  expansionSprites: []
 --- !u!114 &738658144
 MonoBehaviour:
   m_ObjectHideFlags: 0
