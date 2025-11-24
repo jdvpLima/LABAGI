@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 47b3810089b7f4d15961acc5fe947cfa
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 258537
+  packageName: ArcGIS Maps SDK for Unity
+  packageVersion: 2.0.0
+  assetPath: Packages/com.esri.arcgis-maps-sdk/Legal/Copyright_and_Trademarks.pdf
+  uploadId: 776345
