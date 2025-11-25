@@ -1,8 +1,11 @@
 using Assets.Scripts.CreateDeck;
+using Assets.Scripts.Model;
+using Assets.Scripts.Service;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEditor.Timeline.Actions.MenuPriority;
@@ -12,6 +15,8 @@ public class CreateDeckManager : MonoBehaviour
     public GameObject endPanel;
 
     private DeckService _deckService = new DeckService();
+    private CardService _cardService = new CardService();
+
     public GameObject cardPrefab;
 
     public Transform cardCollectionView;
@@ -36,12 +41,30 @@ public class CreateDeckManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     async void Start()
     {
+        verifyEventSystem();
         totalCardUi.text = totalCards.ToString();
         endPanel.SetActive(false);
         
 
-        userID = AuthBootstrapper.CurrentUserId != 0 ? AuthBootstrapper.CurrentUserId : 7 ;
+        userID = AuthBootstrapper.CurrentUserId != 0 ? AuthBootstrapper.CurrentUserId : 12 ;
 
+        List<CardDto> collection = await _cardService.GetPlayerCardCollectionAsync(userID);
+
+        if (collection != null)
+        {
+            Debug.Log("NUM DIF CARDS OF COLLECTION: " + collection.Count);
+            
+        }
+
+        foreach (CardDto card in collection) {
+            for (int i = 0; i < card.quantity; i++)
+            {
+                SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
+            }
+
+        }
+
+        /*
         List<DecksDto> decks = await _deckService.GetDecksAsync(userID);
 
         if (decks != null)
@@ -55,7 +78,7 @@ public class CreateDeckManager : MonoBehaviour
         foreach(DeckCards card  in decks[0].cards) // usar o primeiro deck de cada utilizador como o que guarda toda a coleção de cartas obtidas
         {
             SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
-        }
+        }*/
     }
 
     // Update is called once per frame
@@ -200,6 +223,39 @@ public class CreateDeckManager : MonoBehaviour
     {
         Debug.Log("BACK2BACK2BACK");
         SceneManager.UnloadSceneAsync("DeckCreation");
+    }
+
+
+
+    private void verifyEventSystem()
+    {
+        EventSystem[] eventSystems = FindObjectsByType<EventSystem>(FindObjectsSortMode.InstanceID);
+        AudioListener[] audioListeners = FindObjectsByType<AudioListener>(FindObjectsSortMode.InstanceID);
+
+        // Conta quantas cenas estão atualmente carregadas
+        int loadedScenes = SceneManager.sceneCount;
+
+        bool isAdditive = loadedScenes > 1;
+
+        if (isAdditive)
+        {
+            // Desativa o último EventSystem encontrado (o da cena loaded)
+            if (eventSystems.Length > 0)
+                eventSystems[eventSystems.Length - 1].gameObject.SetActive(false);
+
+            // Desativa o último AudioListener encontrado (o da cena loaded)
+            if (audioListeners.Length > 0)
+                audioListeners[audioListeners.Length - 1].enabled = false;
+        }
+        else
+        {
+            // Cena carregada sozinha -> mantém ativos os primeiros (ou únicos)
+            if (eventSystems.Length > 0)
+                eventSystems[0].gameObject.SetActive(true);
+
+            if (audioListeners.Length > 0)
+                audioListeners[0].enabled = true;
+        }
     }
 
 }
