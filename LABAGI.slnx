@@ -1,0 +1,23 @@
+﻿<Solution>
+  <Project Path="Chess.Testing.csproj" />
+  <Project Path="ArcGISMapsSDK.csproj" />
+  <Project Path="Esri.HPFramework.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.csproj" />
+  <Project Path="MRTTT.csproj" />
+  <Project Path="ArcGISMapsSDK.Editor.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="PerftEditor.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.Hands.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.Editor.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard.csproj" />
+  <Project Path="XRMP.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.DeviceSimulator.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard.Editor.csproj" />
+  <Project Path="Esri.HPFramework.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Unity.XR.Hands.Samples.VisualizerSample.csproj" />
+  <Project Path="ChessAI.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.Hands.Editor.csproj" />
+  <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.Editor.csproj" />
+</Solution>
