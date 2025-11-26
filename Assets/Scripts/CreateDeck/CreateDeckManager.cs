@@ -75,7 +75,7 @@ public class CreateDeckManager : MonoBehaviour
             }
         }
 
-        foreach(DeckCards card  in decks[0].cards) // usar o primeiro deck de cada utilizador como o que guarda toda a coleção de cartas obtidas
+        foreach(DeckCards card  in decks[0].cards) // usar o primeiro deck de cada utilizador como o que guarda toda a coleï¿½ï¿½o de cartas obtidas
         {
             SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
         }*/
@@ -232,24 +232,24 @@ public class CreateDeckManager : MonoBehaviour
         EventSystem[] eventSystems = FindObjectsByType<EventSystem>(FindObjectsSortMode.InstanceID);
         AudioListener[] audioListeners = FindObjectsByType<AudioListener>(FindObjectsSortMode.InstanceID);
 
-        // Conta quantas cenas estão atualmente carregadas
+        // Conta quantas cenas estï¿½o atualmente carregadas
         int loadedScenes = SceneManager.sceneCount;
 
         bool isAdditive = loadedScenes > 1;
 
         if (isAdditive)
         {
-            // Desativa o último EventSystem encontrado (o da cena loaded)
+            // Desativa o ï¿½ltimo EventSystem encontrado (o da cena loaded)
             if (eventSystems.Length > 0)
                 eventSystems[eventSystems.Length - 1].gameObject.SetActive(false);
 
-            // Desativa o último AudioListener encontrado (o da cena loaded)
+            // Desativa o ï¿½ltimo AudioListener encontrado (o da cena loaded)
             if (audioListeners.Length > 0)
                 audioListeners[audioListeners.Length - 1].enabled = false;
         }
         else
         {
-            // Cena carregada sozinha -> mantém ativos os primeiros (ou únicos)
+            // Cena carregada sozinha -> mantï¿½m ativos os primeiros (ou ï¿½nicos)
             if (eventSystems.Length > 0)
                 eventSystems[0].gameObject.SetActive(true);
 
