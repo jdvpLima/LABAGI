@@ -10,7 +10,7 @@ public class SpawnData
 {
     public int id;
     public string status;
-    public int cardPreview; // Use the actual field name from API
+    public int cardPreview;
     public double lat;
     public double lon;
     public string expiresAt;
@@ -52,7 +52,7 @@ public class CardSpawnManager : MonoBehaviour
     public double currentLatitude = 41.1579;
     public double currentLongitude = -8.6291;
 
-    private Dictionary<int, GameObject> activeSpawns = new Dictionary<int, GameObject>();
+    public Dictionary<int, GameObject> activeSpawns = new Dictionary<int, GameObject>();
     public ArcGISMapComponent arcGISMap; // Reference to ArcGIS component
 
 
@@ -200,7 +200,9 @@ public class CardSpawnManager : MonoBehaviour
         // Convert geographic coordinates to Unity world coordinates
         Vector3 worldPosition = ConvertGeoToWorldPosition(spawn.lat, spawn.lon);
 
-        GameObject cardObject = Instantiate(cardPrefab, worldPosition, Quaternion.identity, cardContainer);
+        worldPosition.y += 5f;
+
+        GameObject cardObject = Instantiate(cardPrefab, worldPosition, cardPrefab.transform.rotation, cardContainer);
 
         activeSpawns[spawn.id] = cardObject;
 
@@ -208,7 +210,7 @@ public class CardSpawnManager : MonoBehaviour
     }
 
     // ARCGIS
-    private Vector3 ConvertGeoToWorldPosition(double lat, double lon)
+    public Vector3 ConvertGeoToWorldPosition(double lat, double lon)
     {
         if (arcGISMap == null)
         {

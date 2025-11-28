@@ -1,117 +1,285 @@
-using Esri.GameEngine.Geometry;
 using Esri.ArcGISMapsSDK.Components;
+using Esri.GameEngine.Geometry;
+using System;
 using System.Collections;
+using TMPro;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.Rendering;
+
+public class CreateSpawnRequestClaim
+{
+    public int spawn_id;
+}
 
 public class GPSLocationService : MonoBehaviour
 {
-    public ArcGISRebaseComponent rebaseComponent; // Assign from scene
-    private ArcGISLocationComponent markerLocation;
+    [SerializeField]
+    private char unit = 'K';
 
-    public GameObject playerMarkerPrefab;
-    private GameObject playerMarker;
+    [SerializeField]
+    private GameObject player;
 
-    IEnumerator LocationCoroutine()
+    public float checkDistance = 0.1f; // 100 meters
+
+    public bool gps_ok = false;
+    float PI = Mathf.PI;
+
+    GPSLoc startLoc = new GPSLoc();
+    GPSLoc currLoc = new GPSLoc();
+
+    public GameObject collectButton; // Reference to your UI button
+    private CardSpawnManager spawnManager;
+
+    public string apiBaseUrl = "https://lagabi-group2-backend.onrender.com/api";
+
+    bool measureDistance = false;
+
+    IEnumerator Start()
     {
-        // Uncomment if you want to test with Unity Remote
-        /*#if UNITY_EDITOR
-                yield return new WaitWhile(() => !UnityEditor.EditorApplication.isRemoteConnected);
-                yield return new WaitForSecondsRealtime(5f);
-        #endif*/
+        spawnManager = FindFirstObjectByType<CardSpawnManager>();
+        player = new GameObject();
+
 #if UNITY_EDITOR
-        // No permission handling needed in Editor
-#elif UNITY_ANDROID
-        if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.CoarseLocation)) {
-            UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.CoarseLocation);
-        }
-
-        // First, check if user has location service enabled
-        if (!UnityEngine.Input.location.isEnabledByUser) {
-            // TODO Failure
-            Debug.LogFormat("Android and Location not enabled");
-            yield break;
-        }
-
-#elif UNITY_IOS
-        if (!UnityEngine.Input.location.isEnabledByUser) {
-            // TODO Failure
-            Debug.LogFormat("IOS and Location not enabled");
-            yield break;
-        }
-#endif
-        // Start service before querying location
-        UnityEngine.Input.location.Start(500f, 500f);
-
-        // Wait until service initializes
-        int maxWait = 15;
-        while (UnityEngine.Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+        // Check if the user has location service enabled.
+        if (!Input.location.isEnabledByUser)
         {
-            yield return new WaitForSecondsRealtime(1);
+            Debug.Log("Location not enabled on device or app does not have permission to access location");
+        }
+        // Starts the location service.
+        Input.location.Start();
+
+        // Waits until the location service initializes
+        int maxWait = 20;
+        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+        {
+            yield return new WaitForSeconds(1);
             maxWait--;
         }
 
-        // Editor has a bug which doesn't set the service status to Initializing. So extra wait in Editor.
-#if UNITY_EDITOR
-        int editorMaxWait = 15;
-        while (UnityEngine.Input.location.status == LocationServiceStatus.Stopped && editorMaxWait > 0)
-        {
-            yield return new WaitForSecondsRealtime(1);
-            editorMaxWait--;
-        }
-#endif
-
-        // Service didn't initialize in 15 seconds
+        // If the service didn't initialize in 20 seconds this cancels location service use.
         if (maxWait < 1)
         {
-            // TODO Failure
-            Debug.LogFormat("Timed out");
+            Debug.Log("Timed out");
             yield break;
         }
 
-        // Connection has failed
-        if (UnityEngine.Input.location.status != LocationServiceStatus.Running)
+        // If the connection failed this cancels location service use.
+        if (Input.location.status == LocationServiceStatus.Failed)
         {
-            // TODO Failure
-            Debug.LogFormat("Unable to determine device location. Failed with status {0}", UnityEngine.Input.location.status);
+            Debug.LogError("Unable to determine device location");
+
             yield break;
         }
         else
         {
-            Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
-            // Access granted and location value could be retrieved
-            Debug.LogFormat("Location: "
-                + UnityEngine.Input.location.lastData.latitude + " "
-                + UnityEngine.Input.location.lastData.longitude + " "
-                + UnityEngine.Input.location.lastData.altitude + " "
-                + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
-                + UnityEngine.Input.location.lastData.timestamp);
+            gps_ok = true;
 
-            var _latitude = UnityEngine.Input.location.lastData.latitude;
-            var _longitude = UnityEngine.Input.location.lastData.longitude;
-            // TODO success do something with location
         }
+#endif
 
-        // Stop service if there is no need to query location updates continuously
-        UnityEngine.Input.location.Stop();
     }
 
     void Update()
     {
-        // if location is not working, stop
-        if (Input.location.status != LocationServiceStatus.Running) return;
+        if (gps_ok)
+        {
+            currLoc.lat = Input.location.lastData.latitude;
+            currLoc.lon = Input.location.lastData.longitude;
 
-        // get location info
-        double lat = Input.location.lastData.latitude;
-        double lon = Input.location.lastData.longitude;
+            UpdatePlayerPosition(currLoc.lat, currLoc.lon);
+            CheckSpawnProximity();
+        }
+    }
 
-        // Create ArcGIS geographic point
-        ArcGISPoint point = new ArcGISPoint(
-            lon,           // x = longitude
-            lat,           // y = latitude
-            0,             // z = altitude
-            ArcGISSpatialReference.WGS84()
-        );
+    private void UpdatePlayerPosition(double lat, double lon)
+    {
+        Vector3 playerPosition = spawnManager.ConvertGeoToWorldPosition(currLoc.lat, currLoc.lon);
 
-        markerLocation.Position = point;
+        player.transform.position = playerPosition;
+    }
+
+    private void CheckSpawnProximity()
+    {
+        if (spawnManager == null || !gps_ok)
+        {
+            collectButton.SetActive(false);
+            return;
+        }
+
+        bool anySpawnInRange = false;
+        GameObject[] markers = GameObject.FindGameObjectsWithTag("Marker");
+
+
+        foreach (GameObject marker in markers)
+        {
+            if (marker != null)
+            {
+                SpawnData spawnData = marker.GetComponent<SpawnData>();
+
+                if (spawnData != null &&
+                    IsSpawnWithinDistance(spawnData.lat, spawnData.lon, checkDistance))
+                {
+                    anySpawnInRange = true;
+                    break; // Found one, no need to check others
+                }
+            }
+        }
+
+        collectButton.SetActive(anySpawnInRange);
+    }
+
+    private SpawnData CheckClosestSpawn()
+    {
+        GameObject[] markers = GameObject.FindGameObjectsWithTag("Marker");
+        SpawnData closestSpawn = null;
+
+        double currentDistance = 0;
+        double smallestDistance = 1000;
+
+        foreach (GameObject marker in markers)
+        {
+            if (marker != null)
+            {
+                SpawnData spawnData = marker.GetComponent<SpawnData>();
+
+                currentDistance = distance(currLoc.lat, currLoc.lon, spawnData.lat, spawnData.lon, 'K');
+
+                if (currentDistance < smallestDistance)
+                {
+                    smallestDistance = currentDistance;
+                    closestSpawn = spawnData;
+                }
+            }
+        }
+
+        return closestSpawn;
+    }
+
+    public void ClaimSpawn()
+    {
+        SpawnData spawn = CheckClosestSpawn();
+
+        if (spawn != null)
+        {
+            StartCoroutine(ClaimCard(spawn.id));
+        }
+        else
+        {
+            Debug.LogWarning("No spawn found to claim!");
+        }
+    }
+
+    public bool IsSpawnWithinDistance(double spawnLat, double spawnLon, double maxDistanceKm)
+    {
+        if (!gps_ok) return false;
+
+        double distanceToSpawn = distance(currLoc.lat, currLoc.lon, spawnLat, spawnLon, 'K');
+        return distanceToSpawn <= maxDistanceKm;
+    }
+
+    public IEnumerator ClaimCard(int spawnId)
+    {
+        CreateSpawnRequest request = new CreateSpawnRequest
+        {
+            cardId = spawnId
+        };
+
+        string jsonData = JsonUtility.ToJson(request);
+        string url = $"{apiBaseUrl}/spawns/{spawnId}/claim";
+
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                CreateSpawnResponse response = JsonUtility.FromJson<CreateSpawnResponse>(webRequest.downloadHandler.text);
+                Debug.Log($"Claimed card in spawn with ID: {response.spawn_id}");
+            }
+            else
+            {
+                Debug.LogError($"Failed to claim card in spawn: {webRequest.error}");
+            }
+        }
+    }
+
+    public void StopGPS()
+    {
+        Input.location.Stop();
+
+    }
+
+    public void StoreCurrentGPS()
+    {
+        startLoc = new GPSLoc(currLoc.lon, currLoc.lat);
+        measureDistance = true;
+    }
+
+    //https://www.geodatasource.com/resources/tutorials/how-to-calculate-the-distance-between-2-locations-using-c/
+    private double distance(double lat1, double lon1, double lat2, double lon2, char unit)
+    {
+        if ((lat1 == lat2) && (lon1 == lon2))
+        {
+            return 0;
+        }
+        else
+        {
+            double theta = lon1 - lon2;
+            double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
+            dist = Math.Acos(dist);
+            dist = rad2deg(dist);
+            dist = dist * 60 * 1.1515;
+            if (unit == 'K')
+            {
+                dist = dist * 1.609344;
+            }
+            else if (unit == 'N')
+            {
+                dist = dist * 0.8684;
+            }
+            return (dist);
+        }
+    }
+
+    //  This function converts decimal degrees to radians
+    private double deg2rad(double deg)
+    {
+        return (deg * Math.PI / 180.0);
+    }
+
+    //  This function converts radians to decimal degrees
+    private double rad2deg(double rad)
+    {
+        return (rad / Math.PI * 180.0);
+    }
+
+}
+
+public class GPSLoc
+{
+    public double lon;
+    public double lat;
+
+    public GPSLoc()
+    {
+        lon = 0;
+        lat = 0;
+    }
+    public GPSLoc(double lon, double lat)
+    {
+        this.lon = lon;
+        this.lat = lat;
+    }
+
+    public string getLocData()
+    {
+        return "Lat: " + lat + " \nLon: " + lon;
     }
 }
