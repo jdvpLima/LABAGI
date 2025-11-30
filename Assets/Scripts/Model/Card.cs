@@ -6,7 +6,7 @@ namespace Assets.Scripts.Model
     [System.Serializable]
     public class CardDto
     {
-        public int cardId;
+        public long cardId;
         public string name;
         public string suit;
         public string rarity;
@@ -21,5 +21,7 @@ namespace Assets.Scripts.Model
         public int quantity;
         public string expansionCode;
         public string expansionName;
+        public string flavorText;
+        public string status;
     }
 }

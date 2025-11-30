@@ -6,7 +6,7 @@ namespace Assets.Scripts.CreateDeck
     [System.Serializable]
     public class DeckCards
     {
-        public int cardId;
+        public long cardId;
         public int qty;
     }
 }

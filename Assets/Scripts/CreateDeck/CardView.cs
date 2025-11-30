@@ -6,12 +6,12 @@ public class CardView : MonoBehaviour
 {
     [SerializeField] private Image cardImage;
 
-    public int cardId;
+    public long cardId;
     private Transform initialParent;
     private Transform targetParent;
     private bool isAtTarget = false;
 
-    public void Initialize(int id, Transform initial, Transform target)
+    public void Initialize(long id, Transform initial, Transform target)
     {
         cardId = id;
         initialParent = initial;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private Text abilityText;
         [SerializeField] private Text flavorText;
 
-        public void UpdatePreview(WorkshopCardDTO dto)
+        public void UpdatePreview(CardDto dto)
         {
             if (dto == null)
             {

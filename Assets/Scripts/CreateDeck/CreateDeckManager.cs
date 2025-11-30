@@ -120,7 +120,7 @@ public class CreateDeckManager : MonoBehaviour
 
     }
 
-    void SpawnCard(int id, Transform parentUI, Transform secondParentUI)
+    void SpawnCard(long id, Transform parentUI, Transform secondParentUI)
     {
         GameObject card = Instantiate(cardPrefab, parentUI);
         card.GetComponent<CardView>().Initialize(id,parentUI,secondParentUI);
@@ -139,7 +139,7 @@ public class CreateDeckManager : MonoBehaviour
 
     public List<DeckCards> GetItems()
     {
-        Dictionary<int, int> counter = new Dictionary<int, int>();
+        Dictionary<long, int> counter = new Dictionary<long, int>();
 
         // percorre todas as children
         foreach (Transform child in cardOfDeckView)
@@ -149,7 +149,7 @@ public class CreateDeckManager : MonoBehaviour
             if (item == null)
                 continue;
 
-            int id = item.cardId;
+            long id = item.cardId;
 
             if (counter.ContainsKey(id))
                 counter[id]++;

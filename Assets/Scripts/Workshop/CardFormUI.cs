@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,10 +43,10 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private Button saveDraftButton;
         [SerializeField] private Button submitButton;
 
-        public event Action<WorkshopCardDTO, string> OnSubmitClicked;   // (card, status)
-        public event Action<WorkshopCardDTO> OnFormChanged;
+        public event Action<CardDto, string> OnSubmitClicked;   // (card, status)
+        public event Action<CardDto> OnFormChanged;
 
-        private long? _currentCardId;
+        private long _currentCardId;
         private readonly TMP_Text _pointsLabel;
         private string _abilityJson;
 
@@ -119,7 +120,7 @@ namespace Assets.Scripts.Workshop
                 Debug.LogWarning("[CardFormUI] apiClient não está ligado; dropdowns vão usar opções estáticas.");
         }
 
-        public void LoadFrom(WorkshopCardDTO dto)
+        public void LoadFrom(CardDto dto)
         {
             _currentCardId = dto.cardId;
 
@@ -167,13 +168,13 @@ namespace Assets.Scripts.Workshop
             NotifyChanged();
         }
 
-        private WorkshopCardDTO BuildDto()
+        private CardDto BuildDto()
         {
             var dto = BuildDtoCoreWithoutAbility();
             UpdateAbilityFields(dto);
             return dto;
         }
-        private void UpdateAbilityFields(WorkshopCardDTO dto)
+        private void UpdateAbilityFields(CardDto dto)
         {
             if (dto == null) return;
 
@@ -186,7 +187,7 @@ namespace Assets.Scripts.Workshop
             // nada de UI para abilityJson aqui
             _abilityJson = dto.abilityJson;
         }
-        private WorkshopCardDTO BuildDtoCoreWithoutAbility()
+        private CardDto BuildDtoCoreWithoutAbility()
         {
 
             int amount;
@@ -195,7 +196,7 @@ namespace Assets.Scripts.Workshop
             if (amount < 1) amount = 1;
             if (amount > 4) amount = 4;
 
-            return new WorkshopCardDTO
+            return new CardDto
             {
                 cardId = _currentCardId,
                 name = nameInput.text.Trim(),
@@ -232,7 +233,7 @@ namespace Assets.Scripts.Workshop
 
         private IEnumerator InitDynamicDropdowns()
         {
-            List<WorkshopCardDTO> cards = null;
+            List<CardDto> cards = null;
             string error = null;
 
             yield return apiClient.GetRuntimeCards(
@@ -297,7 +298,7 @@ namespace Assets.Scripts.Workshop
                 previewPointsLbl.text = pointsDropdown.options[index].text;
         }
 
-        private void UpdatePreview(WorkshopCardDTO dto)
+        private void UpdatePreview(CardDto dto)
         {
             if (dto == null) return;
 

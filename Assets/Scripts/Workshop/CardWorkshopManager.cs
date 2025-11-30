@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,11 @@ namespace Assets.Scripts.Workshop
             formUI.ClearForm();
         }
 
-        private IEnumerator SendToBackend(WorkshopCardDTO dto, string status)
+        private IEnumerator SendToBackend(CardDto dto, string status)
         {
             bool done = false;
             string error = null;
-            WorkshopCardDTO saved = null;
+            CardDto saved = null;
 
             yield return apiClient.PostWorkshopCard(
                 dto,

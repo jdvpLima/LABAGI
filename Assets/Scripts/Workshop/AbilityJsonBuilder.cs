@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Workshop
 {
     public static class AbilityJsonBuilder
     {
-        public static string Build(WorkshopCardDTO dto)
+        public static string Build(CardDto dto)
         {
             if (dto == null)
                 return null;

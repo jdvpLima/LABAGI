@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +13,15 @@ namespace Assets.Scripts.Workshop
 {
     public class CardWorkshopApiClient : MonoBehaviour
     {
-        [SerializeField] private string baseApiUrl = "https://o_teu_backend.com";
-        [SerializeField] private string sessionToken; // podes injetar do teu SessionManager
+        [SerializeField] private string baseApiUrl = "https://lagabi-group2-backend.onrender.com";
+        [SerializeField] private string sessionToken;
 
         private void ApplyAuth(UnityWebRequest req)
         {
             if (!string.IsNullOrEmpty(sessionToken))
                 req.SetRequestHeader("Authorization", "Bearer " + sessionToken);
         }
-        public IEnumerator PostWorkshopCard(
-        WorkshopCardDTO card,
-        string status,                          // "draft" ou "active"
-        Action<WorkshopCardDTO> onSuccess,
-        Action<string> onError)
+        public IEnumerator PostWorkshopCard(CardDto card, string status, Action<CardDto> onSuccess, Action<string> onError)
         {
             card.status = status;
 
@@ -47,67 +45,100 @@ namespace Assets.Scripts.Workshop
 
             // se o endpoint devolver a carta atualizada (com id), podes ler:
             var responseJson = req.downloadHandler.text;
-            var saved = JsonUtility.FromJson<WorkshopCardDTO>(responseJson);
+            var saved = JsonUtility.FromJson<CardDto>(responseJson);
             onSuccess?.Invoke(saved);
         }
-        public IEnumerator GetWorkshopCard(long? cardId, Action<WorkshopCardDTO> onSuccess, Action<string> onError)
+        public IEnumerator GetWorkshopCard(long? cardId, Action<CardDto> onSuccess, Action<string> onError)
         {
-            // cardId e userId ambos em query
-            var url = $"{baseApiUrl}/api/Cards/workshop?cardId={cardId}&userId={AuthBootstrapper.CurrentUserId}";
+            var url = $"{baseApiUrl}/api/Cards/{cardId}";
 
-            using var req = UnityWebRequest.Get(url);
-            ApplyAuth(req);
-
-            yield return req.SendWebRequest();
-
-            if (req.result != UnityWebRequest.Result.Success)
+            using (var req = UnityWebRequest.Get(url))
             {
-                onError?.Invoke(req.error);
-                yield break;
-            }
+                ApplyAuth(req);
 
-            var json = req.downloadHandler.text;
-            var dto = JsonUtility.FromJson<WorkshopCardDTO>(json);
-            onSuccess?.Invoke(dto);
+                yield return req.SendWebRequest();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("GET /Cards/{id} falhou: " + req.error);
+                    onError?.Invoke(req.error);
+                    yield break;
+                }
+
+                var json = req.downloadHandler.text; // esperado: { ... }
+
+                CardDto card;
+                try
+                {
+                    card = JsonUtility.FromJson<CardDto>(json);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("[CardWorkshopApiClient] Erro a parsear JSON em GetWorkshopCard: " + e);
+                    onError?.Invoke(e.Message);
+                    yield break;
+                }
+
+                onSuccess?.Invoke(card);
+            }
         }
 
-        public IEnumerator GetUserCollection(Action<List<WorkshopCardDTO>> onSuccess, Action<string> onError)
+
+        public IEnumerator GetUserCollection(Action<List<CardDto>> onSuccess, Action<string> onError)
         {
-            var url = $"{baseApiUrl}/api/Cards/collection?userId={AuthBootstrapper.CurrentUserId}";
+            var url = $"{baseApiUrl}/api/Cards/collection/{AuthBootstrapper.CurrentUserId}";
 
-            using var req = UnityWebRequest.Get(url);
-            ApplyAuth(req);
-
-            yield return req.SendWebRequest();
-
-            if (req.result != UnityWebRequest.Result.Success)
+            using (var req = UnityWebRequest.Get(url))
             {
-                onError?.Invoke(req.error);
-                yield break;
-            }
+                ApplyAuth(req);
 
-            var json = req.downloadHandler.text;
-            var cards = JsonHelper.FromJsonList<WorkshopCardDTO>(json);
-            onSuccess?.Invoke(cards);
+                yield return req.SendWebRequest();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("GET /Cards/collection falhou: " + req.error);
+                    onError?.Invoke(req.error);
+                    yield break;
+                }
+
+                var json = req.downloadHandler.text; // esperado: [ { ... }, ... ]
+
+                List<CardDto> cards;
+                try
+                {
+                    cards = JsonHelper.FromJsonList<CardDto>(json);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("[CardWorkshopApiClient] Erro a parsear JSON em GetUserCollection: " + e);
+                    onError?.Invoke(e.Message);
+                    yield break;
+                }
+
+                onSuccess?.Invoke(cards ?? new List<CardDto>());
+            }
         }
-        public IEnumerator GetRuntimeCards(Action<List<WorkshopCardDTO>> onSuccess, Action<string> onError)
+
+        public async Task<List<CardDto>> GetRuntimeCards(Action<List<CardDto>> onSuccess, Action<string> onError)
         {
-            var url = $"{baseApiUrl}/api/Cards/runtime";
 
-            using var req = UnityWebRequest.Get(url);
-            ApplyAuth(req);
-
-            yield return req.SendWebRequest();
-
-            if (req.result != UnityWebRequest.Result.Success)
+            using (var req = UnityWebRequest.Get(baseApiUrl + "/api/Cards/runtime"))
             {
-                onError?.Invoke(req.error);
-                yield break;
-            }
+                var operation = req.SendWebRequest();
 
-            var json = req.downloadHandler.text;
-            var cards = JsonHelper.FromJsonList<WorkshopCardDTO>(json);
-            onSuccess?.Invoke(cards);
+                while (!operation.isDone)
+                    await Task.Yield();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("GET /Card/collection failed: " + req.error);
+                    return null;
+                }
+
+                string json = req.downloadHandler.text;
+                return JsonHelper.FromJsonList<CardDto>(json);
+            }
         }
+
     }
 }

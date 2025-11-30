@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,8 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private Transform draftListRoot;
         [SerializeField] private DraftRowUI draftRowPrefab;
 
-        private readonly List<WorkshopCardDTO> _drafts = new List<WorkshopCardDTO>();
-        private WorkshopCardDTO _selectedDraft;
+        private readonly List<CardDto> _drafts = new List<CardDto>();
+        private CardDto _selectedDraft;
 
         private void Start()
         {
@@ -40,7 +41,7 @@ namespace Assets.Scripts.Workshop
 
         private IEnumerator RefreshDrafts()
         {
-            List<WorkshopCardDTO> collection = null;
+            List<CardDto> collection = null;
             string error = null;
 
             yield return apiClient.GetUserCollection(
@@ -57,7 +58,7 @@ namespace Assets.Scripts.Workshop
             if (collection == null)
             {
                 Debug.LogWarning("[WorkshopDraftManager] Coleção vazia ou null.");
-                collection = new List<WorkshopCardDTO>();
+                collection = new List<CardDto>();
             }
 
             _drafts.Clear();
@@ -88,13 +89,13 @@ namespace Assets.Scripts.Workshop
             }
         }
 
-        private void OnDraftSelected(WorkshopCardDTO draftHeader)
+        private void OnDraftSelected(CardDto draftHeader)
         {
             _selectedDraft = draftHeader;
             StartCoroutine(LoadWorkshopCard(draftHeader));
         }
 
-        private IEnumerator LoadWorkshopCard(WorkshopCardDTO header)
+        private IEnumerator LoadWorkshopCard(CardDto header)
         {
             if (header == null)
             {
@@ -104,14 +105,10 @@ namespace Assets.Scripts.Workshop
             // cardId vem do DTO da collection (/api/Cards/collection)
             long? cardId = header.cardId;
 
-            WorkshopCardDTO dto = null;
+            CardDto dto = null;
             string error = null;
 
-            yield return apiClient.GetWorkshopCard(
-                cardId,
-                card => dto = card,
-                err => error = err
-            );
+            yield return apiClient.GetWorkshopCard(cardId, card => dto = card,err => error = err);
 
             if (!string.IsNullOrEmpty(error))
             {
@@ -121,7 +118,7 @@ namespace Assets.Scripts.Workshop
 
             if (dto == null)
             {
-                Debug.LogWarning("[WorkshopDraftManager] WorkshopCardDTO devolvido a null.");
+                Debug.LogWarning("[WorkshopDraftManager] CardDto devolvido a null.");
                 yield break;
             }
 

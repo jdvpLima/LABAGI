@@ -39,7 +39,7 @@ public class CardViewer : MonoBehaviour
         }
     }
 
-    void SpawnCard(int id, Transform parentUI)
+    void SpawnCard(long id, Transform parentUI)
     {
         GameObject card = Instantiate(cardPrefab, parentUI);
 

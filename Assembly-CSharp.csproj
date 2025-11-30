@@ -66,10 +66,10 @@
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemDto.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\CardSpawnManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CreateDeckManager.cs" />
-    <Compile Include="Assets\Scripts\Workshop\WorkshopCardDTO.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthBootstrapper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DevicePollResponseDTO.cs" />
+    <Compile Include="Assets\Scripts\Workshop\CardListWrapper.cs" />
     <Compile Include="Assets\Scripts\CardViewer\CardViewer.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DecksDto.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonPayload.cs" />

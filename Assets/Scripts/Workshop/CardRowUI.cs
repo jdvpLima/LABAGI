@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private Text pointsText;
         [SerializeField] private Button selectButton;
 
-        public void Setup(WorkshopCardDTO card, Action onClick)
+        public void Setup(CardDto card, Action onClick)
         {
             if (card == null)
             {
