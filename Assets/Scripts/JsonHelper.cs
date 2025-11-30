@@ -16,5 +16,19 @@ namespace Assets.Scripts
             Wrapper<T> w = JsonUtility.FromJson<Wrapper<T>>(wrapped);
             return w.Items;
         }
+        public static string ToJsonArray<T>(List<T> list)
+        {
+            var w = new Wrapper<T> { Items = list };
+            var json = JsonUtility.ToJson(w);
+
+            // JsonUtility gera algo do género: {"Items":[ ... ]}
+            int start = json.IndexOf('[');
+            int end = json.LastIndexOf(']');
+
+            if (start >= 0 && end > start)
+                return json.Substring(start, end - start + 1);
+
+            return "[]";
+        }
     }
 }
