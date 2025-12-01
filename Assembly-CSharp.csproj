@@ -52,6 +52,7 @@
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\CardSpawnManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CreateDeckManager.cs" />
+    <Compile Include="Assets\Scripts\Workshop\WorkshopCardDTO.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthBootstrapper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DevicePollResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckListUI.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
-    <Compile Include="Assets\Scripts\Game\PreGame\DeckService.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckService.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\MarkerResize.cs" />
@@ -79,13 +79,12 @@
     <Compile Include="Assets\Scripts\CardViewer\CardFullscreenToggle.cs" />
     <Compile Include="Assets\Scripts\Workshop\DraftRowUI.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CardView.cs" />
-    <Compile Include="Assets\Scripts\Workshop\WorkshopCardListWrapper.cs" />
     <Compile Include="Assets\Scripts\JsonHelper.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardRowUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardFormUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
-    <Compile Include="Assets\Scripts\Model\WorkshopCardDTO.cs" />
+    <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
     <Compile Include="Assets\Scripts\Model\Card.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MeResponseDTO.cs" />
