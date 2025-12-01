@@ -17,7 +17,7 @@ namespace Assets.Scripts.Workshop
         [Header("Panels")]
         [SerializeField] private CardFormUI formPanel;
         [SerializeField] private CardPreviewUI previewPanel;
-        [SerializeField] private WorkshopDraftManager draftPanel; // opcional
+        [SerializeField] private WorkshopDraftManager draftPanel; 
 
         private CardService _cardService;
 
@@ -33,15 +33,21 @@ namespace Assets.Scripts.Workshop
             Debug.Log("[CardWorkshopManager] OnEnable - scene = " + SceneManager.GetActiveScene().name);
 
             formPanel.OnFormChanged += OnFormChanged;
-            formPanel.OnSubmitClicked += HandleSubmit;
+            formPanel.OnSubmitClicked += HandleSubmitAsync;
 
-            LoadWorkshop();
+            if (draftPanel != null)
+                draftPanel.OnDraftSelected += formPanel.LoadFrom;
+
+            _ = LoadWorkshopAsync();
         }
 
         private void OnDisable()
         {
             formPanel.OnFormChanged -= OnFormChanged;
-            formPanel.OnSubmitClicked -= HandleSubmit;
+            formPanel.OnSubmitClicked -= HandleSubmitAsync;
+
+            if (draftPanel != null)
+                draftPanel.OnDraftSelected -= formPanel.LoadFrom;
         }
 
         private void OnFormChanged(WorkshopCardDTO dto)
@@ -50,18 +56,23 @@ namespace Assets.Scripts.Workshop
                 previewPanel.UpdatePreview(dto);
         }
 
-        private async void LoadWorkshop()
+
+        private async Task LoadWorkshopAsync()
         {
             long userId = AuthBootstrapper.CurrentUserId;
 
-            List<WorkshopCardDTO> cards = null;
-            List<WorkshopCardDTO> draftCards = null;
+            List<WorkshopCardDTO> runtimeCards = null;
+            List<WorkshopCardDTO> userWorkshopCards = null;
 
             try
             {
-                cards = await _cardService.GetRuntimeCardsAsync();
-                draftCards = await _cardService.GetUserWorkshopCardsAsync(userId);
-                               
+                var runtimeTask = _cardService.GetRuntimeCardsAsync();
+                var userTask = _cardService.GetUserWorkshopCardsAsync(userId);
+
+                await Task.WhenAll(runtimeTask, userTask);
+
+                runtimeCards = runtimeTask.Result;
+                userWorkshopCards = userTask.Result;
             }
             catch (System.Exception e)
             {
@@ -69,14 +80,16 @@ namespace Assets.Scripts.Workshop
                 return;
             }
 
-            formPanel.Init(cards ?? new List<WorkshopCardDTO>());
+            Debug.Log($"[CardWorkshopManager] runtimeCards = {runtimeCards?.Count ?? 0}, drafts = {userWorkshopCards?.Count ?? 0}");
+
+            formPanel.Init(runtimeCards ?? new List<WorkshopCardDTO>());
 
             if (draftPanel != null)
-                draftPanel.Init(draftCards ?? new List<WorkshopCardDTO>());
+                draftPanel.Init(userWorkshopCards ?? new List<WorkshopCardDTO>());
         }
 
         // ASSINATURA ALINHADA COM event Action<WorkshopCardDTO, string>
-        private void HandleSubmit(WorkshopCardDTO dto, string status)
+        private async void HandleSubmitAsync(WorkshopCardDTO dto, string status)
         {
             long userId = AuthBootstrapper.CurrentUserId;
             dto.status = status;
@@ -85,7 +98,7 @@ namespace Assets.Scripts.Workshop
 
             try
             {
-                saved = _cardService.UpsertWorkshopCard(userId, dto);
+                saved = await _cardService.UpsertWorkshopCardAsync(userId, dto);
             }
             catch (System.Exception e)
             {
@@ -99,10 +112,11 @@ namespace Assets.Scripts.Workshop
                 return;
             }
 
-            formPanel.LoadFrom(saved);
-
-            if (draftPanel != null)
-                draftPanel.AddOrUpdateCard(saved);
+            // se ficou active, dar 1 cópia ao inventário
+            if (saved.status == "active")
+            {
+                await _cardService.GrantCardToInventoryAsync(userId, saved.id, 4);
+            }
         }
     }
 
