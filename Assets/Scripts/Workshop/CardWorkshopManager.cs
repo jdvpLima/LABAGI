@@ -99,6 +99,10 @@ namespace Assets.Scripts.Workshop
             try
             {
                 saved = await _cardService.UpsertWorkshopCardAsync(userId, dto);
+                formPanel.LoadFrom(saved);
+
+                if (draftPanel != null)
+                    draftPanel.AddOrUpdateCard(saved);
             }
             catch (System.Exception e)
             {
