@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 134308309}
   - component: {fileID: 134308308}
   - component: {fileID: 134308307}
+  - component: {fileID: 134308310}
   m_Layer: 5
   m_Name: AllDecks
   m_TagString: Untagged
@@ -353,6 +354,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 134308305}
   m_CullTransparentMesh: 1
+--- !u!114 &134308310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134308305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c271d8bc0c884544fbf0d1ab2d71c715, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.DeckListUI
+  contentParent: {fileID: 153447235}
+  deckItemPrefab: {fileID: 4855778433194219250, guid: 1672a5704d84a404fa4b71898c944c7e,
+    type: 3}
+  confirmBtn: {fileID: 2052161700}
+  selectedDeckLabel: {fileID: 0}
+  emptyStateObject: {fileID: 0}
 --- !u!1 &153447234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,9 +1137,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreateDeckManager, Assembly-CSharp
-        m_MethodName: BackButton
+      - m_Target: {fileID: 1906221301}
+        m_TargetAssemblyTypeName: MenuButtons, Assembly-CSharp
+        m_MethodName: QuitPreGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1616,8 +1635,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1906221300}
-  - component: {fileID: 1906221298}
-  - component: {fileID: 1906221297}
+  - component: {fileID: 1906221301}
   m_Layer: 0
   m_Name: DeckManager
   m_TagString: Untagged
@@ -1625,34 +1643,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1906221297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1906221296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 318b76ee34d572648a8f7e5d862f8717, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeckManager
---- !u!114 &1906221298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1906221296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e18961d6f7dbd5d4aa83d202bd7eb364, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeckSelectorController
-  deckItemPrefab: {fileID: 4855778433194219250, guid: 77acc283555f8114d8ae3d99856870cc,
-    type: 3}
-  contentParent: {fileID: 153447235}
-  confirmButton: {fileID: 2052161702}
 --- !u!4 &1906221300
 Transform:
   m_ObjectHideFlags: 0
@@ -1668,6 +1658,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1906221301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906221296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1df43ce2588564d8020873865c3987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuButtons
 --- !u!1 &1917515128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,9 +1916,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreateDeckManager, Assembly-CSharp
-        m_MethodName: BackButton
+      - m_Target: {fileID: 1906221301}
+        m_TargetAssemblyTypeName: MenuButtons, Assembly-CSharp
+        m_MethodName: PlayGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
