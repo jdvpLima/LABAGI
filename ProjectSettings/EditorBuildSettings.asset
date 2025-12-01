@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DeckCreation.unity
     guid: be0c95d2e7bc7064a9563bb18b80364b
+  - enabled: 1
+    path: Assets/Scenes/PreGame.unity
+    guid: d9b7ac6783a42e84e956824e5c658983
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: bf7e823c1be0db345b05de1c9c9beb5e,
       type: 2}
