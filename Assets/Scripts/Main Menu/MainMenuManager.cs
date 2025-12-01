@@ -24,7 +24,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void Workshop()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+        SceneManager.LoadScene("Workshop");
     }
 
     public void Shop()

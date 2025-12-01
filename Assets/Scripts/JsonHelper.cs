@@ -13,7 +13,7 @@ namespace Assets.Scripts
         public static List<T> FromJsonList<T>(string json)
         {
             string wrapped = "{\"Items\":" + json + "}";
-            Wrapper<T> w = JsonUtility.FromJson<Wrapper<T>>(wrapped);
+            var w = JsonUtility.FromJson<Wrapper<T>>(wrapped);
             return w.Items;
         }
         public static string ToJsonArray<T>(List<T> list)

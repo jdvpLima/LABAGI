@@ -1,9 +1,11 @@
 ﻿using Assets.Scripts.Model;
+using Assets.Scripts.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,14 +13,14 @@ namespace Assets.Scripts.Workshop
 {
     public class CardPreviewUI : MonoBehaviour
     {
-        [SerializeField] private Text titleText;
-        [SerializeField] private Text suitText;
-        [SerializeField] private Text rarityText;
-        [SerializeField] private Text pointsText;
-        [SerializeField] private Text abilityText;
-        [SerializeField] private Text flavorText;
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text suitText;
+        [SerializeField] private TMP_Text rarityText;
+        [SerializeField] private TMP_Text pointsText;
+        [SerializeField] private TMP_Text abilityText;
+        [SerializeField] private TMP_Text flavorText;
 
-        public void UpdatePreview(CardDto dto)
+        public void UpdatePreview(WorkshopCardDTO dto)
         {
             if (dto == null)
             {
@@ -31,7 +33,7 @@ namespace Assets.Scripts.Workshop
                 return;
             }
 
-            titleText.text = string.IsNullOrEmpty(dto.name) ? "(sem nome)" : dto.name;
+            titleText.text = string.IsNullOrEmpty(dto.name) ? "(no name)" : dto.name;
             suitText.text = dto.suit;
             rarityText.text = dto.rarity;
             pointsText.text = dto.points.ToString();
@@ -39,4 +41,4 @@ namespace Assets.Scripts.Workshop
             flavorText.text = dto.flavorText;
         }
     }
- }
+}

@@ -2546,7 +2546,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418745949}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2556,7 +2556,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -358}
+  m_AnchoredPosition: {x: 0, y: -357.99997}
   m_SizeDelta: {x: 400, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &418745951
@@ -3733,6 +3733,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 643149820}
+  - component: {fileID: 643149821}
   m_Layer: 5
   m_Name: WorkshopPanel
   m_TagString: Untagged
@@ -3764,6 +3765,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &643149821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643149819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f4ff14e26af034cbe379534ff55e91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Workshop.CardWorkshopManager
+  formPanel: {fileID: 1924197868}
+  previewPanel: {fileID: 1577432118}
+  draftPanel: {fileID: 1203660394}
 --- !u!1 &698440152
 GameObject:
   m_ObjectHideFlags: 0
@@ -4823,7 +4839,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1937825361}
   m_HandleRect: {fileID: 1937825360}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 0.99999976
   m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5036,7 +5052,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 528246429}
   m_HandleRect: {fileID: 528246428}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7330,6 +7346,7 @@ GameObject:
   - component: {fileID: 1203660391}
   - component: {fileID: 1203660393}
   - component: {fileID: 1203660392}
+  - component: {fileID: 1203660394}
   m_Layer: 5
   m_Name: DraftCardsPanel
   m_TagString: Untagged
@@ -7395,6 +7412,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203660390}
   m_CullTransparentMesh: 1
+--- !u!114 &1203660394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203660390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ca7af77986731409dc2d59c96b7d89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Workshop.WorkshopDraftManager
+  contentRoot: {fileID: 0}
+  rowPrefab: {fileID: 0}
 --- !u!1 &1210449952
 GameObject:
   m_ObjectHideFlags: 0
@@ -9479,6 +9510,7 @@ GameObject:
   - component: {fileID: 1577432115}
   - component: {fileID: 1577432117}
   - component: {fileID: 1577432116}
+  - component: {fileID: 1577432118}
   m_Layer: 5
   m_Name: PreviewPanel
   m_TagString: Untagged
@@ -9551,6 +9583,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577432114}
   m_CullTransparentMesh: 1
+--- !u!114 &1577432118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577432114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02c2efa7f94f9b443968c012f50cbe84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Workshop.CardPreviewUI
+  titleText: {fileID: 1081813096}
+  suitText: {fileID: 1193871161}
+  rarityText: {fileID: 143950115}
+  pointsText: {fileID: 1127507564}
+  abilityText: {fileID: 1871019828}
+  flavorText: {fileID: 384247511}
 --- !u!1 &1586111047
 GameObject:
   m_ObjectHideFlags: 0
@@ -11602,27 +11652,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664ebb519916a5b46b0a6e889bcb94b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Workshop.CardFormUI
-  apiClient: {fileID: 537168661}
   nameInput: {fileID: 418745951}
-  amountInput: {fileID: 603410706}
-  flavorTextInput: {fileID: 1005689140}
   suitDropdown: {fileID: 201629176}
   rarityDropdown: {fileID: 264722847}
   pointsDropdown: {fileID: 344894318}
   triggerDropdown: {fileID: 30496538}
   effectDropdown: {fileID: 1945521823}
+  amountInput: {fileID: 603410706}
   targetDropdown: {fileID: 1540537641}
-  expansionDropdown: {fileID: 0}
-  suitImg: {fileID: 0}
-  cardNameLbl: {fileID: 0}
-  previewSuitLbl: {fileID: 0}
-  previewRarityLbl: {fileID: 0}
-  previewAbilityLbl: {fileID: 0}
-  previewPointsLbl: {fileID: 0}
-  previewFlavorLbl: {fileID: 0}
   oncePerGameToggle: {fileID: 1680994913}
+  flavorTextInput: {fileID: 1005689140}
+  expansionDropdown: {fileID: 0}
   saveDraftButton: {fileID: 1630232375}
   submitButton: {fileID: 1901412987}
+  previewUI: {fileID: 1577432118}
 --- !u!114 &1924197869
 MonoBehaviour:
   m_ObjectHideFlags: 0

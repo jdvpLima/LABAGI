@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using Assets.Scripts.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,335 +7,324 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using WebSocketSharp;
 
 namespace Assets.Scripts.Workshop
 {
-    public class CardFormUI: MonoBehaviour
+    public class CardFormUI : MonoBehaviour
     {
-        [Header("API")]
-        [SerializeField] private CardWorkshopApiClient apiClient;
-
         [Header("Fields")]
-        
         [SerializeField] private TMP_InputField nameInput;
-        [SerializeField] private TMP_InputField amountInput;
-        [SerializeField] private TMP_InputField flavorTextInput;
-
         [SerializeField] private TMP_Dropdown suitDropdown;
-        [SerializeField] private TMP_Dropdown rarityDropdown;        
+        [SerializeField] private TMP_Dropdown rarityDropdown;
         [SerializeField] private TMP_Dropdown pointsDropdown;
+        //[SerializeField] private TMP_InputField abilityInput;
         [SerializeField] private TMP_Dropdown triggerDropdown;
         [SerializeField] private TMP_Dropdown effectDropdown;
-        [SerializeField] private TMP_Dropdown targetDropdown;        
-        [SerializeField] private TMP_Dropdown expansionDropdown;
-
-        [Header("Preview Panel")]
-        [SerializeField] private Image suitImg;
-        [SerializeField] private TMP_Text cardNameLbl;
-        [SerializeField] private TMP_Text previewSuitLbl;
-        [SerializeField] private TMP_Text previewRarityLbl;
-        [SerializeField] private TMP_Text previewAbilityLbl;
-        [SerializeField] private TMP_Text previewPointsLbl;
-        [SerializeField] private TMP_Text previewFlavorLbl;
-
+        [SerializeField] private TMP_InputField amountInput;
+        [SerializeField] private TMP_Dropdown targetDropdown;
         [SerializeField] private Toggle oncePerGameToggle;
+        //[SerializeField] private InputField abilityJsonInput;
+        [SerializeField] private TMP_InputField flavorTextInput;
+        [SerializeField] private TMP_Dropdown expansionDropdown;
 
         [Header("Buttons")]
         [SerializeField] private Button saveDraftButton;
         [SerializeField] private Button submitButton;
 
-        public event Action<CardDto, string> OnSubmitClicked;   // (card, status)
-        public event Action<CardDto> OnFormChanged;
+        [Header("Preview")]
+        [SerializeField] private CardPreviewUI previewUI;
 
-        private long _currentCardId;
-        private readonly TMP_Text _pointsLabel;
-        private string _abilityJson;
+        // Eventos usados pelo CardWorkshopManager
+        public event Action<WorkshopCardDTO, string> OnSubmitClicked;
+        public event Action<WorkshopCardDTO> OnFormChanged;
 
+        private long _currentId = 0;
+        private string _currentStatus = null;
 
         private void Awake()
         {
-            if (saveDraftButton != null)
-                saveDraftButton.onClick.AddListener(() => Submit("draft"));
+            // Listeners de alteração de campos
+            nameInput.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            amountInput.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            flavorTextInput.onValueChanged.AddListener(_ => OnAnyFieldChanged());
 
-            if (submitButton != null)
-                submitButton.onClick.AddListener(() => Submit("active"));
+            suitDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            rarityDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            triggerDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            effectDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            targetDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+            pointsDropdown.onValueChanged.AddListener(_ => OnAnyFieldChanged());
 
-            if (nameInput != null)
-                nameInput.onValueChanged.AddListener(_ => NotifyChanged());
-
-            if (pointsDropdown != null)
-                pointsDropdown.onValueChanged.AddListener(_ => NotifyChanged());
-
-            if (triggerDropdown != null)
-                triggerDropdown.onValueChanged.AddListener(_ => NotifyChanged());
-
-            if (effectDropdown != null)
-                effectDropdown.onValueChanged.AddListener(_ => NotifyChanged());
-
-            if (amountInput != null)
+            oncePerGameToggle.onValueChanged.AddListener(_ => OnAnyFieldChanged());
+        }
+        public void Init(List<WorkshopCardDTO> runtimeCards)
+        {
+            if (runtimeCards == null || runtimeCards.Count == 0)
             {
-                amountInput.onValueChanged.AddListener(_ => NotifyChanged());
-                amountInput.onEndEdit.AddListener(_ => ValidateAmount());
+                Debug.LogWarning("[CardFormUI] Init chamado com lista vazia de runtimeCards.");
+                return;
             }
 
-            if (targetDropdown != null)
-                targetDropdown.onValueChanged.AddListener(_ => NotifyChanged());
+            // Suits
+            var suits = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.suit))
+                .Select(c => c.suit)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToList();
+            SetDropdownOptions(suitDropdown, suits);
 
-            if (suitDropdown != null)
-                suitDropdown.onValueChanged.AddListener(_ => NotifyChanged());
+            // Rarities
+            var rarities = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.rarity))
+                .Select(c => c.rarity)
+                .Distinct()
+                .OrderBy(r => r)
+                .ToList();
+            SetDropdownOptions(rarityDropdown, rarities);
 
-            if (rarityDropdown != null)
-                rarityDropdown.onValueChanged.AddListener(_ => NotifyChanged());
+            // Triggers
+            var triggers = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.trigger))
+                .Select(c => c.trigger)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+            SetDropdownOptions(triggerDropdown, triggers);
 
-            if (oncePerGameToggle != null)
-                oncePerGameToggle.onValueChanged.AddListener(_ => NotifyChanged());
+            // Effects
+            var effects = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.effect))
+                .Select(c => c.effect)
+                .Distinct()
+                .OrderBy(e => e)
+                .ToList();
+            SetDropdownOptions(effectDropdown, effects);
 
-            if (flavorTextInput != null)
-                flavorTextInput.onValueChanged.AddListener(_ => NotifyChanged());
+            // Targets
+            var targets = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.target))
+                .Select(c => c.target)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+            SetDropdownOptions(targetDropdown, targets);
 
-            if (expansionDropdown != null)
-                expansionDropdown.onValueChanged.AddListener(_ => NotifyChanged());
-
+            // Points
+            var points = runtimeCards
+                .Select(c => c.points)
+                .Distinct()
+                .OrderBy(p => p)
+                .ToList();
             if (pointsDropdown != null)
-                pointsDropdown.onValueChanged.AddListener(OnPointsDropdownChanged);
-        }
-        private void ValidateAmount()
-        {
-            if (!int.TryParse(amountInput.text, out var value))
             {
-                value = 1; // default
+                pointsDropdown.ClearOptions();
+                var opt = points
+                    .Select(p => new TMPro.TMP_Dropdown.OptionData(p.ToString()))
+                    .ToList();
+                pointsDropdown.AddOptions(opt);
             }
 
-            if (value < 1) value = 1;
-            if (value > 4) value = 4;
+            // Expansions
+            var expansions = runtimeCards
+                .Where(c => !string.IsNullOrEmpty(c.expansionCode))
+                .Select(c => c.expansionCode)
+                .Distinct()
+                .OrderBy(ec => ec)
+                .ToList();
+            SetDropdownOptions(expansionDropdown, expansions);
+        }
+        private void SetDropdownOptions(TMP_Dropdown dropdown, List<string> values)
+        {
+            if (dropdown == null) return;
 
-            amountInput.text = value.ToString();
+            dropdown.ClearOptions();
+            var options = values.Select(v => new TMP_Dropdown.OptionData(v)).ToList();
+            dropdown.AddOptions(options);
+
+            if (values.Count > 0)
+                dropdown.value = 0;
         }
 
-        private void Start()
+        // Botão "Guardar rascunho"
+        public void OnClickSubmitDraft()
         {
-            // carrega valores dinâmicos para os dropdowns a partir do /api/Cards/runtime
-            if (apiClient != null)
-                StartCoroutine(InitDynamicDropdowns());
-            else
-                Debug.LogWarning("[CardFormUI] apiClient não está ligado; dropdowns vão usar opções estáticas.");
+            Submit("draft");
         }
 
-        public void LoadFrom(CardDto dto)
+        // Botão "Submeter para revisão"
+        public void OnClickSubmitForReview()
         {
-            _currentCardId = dto.cardId;
-
-            nameInput.text = dto.name;
-            previewAbilityLbl.text = dto.ability;
-            flavorTextInput.text = dto.flavorText;
-            amountInput.text = dto.amount.ToString();
-            oncePerGameToggle.isOn = dto.oncePerGame;
-
-            suitDropdown.value = suitDropdown.options.FindIndex(o => o.text == dto.suit);
-            rarityDropdown.value = rarityDropdown.options.FindIndex(o => o.text == dto.rarity);
-            triggerDropdown.value = triggerDropdown.options.FindIndex(o => o.text == dto.trigger);
-            effectDropdown.value = effectDropdown.options.FindIndex(o => o.text == dto.effect);
-            targetDropdown.value = targetDropdown.options.FindIndex(o => o.text == dto.target);
-            expansionDropdown.value = expansionDropdown.options.FindIndex(o => o.text == dto.expansionCode);
-
-            if (pointsDropdown != null)
-            {
-                var txt = dto.points.ToString();
-                var idx = pointsDropdown.options.FindIndex(o => o.text == txt);
-                if (idx >= 0)
-                    pointsDropdown.value = idx;
-            }
-
-            UpdateAbilityFields(dto);
-            UpdatePreview(dto);
-            OnFormChanged?.Invoke(dto);
-        }
-
-        public void ClearForm()
-        {
-            _currentCardId = 0;
-
-            nameInput.text = "";
-            previewAbilityLbl.text = "";
-            _abilityJson = string.Empty;
-            flavorTextInput.text = "";
-            amountInput.text = "0";
-            oncePerGameToggle.isOn = false;
-
-            // dropdowns podem ficar nos valores default (0)
-            if (pointsDropdown != null)
-                pointsDropdown.value = 0;
-
-            NotifyChanged();
-        }
-
-        private CardDto BuildDto()
-        {
-            var dto = BuildDtoCoreWithoutAbility();
-            UpdateAbilityFields(dto);
-            return dto;
-        }
-        private void UpdateAbilityFields(CardDto dto)
-        {
-            if (dto == null) return;
-
-            dto.ability = AbilityTextBuilder.Build(dto);
-            dto.abilityJson = AbilityJsonBuilder.Build(dto);
-
-            if (previewAbilityLbl != null)
-                previewAbilityLbl.text = dto.ability ?? string.Empty;
-
-            // nada de UI para abilityJson aqui
-            _abilityJson = dto.abilityJson;
-        }
-        private CardDto BuildDtoCoreWithoutAbility()
-        {
-
-            int amount;
-            if (!int.TryParse(amountInput.text, out amount))
-                amount = 1;
-            if (amount < 1) amount = 1;
-            if (amount > 4) amount = 4;
-
-            return new CardDto
-            {
-                cardId = _currentCardId,
-                name = nameInput.text.Trim(),
-                suit = suitDropdown.options[suitDropdown.value].text,
-                rarity = rarityDropdown.options[rarityDropdown.value].text,
-                points = Convert.ToInt32(pointsDropdown.options[pointsDropdown.value].text),
-                trigger = triggerDropdown.options[triggerDropdown.value].text,
-                effect = effectDropdown.options[effectDropdown.value].text,
-                amount = amount,
-                target = targetDropdown.options[targetDropdown.value].text,
-                oncePerGame = oncePerGameToggle.isOn,
-                flavorText = flavorTextInput.text,
-                expansionCode = expansionDropdown.options[expansionDropdown.value].text
-            };
-        }
-
-        private void NotifyChanged()
-        {
-            var dto = BuildDtoCoreWithoutAbility();
-            UpdateAbilityFields(dto);   // gera ability e abilityJson
-            UpdatePreview(dto);         // atualiza o painel de preview
-            OnFormChanged?.Invoke(dto);
+            Submit("active");
         }
 
         private void Submit(string status)
         {
-            var dto = BuildDto();
+            var dto = BuildDto(status);
+
+            // atualiza status interno para futuras edições
+            _currentStatus = status;
+
             OnSubmitClicked?.Invoke(dto, status);
         }
 
-        // =========================
-        //  Dinamic dropdown logic
-        // =========================
-
-        private IEnumerator InitDynamicDropdowns()
+        private void OnAnyFieldChanged()
         {
-            List<CardDto> cards = null;
-            string error = null;
+            var dto = BuildDto(_currentStatus);
 
-            yield return apiClient.GetRuntimeCards(
-                list => cards = list,
-                err => error = err
-            );
-
-            if (!string.IsNullOrEmpty(error))
+            // Atualizar preview
+            if (previewUI != null)
             {
-                Debug.LogError("[CardFormUI] Erro ao carregar /api/Cards/runtime: " + error);
-                yield break;
+                previewUI.UpdatePreview(dto);
             }
 
-            if (cards == null || cards.Count == 0)
+            // Notificar manager (para draft list, etc.)
+            OnFormChanged?.Invoke(dto);
+        }
+
+        /// <summary>
+        /// Constrói o DTO do formulário atual, incluindo ability e abilityJson.
+        /// </summary>
+        private WorkshopCardDTO BuildDto(string statusOverride)
+        {
+            int points = 0;
+            int.TryParse(GetDropdownText(pointsDropdown), out points);
+
+            int amount = 0;
+            int.TryParse(amountInput.text, out amount);
+
+            string suit = GetDropdownText(suitDropdown);
+            string rarity = GetDropdownText(rarityDropdown);
+            string trigger = GetDropdownText(triggerDropdown);
+            string effect = GetDropdownText(effectDropdown);
+            string target = GetDropdownText(targetDropdown);
+
+            // Construir um CardDto temporário só para alimentar os builders
+            var cardForAbility = new WorkshopCardDTO
             {
-                Debug.LogWarning("[CardFormUI] /api/Cards/runtime devolveu lista vazia.");
-                yield break;
+                id = _currentId,
+                name = nameInput.text,
+                suit = suit,
+                rarity = rarity,
+                points = points,
+                ability = null, // vai ser preenchido pelos builders
+                trigger = trigger,
+                effect = effect,
+                amount = amount,
+                target = target,
+                oncePerGame = oncePerGameToggle.isOn,
+                abilityJson = null,
+                expansionCode = "wks",
+                flavorText = flavorTextInput.text,
+                status = statusOverride ?? _currentStatus,
+            };
+
+            string humanReadableAbility = AbilityTextBuilder.Build(cardForAbility);
+            string abilityJson = AbilityJsonBuilder.Build(cardForAbility);
+
+            var dto = new WorkshopCardDTO
+            {
+                id = _currentId,
+                name = nameInput.text,
+                suit = suit,
+                rarity = rarity,
+                points = points,
+                ability = humanReadableAbility,
+                trigger = trigger,
+                effect = effect,
+                amount = amount,
+                target = target,
+                oncePerGame = oncePerGameToggle.isOn,
+                abilityJson = abilityJson,
+                expansionCode = "wks",
+                flavorText = flavorTextInput.text,
+                status = statusOverride ?? _currentStatus
+            };
+
+            return dto;
+        }
+
+        private static string GetDropdownText(TMP_Dropdown ddl)
+        {
+            if (ddl == null || ddl.options == null || ddl.options.Count == 0)
+                return string.Empty;
+
+            int idx = ddl.value;
+            if (idx < 0 || idx >= ddl.options.Count)
+                return string.Empty;
+
+            return ddl.options[idx].text;
+        }
+
+        /// <summary>
+        /// Limpa o formulário para criar uma nova carta.
+        /// </summary>
+        public void ClearForm()
+        {
+            _currentId = 0;
+            _currentStatus = null;
+
+            nameInput.text = string.Empty;
+            amountInput.text = "0";
+            flavorTextInput.text = string.Empty;
+
+            if (suitDropdown != null && suitDropdown.options.Count > 0) suitDropdown.value = 0;
+            if (rarityDropdown != null && rarityDropdown.options.Count > 0) rarityDropdown.value = 0;
+            if (triggerDropdown != null && triggerDropdown.options.Count > 0) triggerDropdown.value = 0;
+            if (effectDropdown != null && effectDropdown.options.Count > 0) effectDropdown.value = 0;
+            if (targetDropdown != null && targetDropdown.options.Count > 0) targetDropdown.value = 0;
+            if (pointsDropdown != null && targetDropdown.options.Count > 0) targetDropdown.value = 0;
+
+            oncePerGameToggle.isOn = false;
+
+            OnAnyFieldChanged();
+        }
+
+        /// <summary>
+        /// Carrega a carta recebida (ex: devolvida da API) para o formulário.
+        /// </summary>
+        public void LoadFrom(WorkshopCardDTO dto)
+        {
+            if (dto == null)
+            {
+                ClearForm();
+                return;
             }
 
-            var suits = DistinctStrings(cards.Select(c => c.suit));
-            var rarities = DistinctStrings(cards.Select(c => c.rarity));
-            var triggers = DistinctStrings(cards.Select(c => c.trigger));
-            var effects = DistinctStrings(cards.Select(c => c.effect));
-            var targets = DistinctStrings(cards.Select(c => c.target));
-            var points = cards.Select(c => c.points)
-                              .Distinct()
-                              .OrderBy(p => p)
-                              .Select(p => p.ToString())
-                              .ToList();
+            _currentId = dto.id;
+            _currentStatus = dto.status;
 
-            SetDropdownOptions(suitDropdown, suits);
-            SetDropdownOptions(rarityDropdown, rarities);
-            SetDropdownOptions(triggerDropdown, triggers);
-            SetDropdownOptions(effectDropdown, effects);
-            SetDropdownOptions(targetDropdown, targets);
-            SetDropdownOptions(pointsDropdown, points);
-        }
+            nameInput.text = dto.name;
+            amountInput.text = dto.amount.ToString();
+            flavorTextInput.text = dto.flavorText ?? string.Empty;
 
-        private static List<string> DistinctStrings(IEnumerable<string> source)
-        {
-            return source
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Distinct()
-                .OrderBy(s => s)
-                .ToList();
-        }
+            SetDropdownValueByText(suitDropdown, dto.suit);
+            SetDropdownValueByText(rarityDropdown, dto.rarity);
+            SetDropdownValueByText(triggerDropdown, dto.trigger);
+            SetDropdownValueByText(effectDropdown, dto.effect);
+            SetDropdownValueByText(targetDropdown, dto.target);
+            SetDropdownValueByText(pointsDropdown, dto.points.ToString());
 
-        private static void SetDropdownOptions(TMP_Dropdown dropdown, List<string> values)
-        {
-            if (dropdown == null || values == null) return;
+            oncePerGameToggle.isOn = dto.oncePerGame;
 
-            dropdown.ClearOptions();
-            dropdown.AddOptions(values);
-        }
-
-        private void OnPointsDropdownChanged(int index)
-        {
-            if (pointsDropdown == null) return;
-            if (index < 0 || index >= pointsDropdown.options.Count) return;
-
-            if (previewPointsLbl != null)
-                previewPointsLbl.text = pointsDropdown.options[index].text;
-        }
-
-        private void UpdatePreview(CardDto dto)
-        {
-            if (dto == null) return;
-
-            if (cardNameLbl != null)
-                cardNameLbl.text = dto.name ?? string.Empty;
-
-            if (previewSuitLbl != null)
-                previewSuitLbl.text = dto.suit ?? string.Empty;
-
-            if (previewRarityLbl != null)
-                previewRarityLbl.text = dto.rarity ?? string.Empty;
-
-            if (previewPointsLbl != null)
-                previewPointsLbl.text = dto.points.ToString();
-
-            if (previewFlavorLbl != null)
-                previewFlavorLbl.text = dto.flavorText ?? string.Empty;
-
-            // abilityLbl já é tratado em UpdateAbilityFields(dto)
-
-            // Atualizar imagem do suit
-            if (suitImg != null)
+            // aqui o texto da ability vem do dto, mas também podemos reconstruir
+            var rebuilt = BuildDto(_currentStatus);
+            if (previewUI != null)
             {
-                var sprite = LoadSuitSprite(dto.suit);
-                if (sprite != null)
-                    suitImg.sprite = sprite;
+                previewUI.UpdatePreview(rebuilt);
             }
+
+            OnFormChanged?.Invoke(rebuilt);
         }
-        private Sprite LoadSuitSprite(string suitName)
+
+        private static void SetDropdownValueByText(TMP_Dropdown ddl, string text)
         {
-            if (string.IsNullOrEmpty(suitName))
-                return null;
-
-            // Exemplo: suitName = "Analitycal" → Resources/Suits/Analitycal
-            return Resources.Load<Sprite>($"Suits/{suitName}");
+            if (ddl == null || ddl.options == null) return;
+            int index = ddl.options.FindIndex(o => o.text == text);
+            if (index >= 0)
+                ddl.value = index;
         }
-
     }
 }
+    

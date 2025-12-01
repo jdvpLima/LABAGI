@@ -1,11 +1,12 @@
 ﻿using Assets.Scripts.Model;
+using Assets.Scripts.Service;
 using System.Text;
 
 namespace Assets.Scripts.Workshop
 {
     public static class AbilityTextBuilder
     {
-        public static string Build(CardDto dto)
+        public static string Build(WorkshopCardDTO dto)
         {
             if (dto == null)
                 return string.Empty;
