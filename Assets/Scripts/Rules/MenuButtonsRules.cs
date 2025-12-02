@@ -9,6 +9,6 @@ public class MenuButtonsRules : MonoBehaviour
     }
     public void QuitPreGame()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.UnloadSceneAsync("Rules");
     }
 }

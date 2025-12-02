@@ -241,7 +241,7 @@ public class ARManipulateUI : MonoBehaviour
     public void Button()
     {
         Debug.Log("Botão pressionado na UI AR");
-        loader.LoadSceneAtPosition("DeckCreation", placeUI.spawnedUI.transform.position, placeUI.spawnedUI.transform.rotation);
+        loader.LoadSceneAtPosition("MainMenu", placeUI.spawnedUI.transform.position, placeUI.spawnedUI.transform.rotation);
     }
 
 

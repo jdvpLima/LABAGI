@@ -122,6 +122,18 @@ namespace Assets.Scripts.Workshop
                 await _cardService.GrantCardToInventoryAsync(userId, saved.id, 4);
             }
         }
+
+
+        public void BackButton()
+        {
+            //Debug.Log("BACK2BACK2BACK");
+            MainMenuManager.workshop = false;
+            SceneManager.UnloadSceneAsync("Workshop");
+            
+        }
+
     }
+
+
 
 }

@@ -28,10 +28,25 @@ public class SettingsManager : MonoBehaviour
     private const string MUSIC_VOL_MIXER_VARIABLE = "MusicVolume";
     private const string SFX_VOL_MIXER_VARIABLE = "SfxVolume";
 
+    //public static SettingsManager Instance;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         LoadSettings();
+       /*
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Registrar esta instância
+        Instance = this;
+
+        // Fazer persistir entre cenas
+        DontDestroyOnLoad(gameObject);*/
     }
 
     public void OnBackButtonPressed()
