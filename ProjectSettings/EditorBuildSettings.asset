@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PreGame.unity
     guid: d9b7ac6783a42e84e956824e5c658983
+  - enabled: 1
+    path: Assets/Scenes/Rules.unity
+    guid: ff91b01b00f24f34aa3cc4d471a0bf9e
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: bf7e823c1be0db345b05de1c9c9beb5e,
       type: 2}

@@ -19,7 +19,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void Rules()
     {
-        Debug.Log("Rules!");
+        SceneManager.LoadScene("Rules");
     }
 
     public void Workshop()
