@@ -9,6 +9,8 @@ TagManager:
   - PlayerHand
   - Anchor
   - Projectile
+  - Marker
+  - CanvaPref
   layers:
   - Default
   - TransparentFX

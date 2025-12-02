@@ -8,29 +8,53 @@ public class GameModeNeuroNexus : MonoBehaviour, IGameMode
     public int gameModeID => m_GameModeID;
     [SerializeField] int m_GameModeID = 1;
 
+    public GameObject cardPrefab;
+    public Transform cardSpawnRoot; // um empty object em frente ao player
 
-    [SerializeField] GameObject modelToView;
+    // Test
+    // [SerializeField] GameObject modelToView;
 
     void Start()
     {
         HideGameMode();
+
+        if(cardPrefab == null)
+        {
+            Debug.LogWarning("No card prefab assigned!!");
+        }
+
+        if (cardSpawnRoot == null)
+        {
+            Debug.LogWarning("No card root assigned!!");
+        }
     }
 
     public void HideGameMode()
     {
-        modelToView.SetActive(false);
+        
     }
 
     public void ShowGameMode()
     {
         Debug.Log("Showing NeuroNexus.");
-        modelToView.SetActive(true);
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 offset = new Vector3(i * 0.09f, 0, 0);
+            Instantiate(cardPrefab, cardSpawnRoot.position + offset, cardSpawnRoot.rotation, cardSpawnRoot);
+            Debug.Log("CARTA INSTANCIADA");
+        }
     }
 
     public void OnGameModeStart()
     {
-        Debug.Log("Started game NeuroNexus.");
-        
+        Debug.Log("OnGameModeStart() IS ON!");
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 offset = new Vector3(i * 0.2f, 0, 0);
+            Instantiate(cardPrefab, cardSpawnRoot.position + offset, cardSpawnRoot.rotation, cardSpawnRoot);
+            Debug.Log("CARTA INSTANCIADA");
+        }
+
     }
 
     public void OnGameModeEnd()

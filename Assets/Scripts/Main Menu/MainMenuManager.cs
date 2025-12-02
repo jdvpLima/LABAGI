@@ -7,6 +7,19 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject playScenePanel;
 
+    public static bool workshop = false;
+
+    [SerializeField] private GameObject video;
+
+
+    void Update()
+    {
+        if(workshop == true)
+            video.SetActive(false);
+        else
+            video.SetActive(true);
+    }
+
     public void Play()
     {
         SceneManager.LoadScene("PreGame");
@@ -19,12 +32,13 @@ public class MainMenuManager : MonoBehaviour
 
     public void Rules()
     {
-        SceneManager.LoadScene("Rules");
+        SceneManager.LoadScene("Rules", LoadSceneMode.Additive);
     }
 
     public void Workshop()
     {
-        SceneManager.LoadScene("Workshop");
+        SceneManager.LoadScene("Workshop", LoadSceneMode.Additive);
+        workshop = true;
     }
 
     public void Shop()

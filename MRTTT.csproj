@@ -1,21 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project>
   <!-- Generated file, do not modify, your changes will be overwritten (use AssetPostprocessor.OnGeneratedCSProject) -->
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <BaseIntermediateOutputPath>Temp/obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    <OutputPath>Temp/bin/Debug/</OutputPath>
   </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Include="Unity" />
+  </ItemGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <LangVersion>9.0</LangVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{B8478A23-0928-DAF5-94B5-0CBDF5CD8CC8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>MRTTT</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup>
@@ -23,33 +26,17 @@
     <DefineConstants>UNITY_6000_2_10;UNITY_6000_2;UNITY_6000;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_2023_2_OR_NEWER;UNITY_2023_3_OR_NEWER;UNITY_6000_0_OR_NEWER;UNITY_6000_1_OR_NEWER;UNITY_6000_2_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_UNITY_CONSENT;ENABLE_UNITY_CLOUD_IDENTIFIERS;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_MARSHALLING_TESTS;ENABLE_VIDEO;ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;TEXTCORE_1_0_OR_NEWER;EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_NVIDIA;ENABLE_AMD;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER;PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION;PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER;USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>Temp\bin\Debug\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>Temp\bin\Release\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup>
-    <NoConfig>true</NoConfig>
+    <NoStandardLibraries>true</NoStandardLibraries>
     <NoStdLib>true</NoStdLib>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
-    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+    <NoConfig>true</NoConfig>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>2.0.25</UnityProjectGeneratorVersion>
-    <UnityProjectGeneratorStyle>Legacy</UnityProjectGeneratorStyle>
+    <UnityProjectGeneratorStyle>SDK</UnityProjectGeneratorStyle>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>6000.2.10f1</UnityVersion>
@@ -61,304 +48,304 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\SlingshotLauncher.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\UI\ArrowMesh.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\BoardVisualizer\VisualizerGravityWell.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\FadePlaneMaterial.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\AbstractChessEngine.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\BitBoardUtility.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Player.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\DelayedUnityEvent.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Sandbox\SimpleFan.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableInitializer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\XRPokeFollowAffordanceFill.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessPiece.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Zobrist.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\PermissionsManager.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\PlayerColocation.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\NetworkTableTopManager.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\GameViewer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\GameManager.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Board\ChessBoardGenerator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\Book\BookCreator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\Billboard.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Board\ChessBoardTile.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Environment\BackgroundTransition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\CustomNetworkTransform.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Piece.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\PGNLoader.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Passthrough\PassthroughVolume.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Utils\VectorUtilities.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Environment\DefaultBackground.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableRotationTransformer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\HoverFilter.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Environment\SystemObjectBase.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\NetworkObjectDestroyer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\Pooler.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\LobbyList\LobbyListSlotUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\DotProductToggle.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\MoveGenerator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableAlignmentTransformer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\LazyFollow.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\AI\Search.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Player\CalloutGazeController.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\UI\BoardTheme.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\SnapToPlayerHeight.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\GameModeManager.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Board\ChessBoardUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Player\PlayerUIArea.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\HumanPlayer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\IntButtonUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\ObjectDispenser\NetworkObjectDispenser.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessSquareUtil.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\SeatMap.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\ClaimableNetworkTransform.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GoalManager.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\ObjectDispenser\InteractableSpawner.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Passthrough\AppearanceManger.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\AccidentalPressHandler.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\TMProSprite.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\ProceduralCapsule.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Utils\TweenableVariableExtensions.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\PlayerList\PlayerListUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\ChessWinTransition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\BoardVisualizer\ParticleBoardJobVisualizer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\Book\Book.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\PseudoLegalMoveGenerator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\SnapBillboard.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessPieceAudioHandler.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\BoardVisualizer\WinBoardJobVisualizer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\SeatChangeListener.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableManipulationSystem.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Board.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\Book\MultiPGNParser.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\GameModeEmpty.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableHandleController.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Passthrough\HandVisuals.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableSeatSystem.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Clock.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\PieceList.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\SlingshotTrajectoryArc.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\FenUtility.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Widgets\XRSlider.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\ChessSetupTransition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessTypes.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\PrecomputedMoveData.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\AI\MoveOrdering.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Sync\NetworkChessBoard.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\SlingshotProjectile.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\Transition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\PGNCreator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Widgets\XRToggle.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Player\OfflinePlayerAvatar.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\AI\AISettings.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\BooleanToggleVisualsController.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Animation\ChessBoardStartAnimator.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\AdditiveLoadedGameMode.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\BalloonTarget.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\AIPlayer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\PassthroughEnvironment.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\TransitionStack.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Coord.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\UI\PieceTheme.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\FileWriter.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\NetworkedAffordanceState.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\PlayerList\PlayerSlot.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\PlayerList\PlayerListInitializer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\SeatBillboard.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableTop.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessSquare.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\ChessBoardTransition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\ImprovedOneEuroFilter.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessBoard.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\SlingshotArea.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\ConnectionToggler.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Player\PlayerOptions.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\BoardVisualizer\BoardJobVisualizer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\GameModeSlingshot.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Passthrough\PassthroughClipSource.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\SubTrigger.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameObjectToggle.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\TranspositionTable.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Table\TableTopSeatButton.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\PieceSquareTable.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\ClaimableNetworkBehaviour.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\PermissionsCheck.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessAIEngine.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\PlatformUnderstanding.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\ChessTimer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Sandbox\SmallScalePhysicsModifier.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Board\ChessOptionsUIController.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\BoardRepresentation.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\UI\ArrowDrawer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\UI\BoardUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\UI\LobbyList\LobbyUI.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\Move.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\ObjectDispenser\NetworkObjectSpawner.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\OneHandInteractionHelper.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\Helpers\ObjectReset.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Other\Book\BookViewer.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Scripts\Core\AI\Evaluation.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Games\Chess\Scripts\Transitions\ChessOptionsTransition.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Sandbox\GameModeSandbox.cs" />
-    <Compile Include="Assets\MRTabletopAssets\Scripts\GameModes\Slingshot\TargetSpawner.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/SlingshotLauncher.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/UI/ArrowMesh.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/BoardVisualizer/VisualizerGravityWell.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/FadePlaneMaterial.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/AbstractChessEngine.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/BitBoardUtility.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Player.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/DelayedUnityEvent.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Sandbox/SimpleFan.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableInitializer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/XRPokeFollowAffordanceFill.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessPiece.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Zobrist.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/PermissionsManager.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/PlayerColocation.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/NetworkTableTopManager.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/GameViewer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/GameManager.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Board/ChessBoardGenerator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/Book/BookCreator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/Billboard.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Board/ChessBoardTile.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Environment/BackgroundTransition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/CustomNetworkTransform.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Piece.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/PGNLoader.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Passthrough/PassthroughVolume.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Utils/VectorUtilities.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Environment/DefaultBackground.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableRotationTransformer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/HoverFilter.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Environment/SystemObjectBase.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/NetworkObjectDestroyer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/Pooler.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/LobbyList/LobbyListSlotUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/DotProductToggle.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/MoveGenerator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableAlignmentTransformer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/LazyFollow.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/AI/Search.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Player/CalloutGazeController.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/UI/BoardTheme.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/SnapToPlayerHeight.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/GameModeManager.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Board/ChessBoardUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Player/PlayerUIArea.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/HumanPlayer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/IntButtonUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/ObjectDispenser/NetworkObjectDispenser.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessSquareUtil.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/SeatMap.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/ClaimableNetworkTransform.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GoalManager.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/ObjectDispenser/InteractableSpawner.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Passthrough/AppearanceManger.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/AccidentalPressHandler.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/TMProSprite.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/ProceduralCapsule.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Utils/TweenableVariableExtensions.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/PlayerList/PlayerListUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/ChessWinTransition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/BoardVisualizer/ParticleBoardJobVisualizer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/Book/Book.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/PseudoLegalMoveGenerator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/SnapBillboard.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessPieceAudioHandler.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/BoardVisualizer/WinBoardJobVisualizer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/SeatChangeListener.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableManipulationSystem.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Board.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/Book/MultiPGNParser.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/GameModeEmpty.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableHandleController.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Passthrough/HandVisuals.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableSeatSystem.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Clock.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/PieceList.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/SlingshotTrajectoryArc.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/FenUtility.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Widgets/XRSlider.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/ChessSetupTransition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessTypes.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/PrecomputedMoveData.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/AI/MoveOrdering.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Sync/NetworkChessBoard.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/SlingshotProjectile.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/Transition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/PGNCreator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Widgets/XRToggle.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Player/OfflinePlayerAvatar.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/AI/AISettings.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/BooleanToggleVisualsController.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Animation/ChessBoardStartAnimator.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/AdditiveLoadedGameMode.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/BalloonTarget.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/AIPlayer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/PassthroughEnvironment.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/TransitionStack.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Coord.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/UI/PieceTheme.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/FileWriter.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/NetworkedAffordanceState.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/PlayerList/PlayerSlot.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/PlayerList/PlayerListInitializer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/SeatBillboard.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableTop.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessSquare.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/ChessBoardTransition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/ImprovedOneEuroFilter.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessBoard.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/SlingshotArea.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/ConnectionToggler.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Player/PlayerOptions.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/BoardVisualizer/BoardJobVisualizer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/GameModeSlingshot.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Passthrough/PassthroughClipSource.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/SubTrigger.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameObjectToggle.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/TranspositionTable.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Table/TableTopSeatButton.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/PieceSquareTable.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/ClaimableNetworkBehaviour.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/PermissionsCheck.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessAIEngine.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/PlatformUnderstanding.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/ChessTimer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Sandbox/SmallScalePhysicsModifier.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Board/ChessOptionsUIController.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/BoardRepresentation.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/UI/ArrowDrawer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/UI/BoardUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/UI/LobbyList/LobbyUI.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/Move.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/ObjectDispenser/NetworkObjectSpawner.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/OneHandInteractionHelper.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/Helpers/ObjectReset.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Other/Book/BookViewer.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Scripts/Core/AI/Evaluation.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Games/Chess/Scripts/Transitions/ChessOptionsTransition.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Sandbox/GameModeSandbox.cs" />
+    <Compile Include="Assets/MRTabletopAssets/Scripts/GameModes/Slingshot/TargetSpawner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Gibraltar2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sochi2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VertexGradient.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sofia2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\SelectivePassthroughStencilWrite.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\London2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Nanjing2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sharjah2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Poikovsky2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VertexColor.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Baden2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VerticalGradientTransparentOccludeUnlit.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sofia2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VertexColorAlpha.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Geneva2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bermuda2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\Book.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Beijing2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Zurich2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Donostia2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Poikovsky2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\UIAlwaysOnTop.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Nanjing2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Tashkent2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shenzhen2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sofia2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\London2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2020.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VertexColorGradient.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Poikovsky2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Medias2011.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\HandShaderURP.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\VertexColorBackgroundFragmentAlphaStencilRead.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sofia2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\PassthroughFade.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\ReggioEmilia2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Pamplona2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Foros2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sarajevo2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Baku2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\London2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Hoogeveen2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\VertexColorHueAdjust.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\InstanceVertexColorBackgroundColorOverlay.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Paris2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2020.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\London2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\TMProSprite_SDF.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Thessalonika2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\InstanceColorUnlit.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Baden2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\Shaders\ChessBackground.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2014.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2017.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Foros2007.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\Games.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Nalchik2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Sofia2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Baden2018.txt" />
-    <None Include="Assets\MRTabletopAssets\MRTTT.asmdef" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Dortmund2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Shamkir2018.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\PassthroughHands.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\CapsuleShader.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Elista2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\Notes.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Zug2013.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bazna2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Riga2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Jermuk2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\UIDefaultNoBackface.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Poikovsky2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2016.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\DosHermanas2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Moscow2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Zagreb2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Biel2012.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Foros2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Havana2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\SaintLouis2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\WijkaanZee2019.txt" />
-    <None Include="Assets\MRTabletopAssets\Shaders\SelectivePassthroughFade.shader" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Linares2005.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Poikovsky2006.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Nanjing2008.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Tbilisi2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\KhantyMansiysk2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\London2009.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Stavanger2015.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Bilbao2010.txt" />
-    <None Include="Assets\MRTabletopAssets\Games\Chess\ThirdParty\ChessAI\Book\PGNs\Zurich2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Gibraltar2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sochi2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VertexGradient.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sofia2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/SelectivePassthroughStencilWrite.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/London2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Nanjing2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sharjah2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Poikovsky2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VertexColor.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Baden2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VerticalGradientTransparentOccludeUnlit.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sofia2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VertexColorAlpha.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Geneva2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bermuda2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/Book.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Beijing2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Zurich2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Donostia2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Poikovsky2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/UIAlwaysOnTop.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Nanjing2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Tashkent2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shenzhen2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sofia2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/London2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2020.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VertexColorGradient.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Poikovsky2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Medias2011.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/HandShaderURP.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/VertexColorBackgroundFragmentAlphaStencilRead.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sofia2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/PassthroughFade.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/ReggioEmilia2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Pamplona2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Foros2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sarajevo2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Baku2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/London2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Hoogeveen2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/VertexColorHueAdjust.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/InstanceVertexColorBackgroundColorOverlay.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Paris2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2020.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/London2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/TMProSprite_SDF.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Thessalonika2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/InstanceColorUnlit.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Baden2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/Shaders/ChessBackground.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2014.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2017.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Foros2007.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/Games.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Nalchik2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Sofia2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Baden2018.txt" />
+    <None Include="Assets/MRTabletopAssets/MRTTT.asmdef" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Dortmund2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Shamkir2018.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/PassthroughHands.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/CapsuleShader.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Elista2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/Notes.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Zug2013.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bazna2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Riga2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Jermuk2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/UIDefaultNoBackface.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Poikovsky2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2016.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/DosHermanas2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Moscow2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Zagreb2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Biel2012.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Foros2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Havana2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/SaintLouis2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/WijkaanZee2019.txt" />
+    <None Include="Assets/MRTabletopAssets/Shaders/SelectivePassthroughFade.shader" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Linares2005.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Poikovsky2006.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Nanjing2008.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Tbilisi2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/KhantyMansiysk2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/London2009.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Stavanger2015.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Bilbao2010.txt" />
+    <None Include="Assets/MRTabletopAssets/Games/Chess/ThirdParty/ChessAI/Book/PGNs/Zurich2015.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -866,47 +853,47 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="websocket-sharp">
-      <HintPath>Library\PackageCache\com.unity.services.wire@2d36cce58c62\Plugins\websocket-sharp.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.services.wire@2d36cce58c62/Plugins/websocket-sharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collections@aea9d3bd5e19/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93/net40/unity-custom/nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ReportGeneratorMerged">
-      <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@205a02cbcb39\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.testtools.codecoverage@205a02cbcb39/lib/ReportGenerator/ReportGeneratorMerged.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@b8d65294b30f\Lib\Editor\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collab-proxy@b8d65294b30f/Lib/Editor/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@b8d65294b30f\Lib\Editor\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collab-proxy@b8d65294b30f/Lib/Editor/Unity.Plastic.Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@b8d65294b30f\Lib\Editor\log4netPlastic.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collab-proxy@b8d65294b30f/Lib/Editor/log4netPlastic.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="unityplastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@b8d65294b30f\Lib\Editor\unityplastic.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collab-proxy@b8d65294b30f/Lib/Editor/unityplastic.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Hashing">
-      <HintPath>Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.Tests\System.IO.Hashing\System.IO.Hashing.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.collections@aea9d3bd5e19/Unity.Collections.Tests/System.IO.Hashing/System.IO.Hashing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\Newtonsoft.Json.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.nuget.newtonsoft-json@74deb55db2a0/Runtime/Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>Library\PackageCache\com.unity.nuget.mono-cecil@d78732e851eb\Mono.Cecil.dll</HintPath>
+      <HintPath>Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb/Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
@@ -1410,63 +1397,63 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Netcode.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.Netcode.Runtime.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Netcode.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Netcode.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Netcode.Editor.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Netcode.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.Interaction.Toolkit">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.Interaction.Toolkit.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.CoreUtils">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.CoreUtils.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.CoreUtils.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Collections">
-      <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Splines">
-      <HintPath>Library\ScriptAssemblies\Unity.Splines.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Splines.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">
-      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Burst">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Services.Vivox">
-      <HintPath>Library\ScriptAssemblies\Unity.Services.Vivox.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Services.Vivox.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Services.Multiplayer">
-      <HintPath>Library\ScriptAssemblies\Unity.Services.Multiplayer.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.Services.Multiplayer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.ARFoundation">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.ARFoundation.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.ARFoundation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.ARSubsystems">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.ARSubsystems.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.ARSubsystems.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.Management">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.Management.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.Management.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.OpenXR">
-      <HintPath>Library\ScriptAssemblies\Unity.XR.OpenXR.dll</HintPath>
+      <HintPath>Library/ScriptAssemblies/Unity.XR.OpenXR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UI">
@@ -1479,26 +1466,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="XRMP.csproj">
-      <Project>{5DDD6969-33F0-BA84-593B-CAD07917D3EC}</Project>
-      <Name>XRMP</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.csproj">
-      <Project>{5B988E10-DC5B-FD95-4EED-3E0127A6376E}</Project>
-      <Name>Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj">
-      <Project>{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}</Project>
-      <Name>Unity.XR.Interaction.Toolkit.Samples.StarterAssets</Name>
-    </ProjectReference>
+    <ProjectReference Include="XRMP.csproj" />
+    <ProjectReference Include="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.csproj" />
+    <ProjectReference Include="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Remove="LaunchProfiles" />
+    <ProjectCapability Remove="SharedProjectReferences" />
+    <ProjectCapability Remove="ReferenceManagerSharedProjects" />
+    <ProjectCapability Remove="ReferenceManagerProjects" />
+    <ProjectCapability Remove="COMReferences" />
+    <ProjectCapability Remove="ReferenceManagerCOM" />
+    <ProjectCapability Remove="AssemblyReferences" />
+    <ProjectCapability Remove="ReferenceManagerAssemblies" />
+  </ItemGroup>
 </Project>
