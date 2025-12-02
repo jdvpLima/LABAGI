@@ -62,8 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
-    <Compile Include="Assets\Scripts\Game\CardNetworkState.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
+    <Compile Include="Assets\Scripts\Rules\GroupSwitcher.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\CardSpawnManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CreateDeckManager.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopCardDTO.cs" />
@@ -88,17 +88,20 @@
     <Compile Include="Assets\Scripts\Georeferencing\MarkerResize.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityTextBuilder.cs" />
     <Compile Include="Assets\Scripts\AuthContext.cs" />
+    <Compile Include="Assets\Scripts\Game\GameModeNeuroNexus.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ToCreateDeckButtton.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopManager.cs" />
     <Compile Include="Assets\Scripts\CardViewer\CardFullscreenToggle.cs" />
     <Compile Include="Assets\Scripts\Workshop\DraftRowUI.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CardView.cs" />
+    <Compile Include="Assets\Scripts\Game\GameCard.cs" />
     <Compile Include="Assets\Scripts\JsonHelper.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardRowUI.cs" />
+    <Compile Include="Assets\Scripts\Rules\BackToMenu.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />
-    <Compile Include="Assets\Scripts\Game\DeckController.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardFormUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
+    <Compile Include="Assets\Scripts\Rules\MenuButtonsRules.cs" />
     <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
     <Compile Include="Assets\Scripts\Model\Card.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />

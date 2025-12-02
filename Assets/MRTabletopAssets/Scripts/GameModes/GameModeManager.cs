@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using UnityEditor.Experimental.GraphView;
 using XRMultiplayer;
 
 namespace UnityEngine.XR.Templates.MRTTabletopAssets
@@ -28,6 +29,11 @@ namespace UnityEngine.XR.Templates.MRTTabletopAssets
         {
             m_GameModes = transform.parent.GetComponentsInChildren<IGameMode>();
             System.Array.Sort(m_GameModes, (a, b) => a.gameModeID.CompareTo(b.gameModeID));
+
+            foreach(IGameMode g in m_GameModes)
+            {
+                Debug.Log(g);
+            }
         }
 
         public override void OnNetworkSpawn()

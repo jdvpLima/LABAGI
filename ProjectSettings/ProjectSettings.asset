@@ -817,11 +817,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 4295f155-f960-48b9-b3ee-f8bc51b198c3
+  cloudProjectId: f5479562-6990-41d6-bff0-397bb0c7dd54
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: LABAGI 2025-11-06_12-30-33
-  organizationId: j0unity
+  projectName: LABAGI
+  organizationId: cattisep
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
