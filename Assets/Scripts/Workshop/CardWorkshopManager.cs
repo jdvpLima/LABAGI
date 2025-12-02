@@ -1,10 +1,5 @@
-﻿using Assets.Scripts.Model;
-using Assets.Scripts.Service;
-using System;
-using System.Collections;
+﻿using Assets.Scripts.Service;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,7 +44,7 @@ namespace Assets.Scripts.Workshop
             if (draftPanel != null)
                 draftPanel.OnDraftSelected -= formPanel.LoadFrom;
         }
-
+        
         private void OnFormChanged(WorkshopCardDTO dto)
         {
             if (previewPanel != null)
@@ -99,7 +94,8 @@ namespace Assets.Scripts.Workshop
             try
             {
                 saved = await _cardService.UpsertWorkshopCardAsync(userId, dto);
-                formPanel.LoadFrom(saved);
+
+                formPanel.ClearForm();
 
                 if (draftPanel != null)
                     draftPanel.AddOrUpdateCard(saved);
@@ -122,6 +118,10 @@ namespace Assets.Scripts.Workshop
                 await _cardService.GrantCardToInventoryAsync(userId, saved.id, 4);
             }
         }
-    }
 
+        public void ReturnToMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
 }

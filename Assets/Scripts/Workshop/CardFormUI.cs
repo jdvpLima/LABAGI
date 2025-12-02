@@ -1,13 +1,10 @@
-﻿using Assets.Scripts.Model;
-using Assets.Scripts.Service;
+﻿using Assets.Scripts.Service;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using WebSocketSharp;
 
 namespace Assets.Scripts.Workshop
 {
@@ -26,7 +23,6 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private Toggle oncePerGameToggle;
         //[SerializeField] private InputField abilityJsonInput;
         [SerializeField] private TMP_InputField flavorTextInput;
-        [SerializeField] private TMP_Dropdown expansionDropdown;
 
         [Header("Buttons")]
         [SerializeField] private Button saveDraftButton;
@@ -125,15 +121,6 @@ namespace Assets.Scripts.Workshop
                     .ToList();
                 pointsDropdown.AddOptions(opt);
             }
-
-            // Expansions
-            var expansions = runtimeCards
-                .Where(c => !string.IsNullOrEmpty(c.expansionCode))
-                .Select(c => c.expansionCode)
-                .Distinct()
-                .OrderBy(ec => ec)
-                .ToList();
-            SetDropdownOptions(expansionDropdown, expansions);
         }
         private void SetDropdownOptions(TMP_Dropdown dropdown, List<string> values)
         {
@@ -178,6 +165,9 @@ namespace Assets.Scripts.Workshop
             {
                 previewUI.UpdatePreview(dto);
             }
+
+            saveDraftButton.interactable = true;
+            submitButton.interactable = true;
 
             // Notificar manager (para draft list, etc.)
             OnFormChanged?.Invoke(dto);
@@ -279,6 +269,9 @@ namespace Assets.Scripts.Workshop
             oncePerGameToggle.isOn = false;
 
             OnAnyFieldChanged();
+
+            saveDraftButton.interactable = false;
+            submitButton.interactable = false;
         }
 
         /// <summary>

@@ -1,9 +1,6 @@
-﻿using Assets.Scripts.CreateDeck;
-using Assets.Scripts.Model;
+﻿using Assets.Scripts.Model;
 using Assets.Scripts.Workshop;
 using Newtonsoft.Json;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -158,6 +155,26 @@ namespace Assets.Scripts.Service
                 }
 
                 return true;
+            }
+        }
+
+        public async Task DeleteCardAsync(long userId, long cardId)
+        {
+
+            using (var req = new UnityWebRequest($"{BaseUrl}/{cardId}", "DELETE"))
+            {
+                req.SetRequestHeader("Content-Type", "application/json");
+
+                req.SetRequestHeader("X-User", userId.ToString());
+
+                var op = req.SendWebRequest();
+                while (!op.isDone)
+                    await Task.Yield();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"DELETE /Cards/{cardId} failed: " + req.error);
+                }
             }
         }
     }

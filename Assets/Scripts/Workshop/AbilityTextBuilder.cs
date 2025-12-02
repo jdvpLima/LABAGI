@@ -32,29 +32,38 @@ namespace Assets.Scripts.Workshop
             if (string.IsNullOrEmpty(trigger))
                 return string.Empty;
 
+            string triggerPrefix = string.Empty;
+
             // once_per_game tem prioridade
             if (oncePerGame || trigger == "once_per_game")
             {
-                return "Once per game:";
+                triggerPrefix += "Once per game: ";
             }
 
             switch (trigger)
             {
                 case "on_accept_accept":
-                    return "If both Accept,";
+                    triggerPrefix += "If both Accept, ";
+                    break;
                 case "on_accept_refuse":
-                    return "If you Accept and opponent Refuses,";
+                    triggerPrefix += "If you Accept and opponent Refuses, ";
+                    break;
                 case "on_refuse_refuse":
-                    return "If both Refuse,";
+                    triggerPrefix += "If both Refuse, ";
+                    break;
                 case "on_reveal":
-                    return "After reveal,";
+                    triggerPrefix += "After reveal, ";
+                    break;
                 case "on_points":
-                    return "After scoring,";
+                    triggerPrefix += "After scoring, ";
+                    break;
                 case "on_choice":
-                    return "Before choices,";
+                    triggerPrefix += "Before choices, "; break;
                 default:
                     return string.Empty; // sem prefixo
             }
+
+            return triggerPrefix;
         }
 
         private static string BuildEffectChunk(string effect, string target, int amount)
