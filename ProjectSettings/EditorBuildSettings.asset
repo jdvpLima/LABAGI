@@ -24,6 +24,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Rules.unity
     guid: ff91b01b00f24f34aa3cc4d471a0bf9e
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: f0c96eb138c82484e9093cfc6b56e15b,
+      type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: bf7e823c1be0db345b05de1c9c9beb5e,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e4092494f37fcd74c9e900c0aa72f3ef,
