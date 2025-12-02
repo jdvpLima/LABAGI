@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\Georeferencing\MarkerResize.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityTextBuilder.cs" />
     <Compile Include="Assets\Scripts\AuthContext.cs" />
+    <Compile Include="Assets\Scripts\Game\GameModeNeuroNexus.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ToCreateDeckButtton.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopManager.cs" />
     <Compile Include="Assets\Scripts\CardViewer\CardFullscreenToggle.cs" />

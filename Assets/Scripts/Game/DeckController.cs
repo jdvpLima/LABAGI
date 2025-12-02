@@ -19,6 +19,7 @@ public class DeckController : NetworkBehaviour
     {
         for (int i = 0; i < numberOfCards; i++)
         {
+            Debug.Log("Spawned card!!!!!!!!!");
             Vector3 pos = cardAnchor.position + new Vector3(0, i * 0.002f, 0);
             Quaternion rot = Quaternion.identity;
 
