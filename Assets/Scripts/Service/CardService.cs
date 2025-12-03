@@ -1,10 +1,8 @@
-﻿using Assets.Scripts.CreateDeck;
-using Assets.Scripts.Model;
+﻿using Assets.Scripts.Model;
 using Assets.Scripts.Workshop;
 using Newtonsoft.Json;
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -62,13 +60,11 @@ namespace Assets.Scripts.Service
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogError("[CardService] Erro a parsear JSON de runtime (Newtonsoft): " + e + "\nJSON = " + json);
+                    Debug.LogError("[CardService] Error while parsing JSON: " + e + "\nJSON = " + json);
                     return new List<WorkshopCardDTO>();
                 }
             }
         }
-
-        // Cartas de workshop do utilizador
         public async Task<List<WorkshopCardDTO>> GetUserWorkshopCardsAsync(long userId)
         {
             using (var req = UnityWebRequest.Get($"{BaseUrl}/workshop/{userId}"))
@@ -89,33 +85,34 @@ namespace Assets.Scripts.Service
 
                 try
                 {
-                    var list = JsonUtility.FromJson<List<WorkshopCardDTO>>(json);
+                    var list = JsonConvert.DeserializeObject<List<WorkshopCardDTO>>(json);
                     return list ?? new List<WorkshopCardDTO>();
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogError("[CardService] Erro a parsear JSON de workshop (Newtonsoft): " + e + "\nJSON = " + json);
+                    Debug.LogError("[CardService] Error while parsing JSON: " + e + "\nJSON = " + json);
                     return new List<WorkshopCardDTO>();
                 }
             }
         }
 
-
-        // Upsert de uma carta de workshop
-        public WorkshopCardDTO UpsertWorkshopCard(long userId, WorkshopCardDTO dto)
+        public async Task<WorkshopCardDTO> UpsertWorkshopCardAsync(long userId, WorkshopCardDTO dto)
         {
             string jsonBody = JsonUtility.ToJson(dto);
-            var bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+            var bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
 
-            using (var req = new UnityWebRequest($"{BaseUrl}/workshop", "POST"))
+            using (var req = new UnityWebRequest($"{BaseUrl}/workshop/{userId}", "POST"))
             {
                 req.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 req.downloadHandler = new DownloadHandlerBuffer();
                 req.SetRequestHeader("Content-Type", "application/json");
+
                 req.SetRequestHeader("X-User", userId.ToString());
 
                 var op = req.SendWebRequest();
-               
+                while (!op.isDone)
+                    await Task.Yield();
+
                 if (req.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError("POST /Cards/workshop failed: " + req.error);
@@ -123,8 +120,61 @@ namespace Assets.Scripts.Service
                 }
 
                 string json = req.downloadHandler.text;
-                // aqui assumo que o backend devolve um DTO único, não uma lista
-                return JsonUtility.FromJson<WorkshopCardDTO>(json);
+
+                var saved = JsonUtility.FromJson<WorkshopCardDTO>(json);
+                return saved;
+            }
+        }
+        public async Task<bool> GrantCardToInventoryAsync(long userId, long cardId, short quantity = 4)
+        {
+            var payload = new[]
+            {
+                new InventoryGrantPayload { cardId = cardId, quantity = quantity }
+            };
+
+            // Precisamos de um array na raiz: [ { cardId, quantity } ]
+            var json = JsonConvert.SerializeObject(payload);
+
+            using (var req = new UnityWebRequest($"{BaseUrl}/inventory/{userId}", "POST"))
+            {
+                var bodyRaw = Encoding.UTF8.GetBytes(json);
+                req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                req.downloadHandler = new DownloadHandlerBuffer();
+                req.SetRequestHeader("Content-Type", "application/json");
+
+                var op = req.SendWebRequest();
+                while (!op.isDone)
+                    await Task.Yield();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("POST /Cards/inventory failed: " + req.error +
+                                   "\nRequest JSON = " + json +
+                                   "\nResponse = " + req.downloadHandler.text);
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        public async Task DeleteCardAsync(long userId, long cardId)
+        {
+
+            using (var req = new UnityWebRequest($"{BaseUrl}/{cardId}", "DELETE"))
+            {
+                req.SetRequestHeader("Content-Type", "application/json");
+
+                req.SetRequestHeader("X-User", userId.ToString());
+
+                var op = req.SendWebRequest();
+                while (!op.isDone)
+                    await Task.Yield();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"DELETE /Cards/{cardId} failed: " + req.error);
+                }
             }
         }
     }

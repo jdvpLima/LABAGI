@@ -45,7 +45,7 @@ namespace Assets.Scripts.CreateDeck
         {
             string json = JsonUtility.ToJson(deck);
 
-            using (UnityWebRequest req = new UnityWebRequest(BaseUrl, "POST"))
+            using (UnityWebRequest req = new UnityWebRequest(BaseUrl + "?userId=" + userId , "POST"))
             {
                 byte[] body = Encoding.UTF8.GetBytes(json);
                 req.uploadHandler = new UploadHandlerRaw(body);

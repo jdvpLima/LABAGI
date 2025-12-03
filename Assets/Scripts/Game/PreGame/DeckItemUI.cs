@@ -1,108 +1,47 @@
-// DeckItemUI.cs
+using TMPro;
 using System;
-using System.Collections;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using Assets.Scripts.CreateDeck; // for DecksDto
 
-namespace Assets.Scripts
+[RequireComponent(typeof(Image))] // ensures there is a Graphic to receive pointer events
+public class DeckItemUI : MonoBehaviour, IPointerClickHandler
 {
-    public class DeckItemUI : MonoBehaviour, IPointerClickHandler
+    [Header("UI refs")]
+    public Image artworkImage;                  // child image for deck artwork (optional)
+    public TextMeshProUGUI titleText;           // display-only text (assign your TMP text object)
+    public Image backgroundImage;               // root background image (for selection highlight)
+
+    [Header("Colors")]
+    public Color normalColor = Color.white;
+    public Color selectedColor = new Color(0.8f, 0.9f, 1f);
+
+    private DecksDto deck;
+    private Action<DecksDto, DeckItemUI> onClick;
+
+    // Bind called by the list manager after instantiation/clone
+    public void Bind(DecksDto d, Action<DecksDto, DeckItemUI> onClickCallback)
     {
-        [Header("Child UI refs")]
-        public Text deckNameText;
-        public Text cardCountText;
-        public Button clickableButton; // optional
-        public Image backgroundImage; // optional
+        deck = d;
+        onClick = onClickCallback;
 
-        // selection colors (set in inspector)
-        public Color normalColor = Color.white;
-        public Color selectedColor = new Color(0.8f, 0.9f, 1f);
+        titleText.text = string.IsNullOrEmpty(d.name) ? $"Deck {d.id}" : d.name;
 
-        private object deckObject;
-        private Action<object, DeckItemUI> onClick;
+        // artworkImage left empty unless you populate it via a sprite field or URL loader
+        // e.g., artworkImage.sprite = someSprite;
+        SetSelected(false);
+    }
 
-        public void Initialize(object deck, Action<object, DeckItemUI> onClickCallback)
-        {
-            deckObject = deck;
-            onClick = onClickCallback;
+    public void SetSelected(bool selected)
+    {
+        if (backgroundImage != null)
+            backgroundImage.color = selected ? selectedColor : normalColor;
+    }
 
-            if (deckNameText != null) deckNameText.text = GetDeckName(deckObject) ?? $"Deck";
-            if (cardCountText != null) cardCountText.text = $"{GetCardCount(deckObject)} cards";
-
-            SetSelected(false);
-
-            if (clickableButton != null)
-            {
-                clickableButton.onClick.RemoveAllListeners();
-                clickableButton.onClick.AddListener(() => NotifyClick());
-            }
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            NotifyClick();
-        }
-
-        private void NotifyClick()
-        {
-            onClick?.Invoke(deckObject, this);
-        }
-
-        public void SetSelected(bool selected)
-        {
-            if (backgroundImage != null)
-                backgroundImage.color = selected ? selectedColor : normalColor;
-        }
-
-        // -----------------------
-        // Reflection helpers
-        // -----------------------
-        private string GetDeckName(object o)
-        {
-            if (o == null) return null;
-            var v = GetMemberValue(o, "name") ?? GetMemberValue(o, "Name");
-            return v?.ToString();
-        }
-
-        private int GetCardCount(object o)
-        {
-            if (o == null) return 0;
-            var cards = GetMemberValue(o, "cards") ?? GetMemberValue(o, "Cards");
-            if (cards == null) return 0;
-            // If it's an ICollection or IList, get Count
-            var asCollection = cards as System.Collections.ICollection;
-            if (asCollection != null) return asCollection.Count;
-            // fallback: try property "Count"
-            var countObj = GetMemberValue(cards, "Count") ?? GetMemberValue(cards, "count");
-            if (countObj != null && int.TryParse(countObj.ToString(), out var n)) return n;
-            return 0;
-        }
-
-        // Generic getter: looks for property or field with given name (case-sensitive / fallback)
-        private object GetMemberValue(object obj, string memberName)
-        {
-            if (obj == null) return null;
-            var t = obj.GetType();
-
-            // try property (case-sensitive)
-            var prop = t.GetProperty(memberName, BindingFlags.Public | BindingFlags.Instance);
-            if (prop != null) return prop.GetValue(obj);
-
-            // try field (case-sensitive)
-            var field = t.GetField(memberName, BindingFlags.Public | BindingFlags.Instance);
-            if (field != null) return field.GetValue(obj);
-
-            // try case-insensitive property
-            prop = t.GetProperty(memberName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            if (prop != null) return prop.GetValue(obj);
-
-            // try case-insensitive field
-            field = t.GetField(memberName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            if (field != null) return field.GetValue(obj);
-
-            return null;
-        }
+    // IPointerClickHandler receives clicks anywhere on the item's Image (so ensure RaycastTarget = true)
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        onClick?.Invoke(deck, this);
     }
 }

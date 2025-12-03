@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29539b189f4b20845862c852e435e4de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GameModeID: 1
+  m_GameModeID: 0
   m_ObjectDispenser: {fileID: 954792105336309443}
   m_ObjectsToToggle: []
 --- !u!1001 &5461809489182484761

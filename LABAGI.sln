@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRTTT", "MRTTT.csproj", "{B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcGISMapsSDK.Editor", "ArcGISMapsSDK.Editor.csproj", "{B50F436A-21CD-6D72-5FDE-9615CB496DF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.XR.Interaction.Toolkit.Samples.StarterAssets", "Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj", "{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{17AF1575-DD95-FC84-8D5E-243A70EA90C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.XR.Interaction.Toolkit.Samples.StarterAssets", "Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj", "{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerftEditor", "PerftEditor.csproj", "{78127477-A87C-5C0A-0C5C-C9B3FC838573}"
 EndProject
@@ -73,14 +73,14 @@ Global
 		{B50F436A-21CD-6D72-5FDE-9615CB496DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B50F436A-21CD-6D72-5FDE-9615CB496DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B50F436A-21CD-6D72-5FDE-9615CB496DF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17AF1575-DD95-FC84-8D5E-243A70EA90C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17AF1575-DD95-FC84-8D5E-243A70EA90C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17AF1575-DD95-FC84-8D5E-243A70EA90C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17AF1575-DD95-FC84-8D5E-243A70EA90C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9C576E5-C78A-ACDE-EBC2-A89661D13C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78127477-A87C-5C0A-0C5C-C9B3FC838573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{78127477-A87C-5C0A-0C5C-C9B3FC838573}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78127477-A87C-5C0A-0C5C-C9B3FC838573}.Release|Any CPU.ActiveCfg = Release|Any CPU
