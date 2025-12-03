@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Game\InGame\Player.cs" />
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
+    <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
     <Compile Include="Assets\Scripts\Rules\GroupSwitcher.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\CardSpawnManager.cs" />
@@ -64,11 +65,13 @@
     <Compile Include="Assets\Scripts\CreateDeck\DecksDto.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonPayload.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckCards.cs" />
+    <Compile Include="Assets\Scripts\Game\PreGame\SelectedDeckHolder.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonBuilder.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\GPSLocationService.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
+    <Compile Include="Assets\Scripts\Game\GameReceiveDeck.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
@@ -97,6 +100,7 @@
     <Compile Include="Assets\Scripts\Rules\MenuButtonsRules.cs" />
     <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
     <Compile Include="Assets\Scripts\Settings\SettingsManager.cs" />
+    <Compile Include="Assets\Scripts\Game\CardViewGame.cs" />
     <Compile Include="Assets\Ar\ARPlaceUI.cs" />
     <Compile Include="Assets\Scripts\Model\Card.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />

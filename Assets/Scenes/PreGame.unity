@@ -201,7 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1735337594}
   m_HandleRect: {fileID: 1735337593}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2240,9 +2240,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1906221301}
-        m_TargetAssemblyTypeName: MenuButtons, Assembly-CSharp
-        m_MethodName: PlayGame
+      - m_Target: {fileID: 1906221302}
+        m_TargetAssemblyTypeName: DeckListUI_Template, Assembly-CSharp
+        m_MethodName: OnConfirmDeck
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

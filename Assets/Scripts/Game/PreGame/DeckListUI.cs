@@ -129,11 +129,15 @@ public class DeckListUI_Template : MonoBehaviour
 
     // Hook this to ConfirmBtn.onClick in the inspector
     public void OnConfirmDeck()
-    {
-        if (selectedDeck == null) { Debug.LogWarning("No deck selected"); return; }
-        Debug.Log($"Confirmed deck id={selectedDeck.id} name={selectedDeck.name}");
-         SceneManager.LoadScene("Game2");
-    }
+{
+    if (selectedDeck == null) { Debug.LogWarning("No deck selected"); return; }
+
+    // store into static holder
+    SelectedDeckHolder.SelectedDeck = selectedDeck;
+
+    Debug.Log($"Confirmed deck id={selectedDeck.id} name={selectedDeck.name}");
+    SceneManager.LoadScene("Game2");
+}
 
     // Public method other systems can call when the user logs in/out to refresh the list
     public void Refresh()
