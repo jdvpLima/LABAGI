@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts.CreateDeck;       // DecksDto
 using Assets.Scripts;                 // AuthContext
-
+using UnityEngine.SceneManagement;
 public class DeckListUI_Template : MonoBehaviour
 {
     [Header("References")]
@@ -132,7 +132,7 @@ public class DeckListUI_Template : MonoBehaviour
     {
         if (selectedDeck == null) { Debug.LogWarning("No deck selected"); return; }
         Debug.Log($"Confirmed deck id={selectedDeck.id} name={selectedDeck.name}");
-        // proceed with selectedDeck (save to game state, close UI, send to server, etc.)
+         SceneManager.LoadScene("Game2");
     }
 
     // Public method other systems can call when the user logs in/out to refresh the list
