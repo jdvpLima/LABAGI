@@ -1,13 +1,14 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CardViewGame : MonoBehaviour
 {
-    public Text titleText;
-    public Text subText;        // show suit / points / rarity
-    public Text flavourText;
-    public Text actionsText;    // join actions list
+    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI subText;        // show suit / points / rarity
+    public TextMeshProUGUI flavourText;
+    public TextMeshProUGUI actionsText;    // join actions list
     public Button button;
 
     public Card CardData { get; private set; }

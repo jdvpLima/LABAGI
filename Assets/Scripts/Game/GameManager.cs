@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // make sure this matches where your DecksDto lives:
-using Assets.Scripts.CreateDeck; // DecksDto
+using Assets.Scripts.CreateDeck;
+using TMPro; // DecksDto
 // Card DTO assumed to be in global namespace as provided by you
 
 public class GameManager : MonoBehaviour
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public Transform handContainer;    // UI parent for hand card prefabs
     public GameObject cardPrefab;      // prefab with CardView attached
-    public Text statusText;
+    public TextMeshProUGUI statusText;
 
     [Header("Gameplay")]
     public int startingHandSize = 5;   // first 5 cards as requested

@@ -25,6 +25,11 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene("PreGame");
     }
 
+    public void Map()
+    {
+        SceneManager.LoadScene("Georeferencing");
+    }
+
     public void Settings()
     {
         SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
