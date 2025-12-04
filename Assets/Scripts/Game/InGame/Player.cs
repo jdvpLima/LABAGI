@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -25,9 +26,15 @@ public class Player : MonoBehaviour
 
 	public Card selectedCard = null;
 
-	public bool selectedDecision = false;
+    public CardViewGame selectedCardUI = null;
 
-    public CardService cardService;
+	public Button proposeBtn;
+
+    public bool selectedDecision = false;
+
+    public GameObject selectedCardPanel; // painel central
+
+    private CardService cardService;
     public long userId;
 
     // Events
@@ -38,6 +45,12 @@ public class Player : MonoBehaviour
 	public event Action<Card> OnCardDrawn;
 	public event Action<Card> OnCardAdded;
 	public event Action<Card> OnCardRemoved;
+
+    private void Awake()
+    {
+        cardService = new CardService(); // construtor normal, sem MonoBehaviour
+    }
+
 
     private async void Start()
     {
@@ -53,6 +66,8 @@ public class Player : MonoBehaviour
             InitializeDeck();
             InitializeHand();
         }
+
+		proposeBtn.gameObject.SetActive(false);
     }
 
     private void InitializeDeck()
@@ -122,14 +137,29 @@ public class Player : MonoBehaviour
 	}
 
 
-	public Card PickCard()
+	public void PickCard(CardViewGame cardUI)
 	{
-		// TODO: implement clicking cards in UI
+        selectedCardUI = cardUI;
+        selectedCard = cardUI.card;
 
-		return selectedCard != null ? selectedCard : Hand[0];
-	}
+        proposeBtn.gameObject.SetActive(true);
+    }
 
-	public void DiscardCard(Card card)
+    public void LockSelectedCard()
+    {
+        if (selectedCard == null) return;
+
+        selectedDecision = true;
+
+        selectedCardPanel.SetActive(true);
+
+        //selectedCardUI.Init(selectedCard, );
+
+    }
+
+
+
+    public void DiscardCard(Card card)
 	{
 		if (Hand.Remove(card))
 			OnCardRemoved?.Invoke(card);
@@ -304,7 +334,7 @@ public class Player : MonoBehaviour
 
 						// Cards
 						case "DrawCard": DrawCard(); break;
-						case "DiscardCard": DiscardCard(PickCard()); break;
+						//case "DiscardCard": DiscardCard(PickCard());	break;
 
 							// TODO: Other actions
 					}

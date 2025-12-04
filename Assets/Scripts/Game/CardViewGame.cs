@@ -11,8 +11,10 @@ public class CardViewGame : MonoBehaviour
     public TextMeshProUGUI actionsText;    // join actions list
     public Button button;
 
-    private Card card;
+    public Card card;
     private Player owner;
+
+    public event Action<CardViewGame> OnCardClicked;
 
     public void Init(Card card, Player owner)
     {
@@ -23,11 +25,16 @@ public class CardViewGame : MonoBehaviour
         subText.text = card.Suit;
         flavourText.text = card.FlavourText;
         actionsText.text = string.Join("\n", card.Actions);
+
+        button.onClick.AddListener(() =>
+        {
+            //owner.PickCard(card);
+        });
     }
 
     public void OnClick()
     {
-        owner.selectedCard = card;
+        OnCardClicked?.Invoke(this);
         Debug.Log("Selected card: " + card.Name);
     }
 
