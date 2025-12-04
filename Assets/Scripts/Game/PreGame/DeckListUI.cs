@@ -136,7 +136,7 @@ public class DeckListUI_Template : MonoBehaviour
     SelectedDeckHolder.SelectedDeck = selectedDeck;
 
     Debug.Log($"Confirmed deck id={selectedDeck.id} name={selectedDeck.name}");
-    SceneManager.LoadScene("Game2");
+    SceneManager.LoadScene("Game");
 }
 
     // Public method other systems can call when the user logs in/out to refresh the list

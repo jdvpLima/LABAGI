@@ -1,5 +1,8 @@
+using Assets.Scripts.Service;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -24,8 +27,11 @@ public class Player : MonoBehaviour
 
 	public bool selectedDecision = false;
 
-	// Events
-	public event Action<int> OnBurnoutChanged;
+    public CardService cardService;
+    public long userId;
+
+    // Events
+    public event Action<int> OnBurnoutChanged;
 	public event Action<int> OnFlexibilityChanged;
 	public event Action<int> OnPointsChanged;
 	public event Action<int> OnTokensChanged;
@@ -33,16 +39,26 @@ public class Player : MonoBehaviour
 	public event Action<Card> OnCardAdded;
 	public event Action<Card> OnCardRemoved;
 
-	private void Start()
-	{
-		InitializeDeck();
-		InitializeHand();
-	}
+    private async void Start()
+    {
+        try
+        {
+            await LoadDeckFromAPI();
+            InitializeHand();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("[Player] Failed to load deck: " + ex);
+            // fallback: inicializa um deck vazio para evitar bloqueios na UI
+            InitializeDeck();
+            InitializeHand();
+        }
+    }
 
-	private void InitializeDeck()
+    private void InitializeDeck()
 	{
 		// Fill the deck with 20 placeholder cards
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			Card newCard = new Card($"Card {i + 1}", "Analytical");
 
@@ -304,4 +320,28 @@ public class Player : MonoBehaviour
 			AddPoints(1);
 		}
 	}
+
+    #region Card communication with backend
+
+    private async Task LoadDeckFromAPI()
+    {
+        var cardDtos = await cardService.GetPlayerCardCollectionAsync(userId);
+
+        Deck.Clear();
+
+        if (cardDtos == null || cardDtos.Count == 0)
+        {
+            Debug.Log("No cards returned from API.");
+            return;
+        }
+
+        foreach (var dto in cardDtos)
+        {
+            var runtimeCard = Card.FromDto(dto);
+            Deck.Add(runtimeCard);
+            OnCardAdded?.Invoke(runtimeCard);
+        }
+    }
+
+    #endregion
 }

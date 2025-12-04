@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Game\InGame\Player.cs" />
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
+    <Compile Include="Assets\Scripts\Game\InGame\UIHandRenderer.cs" />
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
     <Compile Include="Assets\Scripts\Rules\GroupSwitcher.cs" />

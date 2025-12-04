@@ -349,7 +349,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1951906120}
   - {fileID: 315196128}
   - {fileID: 1235409091}
   - {fileID: 2044487520}
@@ -860,6 +859,7 @@ GameObject:
   - component: {fileID: 630161906}
   - component: {fileID: 630161908}
   - component: {fileID: 630161907}
+  - component: {fileID: 630161909}
   m_Layer: 5
   m_Name: PlayerHand
   m_TagString: Untagged
@@ -924,6 +924,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 630161905}
   m_CullTransparentMesh: 1
+--- !u!114 &630161909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630161905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0.2
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &776788521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,6 +1122,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -4.844}
   m_SizeDelta: {x: 885, y: 488.31}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &811849323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811849325}
+  - component: {fileID: 811849324}
+  m_Layer: 0
+  m_Name: UIHandRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &811849324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811849323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c930e90c554430142a390cbc04321741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIHandRenderer
+  player: {fileID: 1951906119}
+  handContainer: {fileID: 630161906}
+  cardPrefab: {fileID: 832509288277181668, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+--- !u!4 &811849325
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811849323}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 826.1607, y: 500.91794, z: -391.77936}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &867506531
 GameObject:
   m_ObjectHideFlags: 0
@@ -2643,9 +2717,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1951906120}
   - component: {fileID: 1951906119}
-  - component: {fileID: 1951906121}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2666,6 +2739,7 @@ MonoBehaviour:
   Opponent: {fileID: 0}
   tokenUsed: 0
   selectedDecision: 0
+  userId: 14
 --- !u!4 &1951906120
 Transform:
   m_ObjectHideFlags: 0
@@ -2675,30 +2749,12 @@ Transform:
   m_GameObject: {fileID: 1951906118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -525.057, y: -236.6796, z: 4.41858}
+  m_LocalPosition: {x: 434.943, y: 303.3204, z: 4.41858}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 83401461}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1951906121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1951906118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 586211034037c324c9e863ef24077266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  handContainer: {fileID: 630161906}
-  cardPrefab: {fileID: 832509288277181668, guid: 1c3124a8a9bc12543b430153cd21ad62,
-    type: 3}
-  statusText: {fileID: 867506532}
-  startingHandSize: 5
-  expectedDeckSize: 20
 --- !u!1 &1994421094
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,4 +3324,6 @@ SceneRoots:
   - {fileID: 1350241549}
   - {fileID: 2100337819}
   - {fileID: 2132106172}
+  - {fileID: 1951906120}
+  - {fileID: 811849325}
   - {fileID: 83401461}

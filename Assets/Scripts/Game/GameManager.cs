@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using Assets.Scripts.CreateDeck;
 using TMPro; // DecksDto
 // Card DTO assumed to be in global namespace as provided by you
-
+/*
 public class GameManager : MonoBehaviour
 {
     [Header("UI")]
@@ -245,4 +245,4 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
-}
+}*/

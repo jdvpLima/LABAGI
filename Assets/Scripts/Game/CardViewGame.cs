@@ -11,7 +11,30 @@ public class CardViewGame : MonoBehaviour
     public TextMeshProUGUI actionsText;    // join actions list
     public Button button;
 
-    public Card CardData { get; private set; }
+    private Card card;
+    private Player owner;
+
+    public void Init(Card card, Player owner)
+    {
+        this.card = card;
+        this.owner = owner;
+
+        titleText.text = card.Name;
+        subText.text = card.Suit;
+        flavourText.text = card.FlavourText;
+        actionsText.text = string.Join("\n", card.Actions);
+    }
+
+    public void OnClick()
+    {
+        owner.selectedCard = card;
+        Debug.Log("Selected card: " + card.Name);
+    }
+
+
+
+
+    /*public Card CardData { get; private set; }
 
     // onClick callback receives this CardView so the manager can access CardData
     public void SetCard(Card card, Action<CardViewGame> onClick)
@@ -33,5 +56,5 @@ public class CardViewGame : MonoBehaviour
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onClick?.Invoke(this));
         }
-    }
+    }*/
 }
