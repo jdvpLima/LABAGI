@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,9 +31,12 @@ public class Player : MonoBehaviour
 
 	public Button proposeBtn;
 
-    public bool selectedDecision = false;
+    public bool selectedDecision = false, actionExecuted = false;
 
-    public GameObject selectedCardPanel; // painel central
+    public GameObject selectedCardPanel, showSuitsPanel;
+
+	public TextMeshProUGUI suitTxt;
+
 
     private CardService cardService;
 	private UIHandRenderer uIHandRenderer;
@@ -72,6 +76,15 @@ public class Player : MonoBehaviour
 		proposeBtn.gameObject.SetActive(false);
     }
 
+    private void Update()
+    {
+        if (!actionExecuted && selectedDecision == true)
+        {
+            actionExecuted = true;     // garante que só corre uma vez
+			ShowSuit();
+        }
+    }
+
     private void InitializeDeck()
 	{
 		// Fill the deck with 20 placeholder cards
@@ -92,8 +105,8 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	// Player Attributes API
-	public void AddBurnout(int amount)
+    // Player Attributes API
+    public void AddBurnout(int amount)
 	{
 		Burnout += amount;
 		OnBurnoutChanged?.Invoke(Burnout);
@@ -163,6 +176,14 @@ public class Player : MonoBehaviour
 
     }
 
+	public void ShowSuit()
+	{
+		if (selectedDecision){
+            showSuitsPanel.SetActive(true);
+			suitTxt.text = selectedCard.Suit;
+        }
+	}
+
 
     public void DiscardCard(Card card)
 	{
@@ -191,8 +212,10 @@ public class Player : MonoBehaviour
 		tokenUsed = false;
 		selectedCard = null;
 		selectedDecision = false;
+		actionExecuted = false;
+        showSuitsPanel.SetActive(false);
 
-		DrawCard();
+        DrawCard();
 		/*await ???*/
 		StartDebateTimer();
 
