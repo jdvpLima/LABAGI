@@ -5,7 +5,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Card
 {
-	public string Name { get; private set; } = "";
+    public long CardId { get; private set; }
+    public string Name { get; private set; } = "";
 	public string Suit { get; private set; } = "";
 	public int Points { get; private set; } = 0;
 	public string Rarity { get; private set; } = "";
@@ -29,6 +30,8 @@ public class Card
         // Mapeamento básico de campos
         var flavour = dto.flavorText ?? dto.flavorText ?? "";
         var card = new Card(dto.name ?? $"Card {dto.cardId}", dto.suit ?? "", dto.points, dto.rarity ?? "", flavour);
+
+        card.CardId = dto.cardId;
 
         // Popula Actions:
         // 1) if abilityJson contém um array de strings — desserializa

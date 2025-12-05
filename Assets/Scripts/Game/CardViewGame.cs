@@ -28,15 +28,17 @@ public class CardViewGame : MonoBehaviour
 
         button.onClick.AddListener(() =>
         {
-            //owner.PickCard(card);
+            OnCardClicked?.Invoke(this);
+            owner.PickCard(this);
+            Debug.Log("Selected card: " + card.Name);
         });
     }
 
-    public void OnClick()
+    /*public void OnClick()
     {
         OnCardClicked?.Invoke(this);
         Debug.Log("Selected card: " + card.Name);
-    }
+    }*/
 
 
 

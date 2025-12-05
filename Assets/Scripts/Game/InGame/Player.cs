@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     public GameObject selectedCardPanel; // painel central
 
     private CardService cardService;
+	private UIHandRenderer uIHandRenderer;
     public long userId;
 
     // Events
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         cardService = new CardService(); // construtor normal, sem MonoBehaviour
+		uIHandRenderer = FindFirstObjectByType<UIHandRenderer>();
     }
 
 
@@ -73,7 +75,7 @@ public class Player : MonoBehaviour
     private void InitializeDeck()
 	{
 		// Fill the deck with 20 placeholder cards
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 20; i++)
 		{
 			Card newCard = new Card($"Card {i + 1}", "Analytical");
 
@@ -151,12 +153,15 @@ public class Player : MonoBehaviour
 
         selectedDecision = true;
 
+		Debug.Log("Locked card: " + selectedCard.Name);
+
+		DiscardCard(selectedCard);
+
         selectedCardPanel.SetActive(true);
 
-        //selectedCardUI.Init(selectedCard, );
+        uIHandRenderer.DisplayCardInMiddle(selectedCard);
 
     }
-
 
 
     public void DiscardCard(Card card)

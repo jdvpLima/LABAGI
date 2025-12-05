@@ -542,7 +542,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -139.08}
+  m_AnchoredPosition: {x: 8, y: -138}
   m_SizeDelta: {x: -1700.8964, y: -798.46}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &209507804
@@ -558,7 +558,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1367,6 +1367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIHandRenderer
   player: {fileID: 1951906119}
   handContainer: {fileID: 630161906}
+  middlePanel: {fileID: 209507803}
   cardPrefab: {fileID: 832509288277181668, guid: 1c3124a8a9bc12543b430153cd21ad62,
     type: 3}
 --- !u!4 &811849325
@@ -1603,9 +1604,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreateDeckManager, Assembly-CSharp
-        m_MethodName: BackButton
+      - m_Target: {fileID: 1951906119}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: LockSelectedCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3116,8 +3117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   Opponent: {fileID: 0}
   tokenUsed: 0
-  selectedCardUI: {fileID: 0}
-  proposeBtn: {fileID: 0}
+  selectedCardUI: {fileID: 7682379642196189944, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  proposeBtn: {fileID: 964194133}
   selectedDecision: 0
   selectedCardPanel: {fileID: 209507802}
   userId: 14
