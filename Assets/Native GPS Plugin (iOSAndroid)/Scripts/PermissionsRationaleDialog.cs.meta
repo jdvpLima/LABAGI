@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2f4017ed723644c14ac3172230d5fa41
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 216027
+  packageName: Native GPS Plugin (iOS/Android)
+  packageVersion: 1.1.0
+  assetPath: Assets/Native GPS Plugin (iOSAndroid)/Scripts/PermissionsRationaleDialog.cs
+  uploadId: 488756

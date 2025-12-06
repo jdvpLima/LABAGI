@@ -1,12 +1,8 @@
-using Esri.ArcGISMapsSDK.Components;
-using Esri.GameEngine.Geometry;
 using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Rendering;
 
 public class CreateSpawnRequestClaim
 {
@@ -24,13 +20,15 @@ public class GPSLocationService : MonoBehaviour
     public float checkDistance = 0.1f; // 100 meters
 
     public bool gps_ok = false;
-    float PI = Mathf.PI;
 
     GPSLoc startLoc = new GPSLoc();
     GPSLoc currLoc = new GPSLoc();
 
     public GameObject collectButton; // Reference to your UI button
     private CardSpawnManager spawnManager;
+
+    [SerializeField] private TextMeshProUGUI playerLatitude;
+    [SerializeField] private TextMeshProUGUI playerLongitude;
 
     public string apiBaseUrl = "https://lagabi-group2-backend.onrender.com/api";
 
@@ -41,7 +39,6 @@ public class GPSLocationService : MonoBehaviour
         spawnManager = FindFirstObjectByType<CardSpawnManager>();
         player = new GameObject();
 
-#if UNITY_EDITOR
         // Check if the user has location service enabled.
         if (!Input.location.isEnabledByUser)
         {
@@ -77,8 +74,8 @@ public class GPSLocationService : MonoBehaviour
             gps_ok = true;
 
         }
-#endif
 
+        yield return gps_ok;
     }
 
     void Update()
@@ -88,8 +85,16 @@ public class GPSLocationService : MonoBehaviour
             currLoc.lat = Input.location.lastData.latitude;
             currLoc.lon = Input.location.lastData.longitude;
 
+            playerLatitude.text = "Latitude: " + Input.location.lastData.latitude;
+            playerLongitude.text = "Longitude: " + Input.location.lastData.longitude;
+
             UpdatePlayerPosition(currLoc.lat, currLoc.lon);
             CheckSpawnProximity();
+        }
+        else
+        {
+            playerLatitude.text = "Player's location is unavailable.";
+            playerLongitude.text = "";
         }
     }
 

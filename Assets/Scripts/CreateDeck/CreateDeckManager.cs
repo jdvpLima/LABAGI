@@ -3,12 +3,10 @@ using Assets.Scripts.Model;
 using Assets.Scripts.Service;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEditor.Timeline.Actions.MenuPriority;
 
 public class CreateDeckManager : MonoBehaviour
 {

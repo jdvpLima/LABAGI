@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEditor.Experimental.GraphView;
 using XRMultiplayer;
 
 namespace UnityEngine.XR.Templates.MRTTabletopAssets
