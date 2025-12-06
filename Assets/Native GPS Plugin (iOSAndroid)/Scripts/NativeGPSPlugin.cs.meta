@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: abd5b71c4372c458ab73db2829a59bd9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 216027
+  packageName: Native GPS Plugin (iOS/Android)
+  packageVersion: 1.1.0
+  assetPath: Assets/Native GPS Plugin (iOSAndroid)/Scripts/NativeGPSPlugin.cs
+  uploadId: 488756

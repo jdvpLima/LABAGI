@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9fc0d4010bbf28b4594072e72b8655ab
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 216027
+  packageName: Native GPS Plugin (iOS/Android)
+  packageVersion: 1.1.0
+  assetPath: Assets/Native GPS Plugin (iOSAndroid)/Scenes/NativeGPS.unity
+  uploadId: 488756

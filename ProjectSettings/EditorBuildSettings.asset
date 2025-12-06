@@ -5,31 +5,31 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 9558e0f0ec78bfdf4a823827fb13139c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Template.unity
     guid: 1394aae0248047f43a644e21c762f218
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Workshop.unity
     guid: 907dca90914f26847af64fe83de3c075
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DeckCreation.unity
     guid: be0c95d2e7bc7064a9563bb18b80364b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PreGame.unity
     guid: d9b7ac6783a42e84e956824e5c658983
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Rules.unity
     guid: ff91b01b00f24f34aa3cc4d471a0bf9e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game.unity
-    guid: 6a8d944a4aa098042a34f763bf26b2b4
-  - enabled: 1
+    guid: bdb91b1c3296c3a41ad366779975c306
+  - enabled: 0
     path: Assets/Scenes/Settings.unity
     guid: 95e3e58dadcfdc44a9a37d8f148f6fdd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game.unity
     guid: bdb91b1c3296c3a41ad366779975c306
   - enabled: 1

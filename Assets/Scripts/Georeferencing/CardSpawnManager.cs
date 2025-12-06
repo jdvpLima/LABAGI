@@ -55,6 +55,7 @@ public class CardSpawnManager : MonoBehaviour
     public Dictionary<int, GameObject> activeSpawns = new Dictionary<int, GameObject>();
     public ArcGISMapComponent arcGISMap; // Reference to ArcGIS component
 
+    [SerializeField] private GameObject loadingInformation;
 
     void Start()
     {
@@ -68,7 +69,9 @@ public class CardSpawnManager : MonoBehaviour
             // Subscribe to location updates if available
             // arcGISMap.OnLocationUpdated += OnLocationUpdated;
         }
-        //VerifySpawnsInDatabase();
+
+        loadingInformation.SetActive(true);
+
         UpdateNearbySpawns();
     }
 
@@ -88,9 +91,18 @@ public class CardSpawnManager : MonoBehaviour
         UpdateNearbySpawns();
     }
 
-    public void UpdateNearbySpawns()
+    private IEnumerator UpdateNearbySpawns()
     {
-        StartCoroutine(FetchNearbySpawns());
+        yield return StartCoroutine(FetchNearbySpawns());
+        ToggleLoading();
+    }
+
+    private void ToggleLoading()
+    {
+        if (loadingInformation.activeInHierarchy)
+        {
+            loadingInformation.SetActive(false);
+        }
     }
 
     private IEnumerator FetchNearbySpawns()
