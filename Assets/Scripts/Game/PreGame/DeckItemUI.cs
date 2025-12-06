@@ -41,7 +41,8 @@ public class DeckItemUI : MonoBehaviour, IPointerClickHandler
 
     // IPointerClickHandler receives clicks anywhere on the item's Image (so ensure RaycastTarget = true)
     public void OnPointerClick(PointerEventData eventData)
-    {
-        onClick?.Invoke(deck, this);
-    }
+{
+    Debug.Log("Item Clicked!"); // <--- Add this
+    onClick?.Invoke(deck, this);
+}
 }

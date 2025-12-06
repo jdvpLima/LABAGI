@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json; // IMPORT THIS
 
 namespace Assets.Scripts.CreateDeck
 {
-   
     public class DeckService
     {
         private const string BaseUrl = "https://lagabi-group2-backend.onrender.com/api/Decks";
 
-        //---------------------------------------------------------------------
-        // GET /api/decks  (com header do user)
-        //---------------------------------------------------------------------
         public async Task<List<DecksDto>> GetDecksAsync(long userId)
         {
-            using (UnityWebRequest req = UnityWebRequest.Get(BaseUrl+ "/UserDeckList?userId=" + userId.ToString()))
+            // Debug check to ensure we aren't sending "0" if we shouldn't
+            if (userId == 0) Debug.LogWarning("DeckService: Requesting decks for UserId 0. Is this intended?");
+
+            string url = $"{BaseUrl}/UserDeckList?userId={userId}";
+            
+            using (UnityWebRequest req = UnityWebRequest.Get(url))
             {
                 req.SetRequestHeader("X-User", userId.ToString());
 
@@ -29,12 +30,23 @@ namespace Assets.Scripts.CreateDeck
 
                 if (req.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.LogError("GET /decks failed: " + req.error);
+                    Debug.LogError($"GET /decks failed: {req.error} | Response: {req.downloadHandler.text}");
                     return null;
                 }
 
                 string json = req.downloadHandler.text;
-                return JsonHelper.FromJsonList<DecksDto>(json);
+                Debug.Log($"Fetched Decks JSON: {json}"); // Helpful for debugging
+
+                try
+                {
+                    // Use Newtonsoft to handle [Array] responses correctly
+                    return JsonConvert.DeserializeObject<List<DecksDto>>(json);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"JSON Parse Error: {ex.Message}");
+                    return new List<DecksDto>();
+                }
             }
         }
 

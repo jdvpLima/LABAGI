@@ -363,7 +363,6 @@ RectTransform:
   - {fileID: 630161906}
   - {fileID: 1221415431}
   - {fileID: 867506534}
-  - {fileID: 209507803}
   - {fileID: 639105447}
   - {fileID: 1955138265}
   m_Father: {fileID: 0}
@@ -494,6 +493,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130720767}
   m_CullTransparentMesh: 1
+--- !u!1 &153288070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 153288073}
+  - component: {fileID: 153288071}
+  - component: {fileID: 153288072}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &153288071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153288070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3534564691
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &153288072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153288070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586211034037c324c9e863ef24077266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  ShowTopMostFoldoutHeaderGroup: 1
+  statusText: {fileID: 0}
+--- !u!4 &153288073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153288070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 465.03836, y: 282.9662, z: 300.44354}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &167178089
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,81 +702,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &209507802
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 209507803}
-  - component: {fileID: 209507805}
-  - component: {fileID: 209507804}
-  m_Layer: 5
-  m_Name: PlayerShowCardZone
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &209507803
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209507802}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 83401461}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 591, y: -111}
-  m_SizeDelta: {x: -1700.8964, y: -798.46}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &209507804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209507802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &209507805
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209507802}
-  m_CullTransparentMesh: 1
 --- !u!1 &281943881
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,9 +1833,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c930e90c554430142a390cbc04321741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIHandRenderer
-  player: {fileID: 1951906119}
   handContainer: {fileID: 630161906}
-  middlePanel: {fileID: 209507803}
+  middlePanel: {fileID: 0}
   cardPrefab: {fileID: 832509288277181668, guid: 1c3124a8a9bc12543b430153cd21ad62,
     type: 3}
 --- !u!4 &811849325
@@ -4678,16 +4673,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd96c1bcbc772e4f9ac583e22ec190d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  Opponent: {fileID: 0}
-  tokenUsed: 0
-  selectedCardUI: {fileID: 7682379642196189944, guid: 1c3124a8a9bc12543b430153cd21ad62,
-    type: 3}
+  ShowTopMostFoldoutHeaderGroup: 1
+  Points:
+    m_InternalValue: 0
+  Burnout:
+    m_InternalValue: 0
+  Flexibility:
+    m_InternalValue: 0
+  AccommodationTokens:
+    m_InternalValue: 2
   proposeBtn: {fileID: 964194133}
-  selectedDecision: 0
-  selectedCardPanel: {fileID: 209507802}
+  selectedCardPanel: {fileID: 0}
   showSuitsPanel: {fileID: 639105446}
   suitTxt: {fileID: 2138748163}
-  userId: 14
+  selectedCardUI: {fileID: 7682379642196189944, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
 --- !u!4 &1951906120
 Transform:
   m_ObjectHideFlags: 0
@@ -5726,3 +5726,4 @@ SceneRoots:
   - {fileID: 811849325}
   - {fileID: 1680820425}
   - {fileID: 83401461}
+  - {fileID: 153288073}

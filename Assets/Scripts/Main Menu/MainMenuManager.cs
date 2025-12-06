@@ -22,8 +22,8 @@ public class MainMenuManager : MonoBehaviour
 
     public void Play()
     {
-        //SceneManager.LoadScene("PreGame");
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("PreGame");
+        //SceneManager.LoadScene("Game");
     }
 
     public void Map()

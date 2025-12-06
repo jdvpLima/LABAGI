@@ -1,55 +1,63 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Video;
 
 public class UIHandRenderer : MonoBehaviour
 {
-    public Player player;
-    public Transform handContainer; // GridLayout ou Horizontal Layout
+    [Header("Containers")]
+    public Transform handContainer;
     public Transform middlePanel;
     public GameObject cardPrefab;
 
-    // list of rendered cards
+    private Player localPlayer;
     private List<CardViewGame> cardViews = new List<CardViewGame>();
 
-    private void OnEnable()
+    // Removed OnEnable/OnDisable automatic subscriptions.
+    
+    // Called by Player.cs in OnNetworkSpawn (only for the owner)
+    public void SetOwner(Player p)
     {
-        Debug.Log("UIHandRenderer ENABLED");
-        player.OnCardDrawn += AddCardToHand;
-        player.OnCardRemoved += RemoveCardRenderer;
+        localPlayer = p;
+        
+        // Subscribe to events
+        localPlayer.OnCardDrawn += AddCardToHand;
+        localPlayer.OnCardRemoved += RemoveCardRenderer;
+
+        Debug.Log("UIHandRenderer linked to " + p.gameObject.name);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        player.OnCardDrawn -= AddCardToHand;
+        // Clean up events to prevent memory leaks
+        if (localPlayer != null)
+        {
+            localPlayer.OnCardDrawn -= AddCardToHand;
+            localPlayer.OnCardRemoved -= RemoveCardRenderer;
+        }
     }
 
     private void AddCardToHand(Card card)
     {
+        if (cardPrefab == null || handContainer == null) return;
+
         GameObject obj = Instantiate(cardPrefab, handContainer);
         var view = obj.GetComponent<CardViewGame>();
         cardViews.Add(view);
-        view.Init(card, player);
+        
+        // Init logic for your specific card prefab
+        view.Init(card, localPlayer); 
     }
 
     private void RemoveCardRenderer(Card card)
     {
-        Debug.Log("RemoveCardRenderer was called!");
-        // encontra o CardView correspondente à carta removida
         CardViewGame viewToRemove = null;
 
+        // Find the visual card that matches the data card
         foreach (var view in cardViews)
         {
-            if (view.card.CardId == card.CardId)   // comparar referência da Card
+            if (view.card.CardId == card.CardId) 
             {
                 viewToRemove = view;
-                Debug.Log("Card to remove is " + viewToRemove);
                 break;
-            }
-            else
-            {
-                Debug.Log("No card with corresponding ID");
-
             }
         }
 
@@ -58,17 +66,17 @@ public class UIHandRenderer : MonoBehaviour
             cardViews.Remove(viewToRemove);
             Destroy(viewToRemove.gameObject);
         }
-        else
-        {
-            Debug.LogWarning($"Could not find card renderer for card id {card.CardId}");
-        }
     }
-
 
     public void DisplayCardInMiddle(Card card)
     {
+        if (middlePanel == null) return;
+
+        // Clear previous middle card if any
+        foreach (Transform child in middlePanel) Destroy(child.gameObject);
+
         GameObject obj = Instantiate(cardPrefab, middlePanel);
         var view = obj.GetComponent<CardViewGame>();
-        view.Init(card, player);
+        view.Init(card, localPlayer);
     }
 }

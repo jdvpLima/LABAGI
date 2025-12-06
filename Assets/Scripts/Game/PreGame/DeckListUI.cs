@@ -1,149 +1,153 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Assets.Scripts.CreateDeck;       // DecksDto
-using Assets.Scripts;                 // AuthContext
-using UnityEngine.SceneManagement;
-public class DeckListUI_Template : MonoBehaviour
+using Assets.Scripts.CreateDeck;
+using Assets.Scripts; 
+using Unity.Netcode; // IMPORT NETCODE
+using TMPro;
+
+public class DeckListUI : MonoBehaviour
 {
     [Header("References")]
-    public Transform content;               // AllDecks/ViewPort/Content
-    public GameObject deckItemTemplate;     // DeckItemTemplate (in-scene, disabled)
-    public Button confirmBtn;               // ConfirmBtn (hidden until selection)
-    public Text statusText;                 // optional status text
+    public Transform content;
+    public GameObject deckItemTemplate;
+    
+    // CHANGED: We now have two buttons instead of just "Confirm"
+    [Header("Multiplayer Controls")]
+    public Button hostBtn;
+    public Button joinBtn;
+    
+    public Text statusText; // Use standard Text or TextMeshProUGUI based on your setup
 
-    [Header("Inspector for testing only")]
-    [Tooltip("Only used when not logged in (editor/testing). If user is logged-in, AuthContext.UserId is used).")]
-    public long userId = 0;
-
-    // runtime
+    // Runtime
     private DeckService deckService;
     private List<DecksDto> decks;
     private DeckItemUI selectedItemUI;
     private DecksDto selectedDeck;
-    private long runtimeUserId;
 
     private void Awake()
     {
-        // prefer the DeckService in Game.PreGame (which supports bearer token)
         deckService = new DeckService();
 
-        if (confirmBtn != null)
-            confirmBtn.gameObject.SetActive(false);
+        // Hide buttons until a deck is picked
+        if (hostBtn != null) hostBtn.gameObject.SetActive(false);
+        if (joinBtn != null) joinBtn.gameObject.SetActive(false);
 
         if (deckItemTemplate == null)
             Debug.LogError("DeckItemTemplate not assigned.");
         else
-            deckItemTemplate.SetActive(false); // ensure template disabled at runtime
+            deckItemTemplate.SetActive(false);
 
-        // decide which user id to use:
-        if (AuthContext.IsLoggedIn)
-        {
-            runtimeUserId = AuthContext.UserId;
-        }
-        else
-        {
-            runtimeUserId = userId; // fallback (useful in editor or if not logged)
-        }
+        // Setup Button Listeners
+        if (hostBtn != null) hostBtn.onClick.AddListener(OnHostClicked);
+        if (joinBtn != null) joinBtn.onClick.AddListener(OnJoinClicked);
     }
 
-    private void Start()
+    private async void Start()
+{
+    // 1. Get ID (Fallback to a debug ID if AuthContext is 0 in Editor)
+    long idToUse = AuthContext.UserId;
+    if (idToUse == 0) 
     {
-        StartCoroutine(LoadDecksCoroutine());
+        Debug.Log("AuthContext is 0, using Debug ID 1");
+        idToUse = 1; // CHANGE THIS to a valid ID from your database for testing
     }
 
-    private IEnumerator LoadDecksCoroutine()
+    // 2. Call the CORRECT method name (GetDecksAsync)
+    decks = await deckService.GetDecksAsync(idToUse); 
+
+    // 3. Clear old list
+    foreach (Transform child in content)
     {
-        if (statusText != null) statusText.text = "Loading decks...";
-
-        // call service with optional bearer token from AuthContext (null if not logged)
-        var task = deckService.GetDecksAsync(runtimeUserId);
-
-        while (!task.IsCompleted) yield return null;
-
-        if (task.IsFaulted)
-        {
-            Debug.LogError("Error fetching decks: " + task.Exception);
-            if (statusText != null) statusText.text = "Error loading decks.";
-            yield break;
-        }
-
-        decks = task.Result;
-        Populate(decks);
-    }
-
-    private void Populate(List<DecksDto> list)
-    {
-        // destroy previous clones but keep the template (if present)
-        for (int i = content.childCount - 1; i >= 0; i--)
-        {
-            var child = content.GetChild(i);
-            if (deckItemTemplate != null && child.gameObject == deckItemTemplate) continue;
+        if (child.gameObject != deckItemTemplate)
             Destroy(child.gameObject);
-        }
-
-        if (list == null || list.Count == 0)
-        {
-            if (statusText != null) statusText.text = "No decks found.";
-            return;
-        }
-
-        if (statusText != null) statusText.text = "";
-
-        foreach (var deck in list)
-        {
-            GameObject go;
-            if (deckItemTemplate != null)
-            {
-                go = Instantiate(deckItemTemplate, content);
-                go.SetActive(true);
-            }
-            else
-            {
-                Debug.LogWarning("No template; skipping deck " + deck.id);
-                continue;
-            }
-
-            go.name = $"DeckItem_{deck.id}";
-            var item = go.GetComponent<DeckItemUI>();
-            if (item != null)
-                item.Bind(deck, OnDeckClicked);
-            else
-                Debug.LogWarning("DeckItemTemplate missing DeckItemUI component.");
-        }
     }
+
+    // 4. Populate List
+    if (decks == null || decks.Count == 0)
+    {
+        if (statusText != null) statusText.text = "No decks found.";
+        Debug.LogWarning("Deck list is empty or null.");
+        return;
+    }
+
+    foreach (var deck in decks)
+    {
+        GameObject go = Instantiate(deckItemTemplate, content);
+        go.SetActive(true);
+        go.name = $"DeckItem_{deck.id}";
+        
+        var item = go.GetComponent<DeckItemUI>();
+        if (item != null)
+            item.Bind(deck, OnDeckClicked);
+    }
+}
 
     private void OnDeckClicked(DecksDto deck, DeckItemUI itemUI)
     {
-        // deselect previous
         if (selectedItemUI != null) selectedItemUI.SetSelected(false);
 
         selectedDeck = deck;
         selectedItemUI = itemUI;
         selectedItemUI.SetSelected(true);
 
-        if (confirmBtn != null)
-            confirmBtn.gameObject.SetActive(true);
+        // Show the Host/Join buttons now that a deck is ready
+        if (hostBtn != null) hostBtn.gameObject.SetActive(true);
+        if (joinBtn != null) joinBtn.gameObject.SetActive(true);
     }
 
-    // Hook this to ConfirmBtn.onClick in the inspector
-    public void OnConfirmDeck()
-{
-    if (selectedDeck == null) { Debug.LogWarning("No deck selected"); return; }
+    // --- MULTIPLAYER LOGIC ---
 
-    // store into static holder
-    SelectedDeckHolder.SelectedDeck = selectedDeck;
-
-    Debug.Log($"Confirmed deck id={selectedDeck.id} name={selectedDeck.name}");
-    SceneManager.LoadScene("Game");
-}
-
-    // Public method other systems can call when the user logs in/out to refresh the list
-    public void Refresh()
+    public void OnHostClicked()
     {
-        // if logged in now, update runtimeUserId
-        runtimeUserId = AuthContext.IsLoggedIn ? AuthContext.UserId : userId;
-        StartCoroutine(LoadDecksCoroutine());
+        if (!ConfirmSelection()) return;
+
+        // 1. Start the Host (Server + Player)
+        bool started = NetworkManager.Singleton.StartHost();
+        
+        if (started)
+        {
+            Debug.Log("Host Started! Loading Game Scene...");
+            // 2. Load Scene using NetworkSceneManager
+            // This tells all connected clients to switch scenes automatically
+            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+        else
+        {
+            Debug.LogError("Failed to start Host.");
+        }
+    }
+
+    public void OnJoinClicked()
+    {
+        if (!ConfirmSelection()) return;
+
+        // 1. Start Client
+        // Note: For localhost, this connects to 127.0.0.1 immediately.
+        // For real online play, you'd need an InputField to type the Host's IP.
+        bool started = NetworkManager.Singleton.StartClient();
+        
+        if (started)
+        {
+            Debug.Log("Client Started! Waiting for Host to switch scenes...");
+            if (statusText != null) statusText.text = "Connecting...";
+        }
+        else
+        {
+            Debug.LogError("Failed to start Client.");
+        }
+    }
+
+    private bool ConfirmSelection()
+    {
+        if (selectedDeck == null) 
+        { 
+            Debug.LogWarning("No deck selected"); 
+            return false; 
+        }
+
+        // Store deck for the next scene
+        SelectedDeckHolder.SelectedDeck = selectedDeck;
+        return true;
     }
 }
