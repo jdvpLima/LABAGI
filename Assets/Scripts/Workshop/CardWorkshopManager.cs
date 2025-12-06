@@ -121,7 +121,8 @@ namespace Assets.Scripts.Workshop
 
         public void ReturnToMenu()
         {
-            SceneManager.LoadScene("MainMenu");
+            MainMenuManager.workshop = false;
+            SceneManager.UnloadSceneAsync("Workshop");
         }
     }
 }
