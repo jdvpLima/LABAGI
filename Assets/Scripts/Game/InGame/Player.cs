@@ -1,6 +1,6 @@
 using Assets.Scripts.Service;
 using Assets.Scripts.CreateDeck; 
-using Assets.Scripts.Model; // Needed for CardDto
+using Assets.Scripts.Model; 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,24 +11,20 @@ using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
-    [Header("Networked Stats (Synced)")]
+    [Header("Networked Stats")]
     public NetworkVariable<int> Points = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> Burnout = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> Flexibility = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> AccommodationTokens = new NetworkVariable<int>(2, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    // This stores the logged-in user's ID
     private long userId;
 
     [Header("Local Game Data")]
     public List<Card> Deck { get; private set; } = new List<Card>();
     private List<Card> Hand { get; set; } = new List<Card>();
 
-    [Header("UI References")]
-    public Button proposeBtn;
-    public GameObject selectedCardPanel;
-    public GameObject showSuitsPanel;
-    public TextMeshProUGUI suitTxt;
+    // REMOVED: public Button proposeBtn; 
+    // REMOVED: public GameObject selectedCardPanel;
 
     public Card selectedCard = null;
     public CardViewGame selectedCardUI = null;
@@ -53,35 +49,31 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // 1. Hook up UI Listeners
         Points.OnValueChanged += (oldVal, newVal) => OnPointsChanged?.Invoke(newVal);
         Burnout.OnValueChanged += (oldVal, newVal) => OnBurnoutChanged?.Invoke(newVal);
         Flexibility.OnValueChanged += (oldVal, newVal) => OnFlexibilityChanged?.Invoke(newVal);
         AccommodationTokens.OnValueChanged += (oldVal, newVal) => OnTokensChanged?.Invoke(newVal);
 
-        // 2. Register with Game Manager (Server side)
-        if (IsServer)
-        {
-            GameManager.Instance.RegisterPlayer(this);
-        }
+        if (IsServer) GameManager.Instance.RegisterPlayer(this);
 
-        // 3. Client Side Initialization
         if (IsOwner)
         {
-            // Get User ID safely
             if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
                  userId = Assets.Scripts.AuthContext.UserId; 
-            
-            // Fallback for testing
             if (userId == 0) userId = 1; 
 
-            // Find UI
+            // Find the UI Manager in the scene
             uIHandRenderer = FindObjectOfType<UIHandRenderer>();
-            if (uIHandRenderer != null) uIHandRenderer.SetOwner(this);
             
-            if (proposeBtn != null) proposeBtn.gameObject.SetActive(false);
+            if (uIHandRenderer != null)
+            {
+                 uIHandRenderer.SetOwner(this);
+            }
+            else
+            {
+                 Debug.LogError("CRITICAL: UIHandRenderer not found in scene!");
+            }
 
-            // Load Deck
             _ = InitializeDeckAsync();
         }
     }
@@ -90,43 +82,82 @@ public class Player : NetworkBehaviour
     {
         var selectedDeckDto = SelectedDeckHolder.SelectedDeck;
 
-        // Fetch full card data (List<CardDto>) from API
+        // Debug Log: Check which User ID we are actually using
+        Debug.Log($"[Player] Initializing Deck for User ID: {userId}");
+
         var fullLibrary = await cardService.GetPlayerCardCollectionAsync(userId);
         
+        // Debug Log: Check what the API actually returned
+        if (fullLibrary != null)
+        {
+            Debug.Log($"[Player] Library loaded. Count: {fullLibrary.Count}. First Card ID: {(fullLibrary.Count > 0 ? fullLibrary[0].cardId : -1)}");
+        }
+        else
+        {
+            Debug.LogError("[Player] CRITICAL: Library returned NULL!");
+        }
+
         Deck.Clear();
 
-        if (selectedDeckDto != null && selectedDeckDto.cards != null && fullLibrary != null)
+        if (selectedDeckDto != null && selectedDeckDto.cards != null)
         {
             Debug.Log($"Loading Selected Deck: {selectedDeckDto.name}");
 
+            // Ensure library isn't null to prevent crash
+            if (fullLibrary == null) fullLibrary = new List<CardDto>();
+
             foreach (var deckItem in selectedDeckDto.cards)
             {
-                // FIX: Use 'cardId' (lowercase) to match the DTO definition
+                // Try to find the card in the library
                 var cardDto = fullLibrary.Find(c => c.cardId == deckItem.cardId);
 
                 if (cardDto != null)
                 {
+                    // CASE A: Card Found (Normal)
                     for (int i = 0; i < deckItem.qty; i++)
                     {
-                        // FIX: Use the Factory method!
-                        // This handles the DTO -> Card conversion and parses abilities automatically
                         Deck.Add(Card.FromDto(cardDto));
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"Card ID {deckItem.cardId} in deck but not found in library!");
+                    // CASE B: Card Missing 
+                    // Add a "Placeholder" card so the game works.
+                    Debug.LogError($"[Player] DATA MISMATCH: Card ID {deckItem.cardId} is in the Deck but NOT in the User's Library.");
+                    
+                    for (int i = 0; i < deckItem.qty; i++)
+                    {
+                        // Create a temporary "Error Card"
+                        Card errorCard = new Card(
+                            deckItem.cardId, 
+                            $"MISSING {deckItem.cardId}", 
+                            "System", 
+                            0, 
+                            "Common", 
+                            "Database Error: Card not found in library"
+                        );
+                        Deck.Add(errorCard);
+                    }
                 }
             }
         }
         else
         {
-            Debug.LogWarning("No Deck Selected or Library empty. Loading Debug Deck.");
+            Debug.LogWarning("No Deck Selected. Loading Debug Deck.");
             InitializeDebugDeck();
+        }
+		if (Deck.Count < 5)
+        {
+            Debug.LogWarning($"[Player {OwnerClientId}] Deck is too small ({Deck.Count}). Filling with 5 Backup Cards.");
+            while (Deck.Count < 5)
+            {
+                // Add a simple filler card
+                Deck.Add(new Card(999, "Backup Card", "Analytical", 1, "Common", "Auto-generated to fill hand"));
+            }
         }
 
         ShuffleDeck();
-        InitializeHand();
+        InitializeHand(); // Now this will actually have cards to draw!
     }
 
     private void InitializeDebugDeck()
@@ -151,7 +182,16 @@ public class Player : NetworkBehaviour
 
     private void InitializeHand()
     {
-        for (int i = 0; i < 5; i++) DrawCard();
+        Debug.Log($"[Player {OwnerClientId}] Drawing Initial Hand. Deck Size: {Deck.Count}");
+        
+        for (int i = 0; i < 5; i++) 
+        {
+            var card = DrawCard();
+            if (card == null)
+            {
+                Debug.LogError($"[Player {OwnerClientId}] Could not draw card #{i+1}. The Deck is empty!");
+            }
+        }
     }
 
     public Card DrawCard()
@@ -171,27 +211,39 @@ public class Player : NetworkBehaviour
         selectedCardUI = cardUI;
         selectedCard = cardUI.card;
         
-        if(proposeBtn != null) proposeBtn.gameObject.SetActive(true);
+        // Use the UI Manager to show the button
+        if(uIHandRenderer != null) uIHandRenderer.SetProposeButtonActive(true);
     }
 
     public void LockSelectedCard()
+{
+    if (!IsOwner) return;
+    if (selectedCard == null) return;
+
+    // --- SAFETY CHECK ---
+    // Ensure the UI Manager exists before destroying the card from hand
+    if(uIHandRenderer == null)
     {
-        if (!IsOwner) return;
-        if (selectedCard == null) return;
-
-        if(Hand.Contains(selectedCard))
-        {
-            Hand.Remove(selectedCard);
-            OnCardRemoved?.Invoke(selectedCard);
-        }
-
-        if(selectedCardPanel != null) selectedCardPanel.SetActive(true);
-        uIHandRenderer.DisplayCardInMiddle(selectedCard);
-        
-        if(proposeBtn != null) proposeBtn.gameObject.SetActive(false);
-
-        SubmitCardServerRpc(selectedCard.CardId, selectedCard.Points, selectedCard.Suit);
+        Debug.LogError("Cannot lock card: UIHandRenderer is missing!");
+        return;
     }
+
+    // 1. Remove from Data Hand
+    if(Hand.Contains(selectedCard))
+    {
+        Hand.Remove(selectedCard);
+        OnCardRemoved?.Invoke(selectedCard); // Removes visual from hand
+    }
+
+    // 2. Show in Middle (Visuals)
+    uIHandRenderer.DisplayCardInMiddle(selectedCard);
+    
+    // 3. Hide the button since we just clicked it
+    uIHandRenderer.SetProposeButtonActive(false);
+
+    // 4. Send Data to Server
+    SubmitCardServerRpc(selectedCard.CardId, selectedCard.Points, selectedCard.Suit);
+}
 
     public void UseToken()
     {

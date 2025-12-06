@@ -1293,6 +1293,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.Services.Authentication.PlayerAccounts.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ParrelSync">
+      <HintPath>Library\ScriptAssemblies\ParrelSync.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Services.Authentication.Editor.Shared">
       <HintPath>Library\ScriptAssemblies\Unity.Services.Authentication.Editor.Shared.dll</HintPath>
       <Private>False</Private>

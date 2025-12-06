@@ -1,33 +1,52 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // Required for Button
 
 public class UIHandRenderer : MonoBehaviour
 {
     [Header("Containers")]
     public Transform handContainer;
-    public Transform middlePanel;
+    public Transform middlePanel; // Make sure this is assigned in Inspector
     public GameObject cardPrefab;
+
+    [Header("Global UI Elements")]
+    public Button proposeBtn;           // Drag your Propose Button here
+    public GameObject selectedCardPanel; // Drag your Middle/Selected Panel here
 
     private Player localPlayer;
     private List<CardViewGame> cardViews = new List<CardViewGame>();
 
-    // Removed OnEnable/OnDisable automatic subscriptions.
-    
-    // Called by Player.cs in OnNetworkSpawn (only for the owner)
     public void SetOwner(Player p)
-    {
-        localPlayer = p;
-        
-        // Subscribe to events
-        localPlayer.OnCardDrawn += AddCardToHand;
-        localPlayer.OnCardRemoved += RemoveCardRenderer;
+{
+    localPlayer = p;
+    
+    // 1. Link Visual Events (Hand)
+    localPlayer.OnCardDrawn += AddCardToHand;
+    localPlayer.OnCardRemoved += RemoveCardRenderer;
 
-        Debug.Log("UIHandRenderer linked to " + p.gameObject.name);
+    Debug.Log("UIHandRenderer linked to " + p.gameObject.name);
+    
+    // 2. Hide UI initially
+    if (proposeBtn != null) 
+    {
+        proposeBtn.gameObject.SetActive(false);
+        
+        // --- THE FIX: CONNECT THE BUTTON ---
+        // Remove old listeners to prevent clicking for the wrong player/ghost clicks
+        proposeBtn.onClick.RemoveAllListeners(); 
+        
+        // Add the new listener dynamically
+        proposeBtn.onClick.AddListener(() => 
+        {
+            localPlayer.LockSelectedCard();
+        });
     }
+
+    if (selectedCardPanel != null) selectedCardPanel.SetActive(false);
+}
 
     private void OnDestroy()
     {
-        // Clean up events to prevent memory leaks
         if (localPlayer != null)
         {
             localPlayer.OnCardDrawn -= AddCardToHand;
@@ -42,16 +61,12 @@ public class UIHandRenderer : MonoBehaviour
         GameObject obj = Instantiate(cardPrefab, handContainer);
         var view = obj.GetComponent<CardViewGame>();
         cardViews.Add(view);
-        
-        // Init logic for your specific card prefab
         view.Init(card, localPlayer); 
     }
 
     private void RemoveCardRenderer(Card card)
     {
         CardViewGame viewToRemove = null;
-
-        // Find the visual card that matches the data card
         foreach (var view in cardViews)
         {
             if (view.card.CardId == card.CardId) 
@@ -72,11 +87,21 @@ public class UIHandRenderer : MonoBehaviour
     {
         if (middlePanel == null) return;
 
-        // Clear previous middle card if any
+        // 1. Activate the panel (Fixing the missing reference issue)
+        if (selectedCardPanel != null) selectedCardPanel.SetActive(true);
+
+        // 2. Clear previous
         foreach (Transform child in middlePanel) Destroy(child.gameObject);
 
+        // 3. Spawn
         GameObject obj = Instantiate(cardPrefab, middlePanel);
         var view = obj.GetComponent<CardViewGame>();
         view.Init(card, localPlayer);
+    }
+
+    // Helper to toggle button from Player.cs
+    public void SetProposeButtonActive(bool isActive)
+    {
+        if (proposeBtn != null) proposeBtn.gameObject.SetActive(isActive);
     }
 }
