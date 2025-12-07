@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,17 +12,55 @@ public class CardView : MonoBehaviour
     private Transform targetParent;
     private bool isAtTarget = false;
 
+
+    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI subText;
+    public TextMeshProUGUI flavourText;
+    public TextMeshProUGUI actionsText;
+    public Button button;
+
+    public Card card;
+
+    void Awake()
+    {
+        //button = GetComponent<Button>();
+    }
+
+
     public void Initialize(long id, Transform initial, Transform target)
     {
         cardId = id;
         initialParent = initial;
         targetParent = target;
         isAtTarget = false;
-        LoadImage();
+        //LoadImage();
         transform.SetParent(initialParent);
         transform.localPosition = Vector3.zero;
     }
 
+    public void Init(Card card, Transform initial, Transform target)
+    {
+        this.card = card;
+
+        cardId = card.CardId;
+        initialParent = initial;
+        targetParent = target;
+        isAtTarget = false;
+        //LoadImage();
+        transform.SetParent(initialParent);
+        transform.localPosition = Vector3.zero;
+
+        titleText.text = card.Name;
+        subText.text = card.Suit;
+        flavourText.text = card.FlavourText;
+
+        
+        button.onClick.AddListener(OnClick);
+
+
+    }
+
+    /*
     private void LoadImage()
     {
         // Caminho dentro de Resources
@@ -42,7 +81,7 @@ public class CardView : MonoBehaviour
         {
             Debug.LogWarning($"Imagem com ID {cardId} não encontrada em Resources/Images");
         }
-    }
+    }*/
 
 
     // Chame pelo botão ou clique
@@ -70,7 +109,7 @@ public class CardView : MonoBehaviour
     public void MoveTo(Transform newParent)
     {
         transform.SetParent(newParent, false);
-        StartCoroutine(RefreshLater(newParent));
+        //StartCoroutine(RefreshLater(newParent));
     }
 
     IEnumerator RefreshLater(Transform newParent)
