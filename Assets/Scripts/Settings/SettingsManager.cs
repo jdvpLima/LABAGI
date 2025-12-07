@@ -41,19 +41,21 @@ public class SettingsManager : MonoBehaviour
     void Awake()
     {
         LoadSettings();
-       /*
+        /*
 
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+         if (Instance != null && Instance != this)
+         {
+             Destroy(gameObject);
+             return;
+         }
 
-        // Registrar esta instância
-        Instance = this;
+         // Registrar esta instância
+         Instance = this;
 
-        // Fazer persistir entre cenas
-        DontDestroyOnLoad(gameObject);*/
+         // Fazer persistir entre cenas
+         DontDestroyOnLoad(gameObject);*/
+        musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
+        sfxVolumeSlider.onValueChanged.AddListener(SetSfxVolume);
     }
 
     public void OnBackButtonPressed()

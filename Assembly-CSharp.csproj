@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\CreateDeck\DecksDto.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonPayload.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckCards.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\AmbienceAudioController.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\SelectedDeckHolder.cs" />
     <Compile Include="Assets\Scripts\Workshop\LocalContentFilter.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonBuilder.cs" />
