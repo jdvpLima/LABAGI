@@ -38,10 +38,10 @@ MonoBehaviour:
     m_Value: 0
   greenOutRedIn:
     m_OverrideState: 1
-    m_Value: 142
+    m_Value: 100
   greenOutGreenIn:
     m_OverrideState: 1
-    m_Value: 30
+    m_Value: 52
   greenOutBlueIn:
     m_OverrideState: 0
     m_Value: 0

@@ -34,7 +34,7 @@ namespace Assets.Scripts.Workshop
 
         private void OnEnable()
         {
-            Debug.Log("[CardWorkshopManager] OnEnable - scene = " + SceneManager.GetActiveScene().name);
+            Debug.Log("[CardWogirkshopManager] OnEnable - scene = " + SceneManager.GetActiveScene().name);
 
             formPanel.OnFormChanged += OnFormChanged;
             formPanel.OnSubmitClicked += HandleSubmitAsync;
