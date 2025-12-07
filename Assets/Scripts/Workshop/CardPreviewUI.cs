@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Assets.Scripts.Workshop
 {
@@ -19,7 +20,22 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private TMP_Text pointsText;
         [SerializeField] private TMP_Text abilityText;
         [SerializeField] private TMP_Text flavorText;
+        [SerializeField] private RawImage suitImg;
+        [SerializeField] private AspectRatioFitter suitRatioFitter;
+        [SerializeField] private VideoPlayer suitVideo;
 
+        [Header("Suit videos")]
+        [SerializeField] private List<VideoClip> suitClips = new();
+        private Dictionary<string, VideoClip> _clipBySuit;
+
+        private void Awake()
+        {
+            // Mapa nome-do-clip -> VideoClip (case-insensitive)
+            _clipBySuit = suitClips
+                .Where(c => c != null)
+                .GroupBy(c => c.name, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+        }
         public void UpdatePreview(WorkshopCardDTO dto)
         {
             if (dto == null)
@@ -39,6 +55,34 @@ namespace Assets.Scripts.Workshop
             pointsText.text = dto.points.ToString();
             abilityText.text = dto.ability;
             flavorText.text = dto.flavorText;
+
+            UpdateSuitVideo(dto.suit);
+
+        }
+        private void UpdateSuitVideo(string suit)
+        {
+            if (suitImg.texture != null)
+            {
+                float w = suitImg.texture.width;
+                float h = suitImg.texture.height;
+                suitRatioFitter.aspectRatio = w / h;
+            }
+            if (string.IsNullOrWhiteSpace(suit) || _clipBySuit == null)
+            {
+                suitVideo.clip = null;
+                return;
+            }
+
+            if (_clipBySuit.TryGetValue(suit, out var clip))
+            {
+                suitVideo.clip = clip;
+                suitVideo.isLooping = true; // opcional
+                suitVideo.Play();
+            }
+            else
+            {
+                suitVideo.clip = null;
+            }
         }
     }
 }

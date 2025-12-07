@@ -31,12 +31,19 @@ namespace Assets.Scripts.Workshop
         [Header("Preview")]
         [SerializeField] private CardPreviewUI previewUI;
 
+        [Header("Word Filter")]
+        [SerializeField] private LocalContentFilter contentFilter;
+        [SerializeField] private TMP_Text validationMessageText;
+
         // Eventos usados pelo CardWorkshopManager
         public event Action<WorkshopCardDTO, string> OnSubmitClicked;
         public event Action<WorkshopCardDTO> OnFormChanged;
 
         private long _currentId = 0;
         private string _currentStatus = null;
+        private bool _hasOffensiveContent;
+        private bool _hasNonEnglishText;
+
 
         private void Awake()
         {
@@ -56,6 +63,7 @@ namespace Assets.Scripts.Workshop
         }
         public void Init(List<WorkshopCardDTO> runtimeCards)
         {
+            validationMessageText.text = string.Empty;
             if (runtimeCards == null || runtimeCards.Count == 0)
             {
                 Debug.LogWarning("[CardFormUI] Init chamado com lista vazia de runtimeCards.");
@@ -137,12 +145,24 @@ namespace Assets.Scripts.Workshop
         // Botão "Guardar rascunho"
         public void OnClickSubmitDraft()
         {
+            if (_hasOffensiveContent || _hasNonEnglishText)
+            {
+                UpdateValidationState();
+                return;
+            }
+
             Submit("draft");
         }
 
         // Botão "Submeter para revisão"
         public void OnClickSubmitForReview()
         {
+            if (_hasOffensiveContent || _hasNonEnglishText)
+            {
+                UpdateValidationState();
+                return;
+            }
+
             Submit("active");
         }
 
@@ -166,13 +186,44 @@ namespace Assets.Scripts.Workshop
                 previewUI.UpdatePreview(dto);
             }
 
-            saveDraftButton.interactable = true;
-            submitButton.interactable = true;
+            // Atualizar estado de validação (liga/desliga botões e mostra aviso)
+            UpdateValidationState();
 
             // Notificar manager (para draft list, etc.)
             OnFormChanged?.Invoke(dto);
         }
+        private void UpdateValidationState()
+        {
+            _hasOffensiveContent = HasOffensiveContentInForm();
+            _hasNonEnglishText = HasNonEnglishText();
 
+            if (validationMessageText != null)
+            {
+                if (_hasOffensiveContent)
+                {
+                    validationMessageText.text =
+                        "This card contains offensive language. Remove any offensive words before saving or submitting.";
+                }
+                else if (_hasNonEnglishText)
+                {
+                    validationMessageText.text =
+                        "This card must be written in English only. Please remove any non-English text.";
+                }
+                else
+                {
+                    validationMessageText.text = string.Empty;
+                }
+            }
+
+            // Se quiseres bloquear os botões também em caso de não-inglês:
+            bool canInteract = !_hasOffensiveContent && !_hasNonEnglishText;
+
+            if (saveDraftButton != null)
+                saveDraftButton.interactable = canInteract;
+
+            if (submitButton != null)
+                submitButton.interactable = canInteract;
+        }
         /// <summary>
         /// Constrói o DTO do formulário atual, incluindo ability e abilityJson.
         /// </summary>
@@ -317,6 +368,33 @@ namespace Assets.Scripts.Workshop
             int index = ddl.options.FindIndex(o => o.text == text);
             if (index >= 0)
                 ddl.value = index;
+        }
+
+        private bool HasOffensiveContentInForm()
+        {
+            if (contentFilter == null)
+                return false;
+
+            if (contentFilter.ContainsOffensiveContent(nameInput.text))
+                return true;
+
+            if (contentFilter.ContainsOffensiveContent(flavorTextInput.text))
+                return true;
+
+            return false;
+        }
+        private bool HasNonEnglishText()
+        {
+            string unknownWord = string.Empty;
+            if (contentFilter == null) return false; // ou true, se quiseres ser mais estrito
+
+            if (!contentFilter.IsStrictEnglish(nameInput.text, out unknownWord))
+                return true;
+
+            if (!contentFilter.IsStrictEnglish(flavorTextInput.text, out unknownWord))
+                return true;
+
+            return false;
         }
     }
 }
