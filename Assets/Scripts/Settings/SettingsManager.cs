@@ -64,13 +64,14 @@ public class SettingsManager : MonoBehaviour
 
     public void OnBackButtonPressed()
     {
+        // Only restore previous settings
+        // Unloading the scene is handled by QuitScene script
         if (this.persistentSettings == null)
         {
             Debug.LogError("PersistentSettingsManager instance not found in the scene.");
             return;
         }
         RestorePreviousSettings(this.persistentSettings);
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Settings");
     }
 
     private void RestorePreviousSettings(PersistentSettingsManager persistentSettings)
