@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.XR.Interaction.Toolki
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esri.HPFramework.Editor", "Esri.HPFramework.Editor.csproj", "{C182F57C-EF39-D0A1-FF13-B2091C6CB499}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colorblind", "Colorblind.csproj", "{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{EF805F29-624A-47BE-DE67-60765AB6B072}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.XR.Hands.Samples.VisualizerSample", "Unity.XR.Hands.Samples.VisualizerSample.csproj", "{20637F79-C950-FE73-5017-E19C23FCF86D}"
@@ -113,6 +115,10 @@ Global
 		{C182F57C-EF39-D0A1-FF13-B2091C6CB499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C182F57C-EF39-D0A1-FF13-B2091C6CB499}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C182F57C-EF39-D0A1-FF13-B2091C6CB499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF805F29-624A-47BE-DE67-60765AB6B072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF805F29-624A-47BE-DE67-60765AB6B072}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF805F29-624A-47BE-DE67-60765AB6B072}.Release|Any CPU.ActiveCfg = Release|Any CPU

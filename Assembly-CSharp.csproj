@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Game\InGame\Player.cs" />
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
+    <Compile Include="Assets\Scripts\Settings\ColorblindManager.cs" />
     <Compile Include="Assets\Scripts\Game\InGame\UIHandRenderer.cs" />
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets\Scripts\CardViewer\CardFullscreenToggle.cs" />
     <Compile Include="Assets\Scripts\Workshop\DraftRowUI.cs" />
     <Compile Include="Assets\Native GPS Plugin (iOSAndroid)\Scripts\PermissionsRationaleDialog.cs" />
+    <Compile Include="Assets\Scripts\AttachCanvasToMainCamera.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\CardView.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\ReturnToMainMenu.cs" />
     <Compile Include="Assets\Scripts\JsonHelper.cs" />
@@ -1763,6 +1765,10 @@
     <ProjectReference Include="ChessAI.csproj">
       <Project>{F7B852D9-CE37-179A-D6BB-A96A199DE584}</Project>
       <Name>ChessAI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Colorblind.csproj">
+      <Project>{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}</Project>
+      <Name>Colorblind</Name>
     </ProjectReference>
     <ProjectReference Include="ArcGISMapsSDK.Editor.csproj">
       <Project>{B50F436A-21CD-6D72-5FDE-9615CB496DF1}</Project>

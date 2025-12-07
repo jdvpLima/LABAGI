@@ -1728,6 +1728,10 @@
       <Project>{F7B852D9-CE37-179A-D6BB-A96A199DE584}</Project>
       <Name>ChessAI</Name>
     </ProjectReference>
+    <ProjectReference Include="Colorblind.csproj">
+      <Project>{8FA4E2CE-96C5-49A8-656E-D81E5A89B6AA}</Project>
+      <Name>Colorblind</Name>
+    </ProjectReference>
     <ProjectReference Include="ArcGISMapsSDK.Editor.csproj">
       <Project>{B50F436A-21CD-6D72-5FDE-9615CB496DF1}</Project>
       <Name>ArcGISMapsSDK.Editor</Name>

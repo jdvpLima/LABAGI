@@ -1,3 +1,5 @@
+using Assets.Scripts.Settings;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -15,15 +17,20 @@ public class SettingsManager : MonoBehaviour
     public Toggle enableHaptics;
     public Button backButton;
 
+    [Header("Accessibility")]
+    public TMP_Dropdown colorblindModeDropdown;
+
     public float musicVolume = 1.0f;
     public float sfxVolume = 1.0f;
     public bool lowSensoryModeEnabled = false;
     public bool hapticsEnabled = true;
+    public int colorblindMode = 0;
 
     private const string MUSIC_VOL_KEY = "MusicVolume";
     private const string SFX_VOL_KEY = "SfxVolume";
     private const string LOW_SENSORY_MODE_KEY = "LowSensoryModeEnabled";
     private const string ENABLE_HAPTCIS_KEY = "HapticsEnabled";
+    private const string COLORBLIND_MODE_KEY = "Accessibility.ColorblindType";
 
     private const string MUSIC_VOL_MIXER_VARIABLE = "MusicVolume";
     private const string SFX_VOL_MIXER_VARIABLE = "SfxVolume";
@@ -60,8 +67,15 @@ public class SettingsManager : MonoBehaviour
         SetSfxVolume(sfxVolumeSlider.value);
         SetLowSensoryMode(lowSensoryMode.isOn);
         SetHaptics(enableHaptics.isOn);
+        SetColorblindMode(colorblindModeDropdown.value);
+
         PlayerPrefs.Save();
         OnBackButtonPressed();
+    }
+    public void SetColorblindMode(int modeIndex)
+    {
+        colorblindMode = modeIndex;
+        PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, modeIndex);
     }
 
     public void SetMusicVolume(float volume)
@@ -103,14 +117,34 @@ public class SettingsManager : MonoBehaviour
         // Load Toggles
         bool hapticsEnabled = PlayerPrefs.GetInt(ENABLE_HAPTCIS_KEY, 1) == 1;
         bool lowSensoryModeEnabled = PlayerPrefs.GetInt(LOW_SENSORY_MODE_KEY, 0) == 1;
+        int savedColorblindMode = PlayerPrefs.GetInt(COLORBLIND_MODE_KEY, 0);
 
         enableHaptics.isOn = hapticsEnabled;
         lowSensoryMode.isOn = lowSensoryModeEnabled;
+
+        if (colorblindModeDropdown != null)
+        {
+            colorblindModeDropdown.value = savedColorblindMode;
+            colorblindModeDropdown.RefreshShownValue();
+        }
 
         SetMusicVolume(musicVolumeSlider.value);
         SetSfxVolume(sfxVolumeSlider.value);
         SetLowSensoryMode(lowSensoryMode.isOn);
         SetHaptics(enableHaptics.isOn);
+
         PlayerPrefs.Save();
+    }
+    public void OnColorblindModeChanged(int index)
+    {
+        // guardar na mesma key que o plugin usa
+        PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, index);
+        PlayerPrefs.Save();
+
+        // chamar diretamente o SOHNE.Colorblindness
+        if (SOHNE.Accessibility.Colorblindness.Colorblindness.Instance != null)
+        {
+            SOHNE.Accessibility.Colorblindness.Colorblindness.Instance.Change(index);
+        }
     }
 }
