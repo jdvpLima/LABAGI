@@ -19,21 +19,21 @@ public class GroupSwitcher : MonoBehaviour
         if (groups == null) groups = new List<GameObject>();
         if (buttons == null) buttons = new List<Button>();
 
-        // If user forgot to assign buttons but the buttons are children of this object, auto-find them.
-        if (buttons.Count == 0)
-        {
-            var found = GetComponentsInChildren<Button>(true);
-            foreach (var b in found) buttons.Add(b);
-        }
+        //// If user forgot to assign buttons but the buttons are children of this object, auto-find them.
+        //if (buttons.Count == 0)
+        //{
+        //    var found = GetComponentsInChildren<Button>(true);
+        //    foreach (var b in found) buttons.Add(b);
+        //}
 
-        // Attach listeners. Use min length to avoid out-of-range.
-        int pairCount = Mathf.Min(groups.Count, buttons.Count);
-        for (int i = 0; i < pairCount; i++)
-        {
-            int idx = i; // capture local copy for closure
-            if (buttons[i] != null)
-                buttons[i].onClick.AddListener(() => ShowGroup(idx));
-        }
+        //// Attach listeners. Use min length to avoid out-of-range.
+        //int pairCount = Mathf.Min(groups.Count, buttons.Count);
+        //for (int i = 0; i < pairCount; i++)
+        //{
+        //    int idx = i; // capture local copy for closure
+        //    if (buttons[i] != null)
+        //        buttons[i].onClick.AddListener(() => ShowGroup(idx));
+        //}
     }
 
     void Start()
