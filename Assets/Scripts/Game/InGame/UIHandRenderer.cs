@@ -1,49 +1,77 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Required for Button
+using UnityEngine.UI;
+using TMPro;
 
 public class UIHandRenderer : MonoBehaviour
 {
     [Header("Containers")]
     public Transform handContainer;
-    public Transform middlePanel; // Make sure this is assigned in Inspector
+    public Transform middlePanel;
     public GameObject cardPrefab;
+    public Button proposeBtn;
+    public GameObject selectedCardPanel; 
+    public CanvasGroup selectedPanelGroup; 
 
-    [Header("Global UI Elements")]
-    public Button proposeBtn;           // Drag your Propose Button here
-    public GameObject selectedCardPanel; // Drag your Middle/Selected Panel here
+    [Header("Decision UI")]
+    public Button acceptBtn;
+    public Button refuseBtn;
+    public GameObject decisionPanel; 
+
+    [Header("Suit Reveal UI")]
+    public GameObject showSuitsPanel;
+    public TextMeshProUGUI suitTxt;
+
+    // --- NEW: STATS UI ---
+    [Header("Stats UI")]
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI burnoutText;
+    public TextMeshProUGUI flexibilityText;
+    // ---------------------
 
     private Player localPlayer;
     private List<CardViewGame> cardViews = new List<CardViewGame>();
 
     public void SetOwner(Player p)
-{
-    localPlayer = p;
-    
-    // 1. Link Visual Events (Hand)
-    localPlayer.OnCardDrawn += AddCardToHand;
-    localPlayer.OnCardRemoved += RemoveCardRenderer;
-
-    Debug.Log("UIHandRenderer linked to " + p.gameObject.name);
-    
-    // 2. Hide UI initially
-    if (proposeBtn != null) 
     {
-        proposeBtn.gameObject.SetActive(false);
+        localPlayer = p;
         
-        // --- THE FIX: CONNECT THE BUTTON ---
-        // Remove old listeners to prevent clicking for the wrong player/ghost clicks
-        proposeBtn.onClick.RemoveAllListeners(); 
-        
-        // Add the new listener dynamically
-        proposeBtn.onClick.AddListener(() => 
-        {
-            localPlayer.LockSelectedCard();
-        });
-    }
+        // Clear trash
+        foreach(Transform child in handContainer) Destroy(child.gameObject);
+        cardViews.Clear();
 
-    if (selectedCardPanel != null) selectedCardPanel.SetActive(false);
-}
+        // 1. Link Hand Events
+        localPlayer.OnCardDrawn += AddCardToHand;
+        localPlayer.OnCardRemoved += RemoveCardRenderer;
+
+        // 2. Link Stats Events (This fixes the missing points update)
+        localPlayer.OnPointsChanged += UpdateScoreUI;
+        localPlayer.OnBurnoutChanged += UpdateBurnoutUI;
+        localPlayer.OnFlexibilityChanged += UpdateFlexibilityUI;
+
+        // Initialize Stats immediately
+        UpdateScoreUI(localPlayer.Points.Value);
+        UpdateBurnoutUI(localPlayer.Burnout.Value);
+        UpdateFlexibilityUI(localPlayer.Flexibility.Value);
+
+        if (proposeBtn != null) 
+        {
+            proposeBtn.gameObject.SetActive(false);
+            proposeBtn.onClick.RemoveAllListeners();
+            proposeBtn.onClick.AddListener(() => localPlayer.LockSelectedCard());
+        }
+
+        if (acceptBtn != null && refuseBtn != null)
+        {
+            ToggleDecisionUI(false); 
+            acceptBtn.onClick.RemoveAllListeners();
+            acceptBtn.onClick.AddListener(() => localPlayer.SubmitDecision(true));
+            refuseBtn.onClick.RemoveAllListeners();
+            refuseBtn.onClick.AddListener(() => localPlayer.SubmitDecision(false));
+        }
+
+        if (showSuitsPanel != null) showSuitsPanel.SetActive(false);
+    }
 
     private void OnDestroy()
     {
@@ -51,13 +79,30 @@ public class UIHandRenderer : MonoBehaviour
         {
             localPlayer.OnCardDrawn -= AddCardToHand;
             localPlayer.OnCardRemoved -= RemoveCardRenderer;
+            localPlayer.OnPointsChanged -= UpdateScoreUI;
+            localPlayer.OnBurnoutChanged -= UpdateBurnoutUI;
+            localPlayer.OnFlexibilityChanged -= UpdateFlexibilityUI;
         }
     }
+
+    // --- STAT UPDATE METHODS ---
+    private void UpdateScoreUI(int value) 
+    { 
+        if(scoreText != null) scoreText.text = value.ToString(); 
+    }
+    private void UpdateBurnoutUI(int value) 
+    { 
+        if(burnoutText != null) burnoutText.text = value.ToString(); 
+    }
+    private void UpdateFlexibilityUI(int value) 
+    { 
+        if(flexibilityText != null) flexibilityText.text = value.ToString(); 
+    }
+    // ---------------------------
 
     private void AddCardToHand(Card card)
     {
         if (cardPrefab == null || handContainer == null) return;
-
         GameObject obj = Instantiate(cardPrefab, handContainer);
         var view = obj.GetComponent<CardViewGame>();
         cardViews.Add(view);
@@ -75,7 +120,6 @@ public class UIHandRenderer : MonoBehaviour
                 break;
             }
         }
-
         if (viewToRemove != null)
         {
             cardViews.Remove(viewToRemove);
@@ -86,22 +130,83 @@ public class UIHandRenderer : MonoBehaviour
     public void DisplayCardInMiddle(Card card)
     {
         if (middlePanel == null) return;
+        ShowPopup();
 
-        // 1. Activate the panel (Fixing the missing reference issue)
-        if (selectedCardPanel != null) selectedCardPanel.SetActive(true);
-
-        // 2. Clear previous
         foreach (Transform child in middlePanel) Destroy(child.gameObject);
-
-        // 3. Spawn
+        
+        // Spawn ONLY your card, centered
         GameObject obj = Instantiate(cardPrefab, middlePanel);
         var view = obj.GetComponent<CardViewGame>();
         view.Init(card, localPlayer);
+
+        // Reset position to center (removed offset)
+        RectTransform rect = obj.GetComponent<RectTransform>();
+        if (rect != null) rect.anchoredPosition = Vector2.zero; 
     }
 
-    // Helper to toggle button from Player.cs
+    public void DisplayOpponentSuit(string suit)
+    {
+        if (showSuitsPanel != null) 
+        {
+            showSuitsPanel.SetActive(true);
+            // FORCE TO FRONT so video doesn't hide it
+            showSuitsPanel.transform.SetAsLastSibling(); 
+        }
+        if (suitTxt != null) suitTxt.text = "Opponent Suit:\n" + suit;
+    }
+
+    public void ToggleDecisionUI(bool isActive)
+    {
+        if (isActive) ShowPopup();
+
+        if (decisionPanel != null) decisionPanel.SetActive(isActive);
+        else
+        {
+            if (acceptBtn != null) acceptBtn.gameObject.SetActive(isActive);
+            if (refuseBtn != null) refuseBtn.gameObject.SetActive(isActive);
+        }
+    }
+
+    public void ClearMiddleCards()
+    {
+        if (middlePanel == null) return;
+        foreach (Transform child in middlePanel) Destroy(child.gameObject);
+        
+        if (showSuitsPanel != null) showSuitsPanel.SetActive(false);
+        HidePopup();
+    }
+
     public void SetProposeButtonActive(bool isActive)
     {
         if (proposeBtn != null) proposeBtn.gameObject.SetActive(isActive);
+    }
+
+    private void ShowPopup()
+    {
+        if (selectedPanelGroup != null)
+        {
+            selectedPanelGroup.alpha = 1;
+            selectedPanelGroup.interactable = true;
+            selectedPanelGroup.blocksRaycasts = true;
+        }
+        else if (selectedCardPanel != null)
+        {
+            selectedCardPanel.SetActive(true);
+            selectedCardPanel.transform.localScale = Vector3.one; 
+        }
+    }
+
+    private void HidePopup()
+    {
+        if (selectedPanelGroup != null)
+        {
+            selectedPanelGroup.alpha = 0;
+            selectedPanelGroup.interactable = false;
+            selectedPanelGroup.blocksRaycasts = false;
+        }
+        else if (selectedCardPanel != null)
+        {
+            selectedCardPanel.transform.localScale = Vector3.zero;
+        }
     }
 }

@@ -1,4 +1,4 @@
-using Assets.Scripts.Model; // Ensure this namespace matches where CardDto is
+using Assets.Scripts.Model; 
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +6,6 @@ using UnityEngine;
 [System.Serializable]
 public class Card
 {
-    // Properties (Capitalized for C# standard)
     public long CardId { get; private set; }
     public string Name { get; private set; } = "";
     public string Suit { get; private set; } = "";
@@ -14,9 +13,9 @@ public class Card
     public string Rarity { get; private set; } = "";
     public string FlavourText { get; private set; } = "";
 
+    // Initialize here to be safe
     public List<string> Actions { get; private set; } = new List<string>();
 
-    // --- CONSTRUCTOR ---
     public Card(long id, string name, string suit, int points = 0, string rarity = "", string flavourText = null)
     {
         CardId = id;
@@ -25,22 +24,20 @@ public class Card
         Points = points;
         Rarity = rarity;
         if (flavourText != null) FlavourText = flavourText;
+        
+        // Ensure list is never null
+        if (Actions == null) Actions = new List<string>();
     }
 
-    // --- FACTORY METHOD (The Fix is Here) ---
     public static Card FromDto(CardDto dto)
     {
-        // 1. Map basic fields using the LOWERCASE variable names from your DTO
-        string flavour = dto.flavorText ?? ""; // Uses 'flavorText' (lowercase)
+        string flavour = dto.flavorText ?? "";
         string cardName = dto.name ?? $"Card {dto.cardId}";
         string cardSuit = dto.suit ?? "";
         string cardRarity = dto.rarity ?? "";
 
-        // 2. Create the Card using the new constructor
-        // Notice we use 'dto.cardId' (lowercase c)
         var card = new Card(dto.cardId, cardName, cardSuit, dto.points, cardRarity, flavour);
 
-        // 3. Populate Actions logic
         if (!string.IsNullOrEmpty(dto.abilityJson))
         {
             try
@@ -56,7 +53,6 @@ public class Card
         }
         else
         {
-            // Fallback for older card formats
             if (!string.IsNullOrEmpty(dto.effect)) card.Actions.Add(dto.effect);
             if (!string.IsNullOrEmpty(dto.ability)) card.Actions.Add(dto.ability);
             if (!string.IsNullOrEmpty(dto.trigger)) card.Actions.Add(dto.trigger);

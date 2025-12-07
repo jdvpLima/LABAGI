@@ -9,11 +9,10 @@ public class GameManager : NetworkBehaviour
     [Header("UI References")]
     public TextMeshProUGUI statusText;
 
-    // Connected Players
     private Player hostPlayer;
     private Player clientPlayer;
 
-    // Round Data
+    // Card Data
     private long hostCardId = -1;
     private int hostCardPoints = 0;
     private string hostCardSuit = "";
@@ -22,44 +21,27 @@ public class GameManager : NetworkBehaviour
     private int clientCardPoints = 0;
     private string clientCardSuit = "";
 
+    // Decisions
+    private bool hostDecisionReceived = false;
+    private bool hostAccepted = false;
+    private bool clientDecisionReceived = false;
+    private bool clientAccepted = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
     }
 
-    // Called by Player.cs OnNetworkSpawn
     public void RegisterPlayer(Player p)
     {
         if (!IsServer) return;
-
-        if (p.OwnerClientId == NetworkManager.ServerClientId)
-        {
-            hostPlayer = p;
-            Debug.Log("Host Registered");
-        }
-        else
-        {
-            clientPlayer = p;
-            Debug.Log("Client Registered");
-        }
-
-        CheckGameStart();
+        if (p.OwnerClientId == NetworkManager.ServerClientId) hostPlayer = p;
+        else clientPlayer = p;
+        
+        if (hostPlayer != null && clientPlayer != null) UpdateStatusClientRpc("Game Start!");
     }
 
-    private void CheckGameStart()
-    {
-        if (hostPlayer != null && clientPlayer != null)
-        {
-            UpdateStatusClientRpc("Game Start! Both players connected.");
-        }
-        else
-        {
-            UpdateStatusClientRpc("Waiting for opponent...");
-        }
-    }
-
-    // Called by Player.cs
     public void PlayerSubmittedCard(ulong clientId, long cardId, int points, string suit)
     {
         if (!IsServer) return;
@@ -82,10 +64,9 @@ public class GameManager : NetworkBehaviour
 
     private void CheckTurnResolution()
     {
-        // Check if both have played
         if (hostCardId != -1 && clientCardId != -1)
         {
-            ResolveTurn();
+            StartDecisionPhase();
         }
         else
         {
@@ -93,37 +74,90 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void ResolveTurn()
+    private void StartDecisionPhase()
     {
-        // --- YOUR GAME LOGIC HERE ---
-        // Example: Compare Suits or Points
+        UpdateStatusClientRpc("Review Phase: Accept or Refuse?");
         
-        Debug.Log($"Resolving: Host({hostCardSuit}) vs Client({clientCardSuit})");
+        // Show buttons
+        hostPlayer.EnableDecisionPhaseClientRpc();
+        clientPlayer.EnableDecisionPhaseClientRpc();
+    }
 
-        int hostPointsGain = 0;
-        int clientPointsGain = 0;
+    public void PlayerMadeDecision(ulong clientId, bool accepted)
+    {
+        if (!IsServer) return;
 
-        // Simple Synergy Rule Example
-        if (hostCardSuit == clientCardSuit)
+        if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
         {
-            hostPointsGain += 5;
-            clientPointsGain += 5;
-            UpdateStatusClientRpc($"Synergy! Both played {hostCardSuit}");
+            hostDecisionReceived = true;
+            hostAccepted = accepted;
         }
+        else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
+        {
+            clientDecisionReceived = true;
+            clientAccepted = accepted;
+        }
+
+        if (hostDecisionReceived && clientDecisionReceived)
+        {
+            FinalizeRound();
+        }
+    }
+
+    private void FinalizeRound()
+    {
+        int hostPointsGain = 0;
+        int hostBurnoutGain = 0;
+        int clientPointsGain = 0;
+        int clientBurnoutGain = 0;
+
+        // --- YOUR NEW RULES ---
+
+        // 1. Both Accept: Earn Card Points
+        if (hostAccepted && clientAccepted)
+        {
+            hostPointsGain = hostCardPoints;
+            clientPointsGain = clientCardPoints;
+            UpdateStatusClientRpc("Both Accepted! Points gained.");
+        }
+        // 2. Host Accepts, Client Refuses
+        else if (hostAccepted && !clientAccepted)
+        {
+            // Host gets nothing
+            // Client gets points + 1 Burnout
+            clientPointsGain = clientCardPoints;
+            clientBurnoutGain = 1;
+            UpdateStatusClientRpc("Client Refused! Client gains Points + Burnout.");
+        }
+        // 3. Host Refuses, Client Accepts
+        else if (!hostAccepted && clientAccepted)
+        {
+            // Host gets points + 1 Burnout
+            // Client gets nothing
+            hostPointsGain = hostCardPoints;
+            hostBurnoutGain = 1;
+            UpdateStatusClientRpc("Host Refused! Host gains Points + Burnout.");
+        }
+        // 4. Both Refuse
         else
         {
-            hostPointsGain += hostCardPoints;
-            clientPointsGain += clientCardPoints;
-            UpdateStatusClientRpc("Turn Resolved.");
+            // Both get 1 Burnout
+            hostBurnoutGain = 1;
+            clientBurnoutGain = 1;
+            UpdateStatusClientRpc("Both Refused! Burnout increased.");
         }
 
-        // Apply to network variables
-        hostPlayer.ServerApplyRoundResult(hostPointsGain, 0);
-        clientPlayer.ServerApplyRoundResult(clientPointsGain, 0);
+        // Apply
+        hostPlayer.ServerApplyRoundResult(hostPointsGain, hostBurnoutGain);
+        clientPlayer.ServerApplyRoundResult(clientPointsGain, clientBurnoutGain);
 
-        // Reset for next turn
-        hostCardId = -1;
-        clientCardId = -1;
+        // Cleanup
+        hostPlayer.CleanupRoundClientRpc();
+        clientPlayer.CleanupRoundClientRpc();
+
+        // Reset
+        hostCardId = -1; clientCardId = -1;
+        hostDecisionReceived = false; clientDecisionReceived = false;
     }
 
     [ClientRpc]

@@ -72,7 +72,6 @@
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
-    <Compile Include="Assets\Scripts\Game\GameReceiveDeck.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
@@ -1315,8 +1314,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.Analytics.Hooks.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    <Reference Include="ParrelSync">
+      <HintPath>Library\ScriptAssemblies\ParrelSync.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Tutorials.Core">
@@ -1339,8 +1338,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.Services.Authentication.PlayerAccounts.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ParrelSync">
-      <HintPath>Library\ScriptAssemblies\ParrelSync.dll</HintPath>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Services.Authentication.Editor.Shared">
