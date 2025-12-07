@@ -67,58 +67,68 @@ public class Player : NetworkBehaviour
     /// Waits for the Scene to fully switch to "Game" before initializing logic.
     /// Prevents the "Double Hand" bug where logic runs in the PreGame lobby.
     private IEnumerator InitializeWhenInGameScene()
+{
+    // A. Wait for Scene Switch
+    while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Game") 
     {
-        // A. Wait for Scene Switch
-        while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Game") 
+        yield return null; 
+    }
+
+    // B. Server Side: Register this player with the Referee
+    if (IsServer)
+    {
+        while (GameManager.Instance == null) yield return null;
+        GameManager.Instance.RegisterPlayer(this);
+    }
+
+    // Find the UI Manager
+    if (uIHandRenderer == null) uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+
+    // C. Client Side: Split Logic
+    if (IsOwner)
+    {
+        // --- I AM THE LOCAL PLAYER ---
+
+        // >>> FIX START: Connect the UI immediately! <<<
+        if (uIHandRenderer != null)
         {
-            yield return null; 
+            uIHandRenderer.SetOwner(this);
         }
+        // >>> FIX END <<<
 
-        // B. Server Side: Register this player with the Referee (GameManager)
-        if (IsServer)
+        // Load User ID and Deck
+        if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
+                userId = Assets.Scripts.AuthContext.UserId; 
+        if (userId == 0) userId = 1; 
+
+        _ = InitializeDeckAsync();
+    }
+    else
+    {
+        // --- I AM THE OPPONENT ---
+        if (uIHandRenderer != null)
         {
-            while (GameManager.Instance == null) yield return null;
-            GameManager.Instance.RegisterPlayer(this);
-        }
-
-        // Find the UI Manager
-        if (uIHandRenderer == null) uIHandRenderer = FindObjectOfType<UIHandRenderer>();
-
-        // C. Client Side: Split Logic
-        if (IsOwner)
-        {
-            // --- I AM THE LOCAL PLAYER ---
-            // Load User ID and Deck
-            if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
-                 userId = Assets.Scripts.AuthContext.UserId; 
-            if (userId == 0) userId = 1; 
-
-            _ = InitializeDeckAsync();
-        }
-        else
-        {
-            // --- I AM THE OPPONENT ---
-            // Just link the stats so the UI shows the enemy score
-            if (uIHandRenderer != null)
-            {
-                uIHandRenderer.SetOpponent(this);
-            }
+            uIHandRenderer.SetOpponent(this);
         }
     }
+}
 
     /// Loads cards from the API or creates a fallback deck if the DB is empty.
     private async Task InitializeDeckAsync()
+{
+    await Task.Delay(500); 
+
+    // Remove the logic that tried to SetOwner here. 
+    // Just ensure the reference exists as a safety fallback.
+    if (uIHandRenderer == null)
     {
-        await Task.Delay(500); // Safety delay for UI
+        uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+        // Only set owner if we truly lost the reference and haven't set it yet
+        if (uIHandRenderer != null && IsOwner) uIHandRenderer.SetOwner(this);
+    }
 
-        if (uIHandRenderer == null)
-        {
-            uIHandRenderer = FindObjectOfType<UIHandRenderer>();
-            if (uIHandRenderer != null) uIHandRenderer.SetOwner(this);
-        }
-
-        var selectedDeckDto = SelectedDeckHolder.SelectedDeck;
-        var fullLibrary = await cardService.GetPlayerCardCollectionAsync(userId);
+    var selectedDeckDto = SelectedDeckHolder.SelectedDeck;
+    var fullLibrary = await cardService.GetPlayerCardCollectionAsync(userId);
         
         Deck.Clear();
         if (fullLibrary == null) fullLibrary = new List<CardDto>();
