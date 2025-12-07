@@ -11,6 +11,8 @@ TagManager:
   - Projectile
   - Marker
   - CanvaPref
+  - Canva
+  - CamaraXR
   layers:
   - Default
   - TransparentFX

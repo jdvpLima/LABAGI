@@ -13,7 +13,7 @@ namespace Assets.Scripts
         void OnEnable()
         {
             var canvas = GetComponent<Canvas>();
-            var cam = Camera.main;
+            var cam = getCorrectCameraOnAR() != null ?  getCorrectCameraOnAR() : Camera.main;
 
             if (canvas != null && cam != null)
             {
@@ -23,6 +23,26 @@ namespace Assets.Scripts
             else
             {
                 Debug.LogWarning("[AttachCanvasToMainCamera] Canvas ou Main Camera não encontrados.");
+            }
+        }
+
+
+         Camera getCorrectCameraOnAR()
+        {
+            CameraController scriptEncontrado = FindAnyObjectByType<CameraController>();
+
+            if (scriptEncontrado != null)
+            {
+                // 2. Acede ao componente Camera que está no mesmo GameObject
+                Camera cam = scriptEncontrado.GetComponent<Camera>();
+
+                // Agora podes usar a "cam"
+                Debug.Log("Câmera encontrada: " + cam.name);
+                return cam;
+            }
+            else
+            {
+                return null;
             }
         }
     }
