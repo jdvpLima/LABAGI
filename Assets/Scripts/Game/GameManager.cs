@@ -108,54 +108,73 @@ public class GameManager : NetworkBehaviour
     {
         int hostPointsGain = 0;
         int hostBurnoutGain = 0;
+        int hostFlexGain = 0;
+
         int clientPointsGain = 0;
         int clientBurnoutGain = 0;
+        int clientFlexGain = 0;
 
-        // --- YOUR NEW RULES ---
-
-        // 1. Both Accept: Earn Card Points
+        // --- 1. POINTS LOGIC ---
         if (hostAccepted && clientAccepted)
         {
+            // Both Accept: Both get points
             hostPointsGain = hostCardPoints;
             clientPointsGain = clientCardPoints;
-            UpdateStatusClientRpc("Both Accepted! Points gained.");
+            UpdateStatusClientRpc("Both Accepted!");
         }
-        // 2. Host Accepts, Client Refuses
         else if (hostAccepted && !clientAccepted)
         {
-            // Host gets nothing
-            // Client gets points + 1 Burnout
+            // Client Refused: Client steals points
             clientPointsGain = clientCardPoints;
-            clientBurnoutGain = 1;
-            UpdateStatusClientRpc("Client Refused! Client gains Points + Burnout.");
+            UpdateStatusClientRpc("Client Refused! Client gains Points.");
         }
-        // 3. Host Refuses, Client Accepts
         else if (!hostAccepted && clientAccepted)
         {
-            // Host gets points + 1 Burnout
-            // Client gets nothing
+            // Host Refused: Host steals points
             hostPointsGain = hostCardPoints;
-            hostBurnoutGain = 1;
-            UpdateStatusClientRpc("Host Refused! Host gains Points + Burnout.");
+            UpdateStatusClientRpc("Host Refused! Host gains Points.");
         }
-        // 4. Both Refuse
         else
         {
-            // Both get 1 Burnout
-            hostBurnoutGain = 1;
-            clientBurnoutGain = 1;
-            UpdateStatusClientRpc("Both Refused! Burnout increased.");
+            // Both Refused: No points
+            UpdateStatusClientRpc("Both Refused!");
         }
 
-        // Apply
-        hostPlayer.ServerApplyRoundResult(hostPointsGain, hostBurnoutGain);
-        clientPlayer.ServerApplyRoundResult(clientPointsGain, clientBurnoutGain);
+        // --- 2. BURNOUT & FLEXIBILITY LOGIC  ---
+        
+        // Host Stats
+        if (hostAccepted)
+        {
+            hostBurnoutGain = -1; // Decrease Burnout
+            hostFlexGain = 1;     // Increase Flexibility
+        }
+        else // Host Refused
+        {
+            hostBurnoutGain = 1;  // Increase Burnout
+            hostFlexGain = -1;    // Decrease Flexibility
+        }
+
+        // Client Stats
+        if (clientAccepted)
+        {
+            clientBurnoutGain = -1;
+            clientFlexGain = 1;
+        }
+        else // Client Refused
+        {
+            clientBurnoutGain = 1;
+            clientFlexGain = -1;
+        }
+
+        // Pass the calculated Flexibility (3rd argument)
+        hostPlayer.ServerApplyRoundResult(hostPointsGain, hostBurnoutGain, hostFlexGain);
+        clientPlayer.ServerApplyRoundResult(clientPointsGain, clientBurnoutGain, clientFlexGain);
 
         // Cleanup
         hostPlayer.CleanupRoundClientRpc();
         clientPlayer.CleanupRoundClientRpc();
 
-        // Reset
+        // Reset Server State
         hostCardId = -1; clientCardId = -1;
         hostDecisionReceived = false; clientDecisionReceived = false;
     }

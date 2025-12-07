@@ -61,6 +61,27 @@ public class Player : NetworkBehaviour
             if (userId == 0) userId = 1; 
 
             _ = InitializeDeckAsync();
+        }else
+        {
+            // --- I AM THE OPPONENT (NEW) ---
+            // If IsOwner is false, this object represents the other player.
+            // We just need to tell the UI to listen to this object's score.
+            StartCoroutine(InitOpponentStats());
+        }
+    }
+	private IEnumerator InitOpponentStats()
+    {
+        // Wait until UI is ready (safeguard)
+        while (uIHandRenderer == null)
+        {
+            uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+            yield return null;
+        }
+
+        if (uIHandRenderer != null)
+        {
+            Debug.Log($"[Player] Linking Opponent (ID: {OwnerClientId}) to UI Stats.");
+            uIHandRenderer.SetOpponent(this);
         }
     }
 
@@ -209,11 +230,21 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void ServerApplyRoundResult(int pointsToAdd, int burnoutToAdd)
+    // Called by GameManager to apply results
+    public void ServerApplyRoundResult(int pointsToAdd, int burnoutToAdd, int flexToAdd)
     {
         if (!IsServer) return;
+
         Points.Value += pointsToAdd;
+        
+        // Apply Burnout Change (Ensure it doesn't go below 0 if that's a rule, otherwise just add)
         Burnout.Value += burnoutToAdd;
+        if (Burnout.Value < 0) Burnout.Value = 0; // Optional safety clamp
+
+        // Apply Flexibility Change
+        Flexibility.Value += flexToAdd;
+        // if (Flexibility.Value < 0) Flexibility.Value = 0; // Optional safety clamp
+
         IsReady = false;
         tokenUsed = false;
     }

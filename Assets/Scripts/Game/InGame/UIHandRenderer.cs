@@ -16,18 +16,17 @@ public class UIHandRenderer : MonoBehaviour
     [Header("Decision UI")]
     public Button acceptBtn;
     public Button refuseBtn;
-    public GameObject decisionPanel; 
 
     [Header("Suit Reveal UI")]
     public GameObject showSuitsPanel;
     public TextMeshProUGUI suitTxt;
 
-    // --- NEW: STATS UI ---
+
     [Header("Stats UI")]
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI burnoutText;
     public TextMeshProUGUI flexibilityText;
-    // ---------------------
+    public TextMeshProUGUI opponentScoreText;
 
     private Player localPlayer;
     private List<CardViewGame> cardViews = new List<CardViewGame>();
@@ -73,6 +72,19 @@ public class UIHandRenderer : MonoBehaviour
         if (showSuitsPanel != null) showSuitsPanel.SetActive(false);
     }
 
+    public void SetOpponent(Player p)
+    {
+        // When the opponent's score changes, update the specific Opponent Text
+        p.OnPointsChanged += (val) => 
+        {
+            if (opponentScoreText != null) opponentScoreText.text = val.ToString();
+        };
+
+        // Initialize immediately
+        if (opponentScoreText != null) 
+            opponentScoreText.text = p.Points.Value.ToString();
+    }
+
     private void OnDestroy()
     {
         if (localPlayer != null)
@@ -85,7 +97,7 @@ public class UIHandRenderer : MonoBehaviour
         }
     }
 
-    // --- STAT UPDATE METHODS ---
+    
     private void UpdateScoreUI(int value) 
     { 
         if(scoreText != null) scoreText.text = value.ToString(); 
@@ -98,8 +110,7 @@ public class UIHandRenderer : MonoBehaviour
     { 
         if(flexibilityText != null) flexibilityText.text = value.ToString(); 
     }
-    // ---------------------------
-
+    
     private void AddCardToHand(Card card)
     {
         if (cardPrefab == null || handContainer == null) return;
@@ -131,15 +142,12 @@ public class UIHandRenderer : MonoBehaviour
     {
         if (middlePanel == null) return;
         ShowPopup();
-
         foreach (Transform child in middlePanel) Destroy(child.gameObject);
         
-        // Spawn ONLY your card, centered
         GameObject obj = Instantiate(cardPrefab, middlePanel);
         var view = obj.GetComponent<CardViewGame>();
         view.Init(card, localPlayer);
-
-        // Reset position to center (removed offset)
+        
         RectTransform rect = obj.GetComponent<RectTransform>();
         if (rect != null) rect.anchoredPosition = Vector2.zero; 
     }
@@ -149,22 +157,20 @@ public class UIHandRenderer : MonoBehaviour
         if (showSuitsPanel != null) 
         {
             showSuitsPanel.SetActive(true);
-            // FORCE TO FRONT so video doesn't hide it
+            
+            // This forces the panel to draw ON TOP of the video player
             showSuitsPanel.transform.SetAsLastSibling(); 
         }
+        
         if (suitTxt != null) suitTxt.text = "Opponent Suit:\n" + suit;
     }
 
     public void ToggleDecisionUI(bool isActive)
     {
         if (isActive) ShowPopup();
-
-        if (decisionPanel != null) decisionPanel.SetActive(isActive);
-        else
-        {
-            if (acceptBtn != null) acceptBtn.gameObject.SetActive(isActive);
-            if (refuseBtn != null) refuseBtn.gameObject.SetActive(isActive);
-        }
+        if (acceptBtn != null) acceptBtn.gameObject.SetActive(isActive);
+        if (refuseBtn != null) refuseBtn.gameObject.SetActive(isActive);
+        
     }
 
     public void ClearMiddleCards()

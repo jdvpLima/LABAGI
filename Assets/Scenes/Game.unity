@@ -1899,6 +1899,7 @@ MonoBehaviour:
   scoreText: {fileID: 1779698947}
   burnoutText: {fileID: 61200309}
   flexibilityText: {fileID: 1994421096}
+  opponentScoreText: {fileID: 1539499975}
 --- !u!4 &811849325
 Transform:
   m_ObjectHideFlags: 0
