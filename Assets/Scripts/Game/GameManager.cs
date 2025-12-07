@@ -2,6 +2,8 @@ using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 
+/// The Server-Side Referee.
+/// Manages turn states, resolves scoring rules, and coordinates clients.
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance;
@@ -9,10 +11,11 @@ public class GameManager : NetworkBehaviour
     [Header("UI References")]
     public TextMeshProUGUI statusText;
 
+    // Track both players
     private Player hostPlayer;
     private Player clientPlayer;
 
-    // Card Data
+    // Stores the current round's data
     private long hostCardId = -1;
     private int hostCardPoints = 0;
     private string hostCardSuit = "";
@@ -21,7 +24,7 @@ public class GameManager : NetworkBehaviour
     private int clientCardPoints = 0;
     private string clientCardSuit = "";
 
-    // Decisions
+    // Stores player decisions (Accept/Refuse)
     private bool hostDecisionReceived = false;
     private bool hostAccepted = false;
     private bool clientDecisionReceived = false;
@@ -33,15 +36,18 @@ public class GameManager : NetworkBehaviour
         else Instance = this;
     }
 
+    /// Called by Player.cs when a player connects to the Game Scene.
     public void RegisterPlayer(Player p)
     {
-        if (!IsServer) return;
+        if (!IsServer) return; // Only Server manages registration
+
         if (p.OwnerClientId == NetworkManager.ServerClientId) hostPlayer = p;
         else clientPlayer = p;
         
         if (hostPlayer != null && clientPlayer != null) UpdateStatusClientRpc("Game Start!");
     }
 
+    /// Called when a player locks in a card. Stores data and checks if round can proceed.
     public void PlayerSubmittedCard(ulong clientId, long cardId, int points, string suit)
     {
         if (!IsServer) return;
@@ -64,21 +70,19 @@ public class GameManager : NetworkBehaviour
 
     private void CheckTurnResolution()
     {
-        if (hostCardId != -1 && clientCardId != -1)
-        {
-            StartDecisionPhase();
-        }
-        else
-        {
-            UpdateStatusClientRpc("Waiting for other player...");
-        }
+        // If both players have played cards, start the Decision Phase
+        if (hostCardId != -1 && clientCardId != -1) StartDecisionPhase();
+        else UpdateStatusClientRpc("Waiting for other player...");
     }
 
+    /// Triggers the "Accept/Refuse" phase and reveals opponent suits.
     private void StartDecisionPhase()
     {
         UpdateStatusClientRpc("Review Phase: Accept or Refuse?");
-        
-        // Show buttons
+        // Reveal suits to opponents
+        hostPlayer.RevealOpponentCardClientRpc(clientCardId, clientCardSuit, clientCardPoints);
+        clientPlayer.RevealOpponentCardClientRpc(hostCardId, hostCardSuit, hostCardPoints);
+        // Show UI Buttons
         hostPlayer.EnableDecisionPhaseClientRpc();
         clientPlayer.EnableDecisionPhaseClientRpc();
     }
@@ -98,83 +102,92 @@ public class GameManager : NetworkBehaviour
             clientAccepted = accepted;
         }
 
-        if (hostDecisionReceived && clientDecisionReceived)
+        // If both decided, calculate scores
+        if (hostDecisionReceived && clientDecisionReceived) FinalizeRound();
+    }
+
+    /// Handle MANUAL token usage (Button Click).
+    /// Rule: Using a token gives the Opponent +1 Point.
+    public void PlayerUsedToken(ulong clientId)
+    {
+        if (!IsServer) return;
+
+        if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
         {
-            FinalizeRound();
+            clientPlayer.Points.Value += 1; 
+            UpdateStatusClientRpc("Host used Token! Client +1 Point.");
+        }
+        else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
+        {
+            hostPlayer.Points.Value += 1; 
+            UpdateStatusClientRpc("Client used Token! Host +1 Point.");
         }
     }
 
+    /// Calculates scores based on Acceptance/Refusal rules.
     private void FinalizeRound()
     {
-        int hostPointsGain = 0;
-        int hostBurnoutGain = 0;
-        int hostFlexGain = 0;
+        int hostPointsGain = 0; int hostBurnoutGain = 0; int hostFlexGain = 0;
+        int clientPointsGain = 0; int clientBurnoutGain = 0; int clientFlexGain = 0;
 
-        int clientPointsGain = 0;
-        int clientBurnoutGain = 0;
-        int clientFlexGain = 0;
-
-        // --- 1. POINTS LOGIC ---
+        // 1. Scoring Logic (Who gets the points?)
         if (hostAccepted && clientAccepted)
         {
-            // Both Accept: Both get points
             hostPointsGain = hostCardPoints;
             clientPointsGain = clientCardPoints;
             UpdateStatusClientRpc("Both Accepted!");
         }
         else if (hostAccepted && !clientAccepted)
         {
-            // Client Refused: Client steals points
+            // Client refused: They steal points + 1 Burnout
             clientPointsGain = clientCardPoints;
-            UpdateStatusClientRpc("Client Refused! Client gains Points.");
+            clientBurnoutGain = 1;
+            UpdateStatusClientRpc("Client Refused!");
         }
         else if (!hostAccepted && clientAccepted)
         {
-            // Host Refused: Host steals points
+            // Host refused: They steal points + 1 Burnout
             hostPointsGain = hostCardPoints;
-            UpdateStatusClientRpc("Host Refused! Host gains Points.");
+            hostBurnoutGain = 1;
+            UpdateStatusClientRpc("Host Refused!");
         }
         else
         {
-            // Both Refused: No points
+            // Both refused: Only Burnout
+            hostBurnoutGain = 1;
+            clientBurnoutGain = 1;
             UpdateStatusClientRpc("Both Refused!");
         }
 
-        // --- 2. BURNOUT & FLEXIBILITY LOGIC  ---
-        
-        // Host Stats
-        if (hostAccepted)
+        // 2. Flexibility Rules (Accept = Flex +1, Refuse = Flex -1)
+        hostFlexGain = hostAccepted ? 1 : -1;
+        if (hostAccepted) hostBurnoutGain -= 1; else hostBurnoutGain += 1;
+
+        clientFlexGain = clientAccepted ? 1 : -1;
+        if (clientAccepted) clientBurnoutGain -= 1; else clientBurnoutGain += 1;
+
+        // 3. Apply Results to Players
+        // Capture return value to see if Flexibility limit was broken
+        bool hostReset = hostPlayer.ServerApplyRoundResult(hostPointsGain, hostBurnoutGain, hostFlexGain);
+        bool clientReset = clientPlayer.ServerApplyRoundResult(clientPointsGain, clientBurnoutGain, clientFlexGain);
+
+        // 4. Critical Flexibility Penalty (Opponent +1 Point)
+        if (hostReset)
         {
-            hostBurnoutGain = -1; // Decrease Burnout
-            hostFlexGain = 1;     // Increase Flexibility
+            clientPlayer.Points.Value += 1;
+            UpdateStatusClientRpc("Host Flexibility Break! Client +1 Point.");
         }
-        else // Host Refused
+        if (clientReset)
         {
-            hostBurnoutGain = 1;  // Increase Burnout
-            hostFlexGain = -1;    // Decrease Flexibility
+            hostPlayer.Points.Value += 1;
+            UpdateStatusClientRpc("Client Flexibility Break! Host +1 Point.");
         }
 
-        // Client Stats
-        if (clientAccepted)
-        {
-            clientBurnoutGain = -1;
-            clientFlexGain = 1;
-        }
-        else // Client Refused
-        {
-            clientBurnoutGain = 1;
-            clientFlexGain = -1;
-        }
-
-        // Pass the calculated Flexibility (3rd argument)
-        hostPlayer.ServerApplyRoundResult(hostPointsGain, hostBurnoutGain, hostFlexGain);
-        clientPlayer.ServerApplyRoundResult(clientPointsGain, clientBurnoutGain, clientFlexGain);
-
-        // Cleanup
+        // Cleanup visuals
         hostPlayer.CleanupRoundClientRpc();
         clientPlayer.CleanupRoundClientRpc();
 
-        // Reset Server State
+        // Reset variables
         hostCardId = -1; clientCardId = -1;
         hostDecisionReceived = false; clientDecisionReceived = false;
     }

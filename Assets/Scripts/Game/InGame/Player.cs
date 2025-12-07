@@ -10,9 +10,13 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// Manages the individual Player entity. 
+/// Handles Networking (Stats), Deck Data, and interaction with the Server.
 public class Player : NetworkBehaviour
 {
-    [Header("Networked Stats")]
+	// NetworkVariables are authoritative on the Server but readable by Everyone.
+    // This ensures both players see updated scores instantly.
+    [Header("Networked Stats (Synced)")]
     public NetworkVariable<int> Points = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> Burnout = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> Flexibility = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -28,11 +32,12 @@ public class Player : NetworkBehaviour
     public CardViewGame selectedCardUI = null;
     public bool IsReady { get; private set; } = false;
     
+    // Reference to the UI Manager in the scene
     private UIHandRenderer uIHandRenderer;
     private CardService cardService;
     public bool tokenUsed = false;
 
-    // Events
+    // Events to update UI when NetworkVariables change
     public event Action<int> OnPointsChanged;
     public event Action<int> OnBurnoutChanged;
     public event Action<int> OnFlexibilityChanged;
@@ -45,56 +50,66 @@ public class Player : NetworkBehaviour
         cardService = new CardService();
     }
 
+    /// Called by Netcode when this object spawns.
+    /// This is where we determine if "I am the Player" or "I am the Opponent".
     public override void OnNetworkSpawn()
     {
+        // 1. Subscribe to Network Variables (Runs on both Owner and Opponent)
         Points.OnValueChanged += (oldVal, newVal) => OnPointsChanged?.Invoke(newVal);
         Burnout.OnValueChanged += (oldVal, newVal) => OnBurnoutChanged?.Invoke(newVal);
         Flexibility.OnValueChanged += (oldVal, newVal) => OnFlexibilityChanged?.Invoke(newVal);
         AccommodationTokens.OnValueChanged += (oldVal, newVal) => OnTokensChanged?.Invoke(newVal);
 
-        if (IsServer) StartCoroutine(WaitForGameManagerAndRegister());
+        // 2. Start initialization routine
+        StartCoroutine(InitializeWhenInGameScene());
+    }
 
+    /// Waits for the Scene to fully switch to "Game" before initializing logic.
+    /// Prevents the "Double Hand" bug where logic runs in the PreGame lobby.
+    private IEnumerator InitializeWhenInGameScene()
+    {
+        // A. Wait for Scene Switch
+        while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Game") 
+        {
+            yield return null; 
+        }
+
+        // B. Server Side: Register this player with the Referee (GameManager)
+        if (IsServer)
+        {
+            while (GameManager.Instance == null) yield return null;
+            GameManager.Instance.RegisterPlayer(this);
+        }
+
+        // Find the UI Manager
+        if (uIHandRenderer == null) uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+
+        // C. Client Side: Split Logic
         if (IsOwner)
         {
+            // --- I AM THE LOCAL PLAYER ---
+            // Load User ID and Deck
             if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
                  userId = Assets.Scripts.AuthContext.UserId; 
             if (userId == 0) userId = 1; 
 
             _ = InitializeDeckAsync();
-        }else
-        {
-            // --- I AM THE OPPONENT (NEW) ---
-            // If IsOwner is false, this object represents the other player.
-            // We just need to tell the UI to listen to this object's score.
-            StartCoroutine(InitOpponentStats());
         }
-    }
-	private IEnumerator InitOpponentStats()
-    {
-        // Wait until UI is ready (safeguard)
-        while (uIHandRenderer == null)
+        else
         {
-            uIHandRenderer = FindObjectOfType<UIHandRenderer>();
-            yield return null;
-        }
-
-        if (uIHandRenderer != null)
-        {
-            Debug.Log($"[Player] Linking Opponent (ID: {OwnerClientId}) to UI Stats.");
-            uIHandRenderer.SetOpponent(this);
+            // --- I AM THE OPPONENT ---
+            // Just link the stats so the UI shows the enemy score
+            if (uIHandRenderer != null)
+            {
+                uIHandRenderer.SetOpponent(this);
+            }
         }
     }
 
-    private IEnumerator WaitForGameManagerAndRegister()
-    {
-        while (GameManager.Instance == null) yield return null;
-        GameManager.Instance.RegisterPlayer(this);
-    }
-
+    /// Loads cards from the API or creates a fallback deck if the DB is empty.
     private async Task InitializeDeckAsync()
     {
-        // Small delay to ensure Scene is loaded
-        await Task.Delay(500);
+        await Task.Delay(500); // Safety delay for UI
 
         if (uIHandRenderer == null)
         {
@@ -121,15 +136,14 @@ public class Player : NetworkBehaviour
                 }
                 else
                 {
-                    // --- THE STABLE FALLBACK ---
-                    // This ensures cards exist even if database fails
+                    // Fallback: Create dummy cards if database ID is missing
                     for (int i = 0; i < deckItem.qty; i++)
                     {
                         Deck.Add(new Card(
                             deckItem.cardId, 
                             $"Missing {deckItem.cardId}", 
-                            "Analytical", // Default Suit so game logic works
-                            5,            // Default Points
+                            "Analytical", 
+                            5,            
                             "Common", 
                             "Database Error"
                         ));
@@ -139,12 +153,12 @@ public class Player : NetworkBehaviour
         }
         else
         {
-            // If no deck selected, load debug cards
+            // Debug Deck for testing without API
             for(int i=0; i<20; i++) 
                 Deck.Add(new Card(i, $"Debug {i}", "Analytical", 5));
         }
 
-        // Filler to prevent "Empty Hand" bug if deck is small
+        // Ensure hand is never empty
         while (Deck.Count < 5)
         {
              Deck.Add(new Card(999, "Filler", "Social", 1));
@@ -180,6 +194,9 @@ public class Player : NetworkBehaviour
         return card;
     }
 
+    /// <summary>
+    /// UI Event: Called when clicking a card in hand.
+    /// </summary>
     public void PickCard(CardViewGame cardUI)
     {
         if (!IsOwner) return;
@@ -188,6 +205,9 @@ public class Player : NetworkBehaviour
         if(uIHandRenderer != null) uIHandRenderer.SetProposeButtonActive(true);
     }
 
+    /// <summary>
+    /// UI Event: Locks the card, moves it to the middle, and sends data to Server.
+    /// </summary>
     public void LockSelectedCard()
     {
         if (!IsOwner) return;
@@ -206,11 +226,49 @@ public class Player : NetworkBehaviour
         SubmitCardServerRpc(selectedCard.CardId, selectedCard.Points, selectedCard.Suit);
     }
 
+    // --- TOKEN LOGIC ---
+
     public void UseToken()
     {
         if (!IsOwner) return;
         RequestTokenUseServerRpc();
     }
+
+    [ServerRpc]
+    private void RequestTokenUseServerRpc()
+    {
+        if (AccommodationTokens.Value > 0)
+        {
+            AccommodationTokens.Value -= 1;
+            
+            // Mechanic: Reset Flexibility immediately
+            Flexibility.Value = 0; 
+            tokenUsed = true;
+
+            // 1. Trigger Visuals (Draw Card)
+            DrawExtraCardClientRpc();
+
+            // 2. Apply Penalty (Give opponent point via GameManager)
+            GameManager.Instance.PlayerUsedToken(OwnerClientId);
+        }
+    }
+
+    [ClientRpc]
+    private void DrawExtraCardClientRpc()
+    {
+        if (!IsOwner) return;
+        Debug.Log("[Player] Token Used: Drawing Extra Card...");
+
+        // Safety: Prevent crash if deck is empty
+        if (Deck.Count == 0)
+        {
+            Deck.Add(new Card(999, "Emergency Card", "Analytical", 1, "Common", "Drawn via Token"));
+        }
+
+        DrawCard();
+    }
+
+    // --- GAME LOOP LOGIC ---
 
     [ServerRpc]
     private void SubmitCardServerRpc(long cardId, int points, string suit)
@@ -220,83 +278,92 @@ public class Player : NetworkBehaviour
         GameManager.Instance.PlayerSubmittedCard(OwnerClientId, cardId, points, suit);
     }
 
-    [ServerRpc]
-    private void RequestTokenUseServerRpc()
+    
+    /// Core Math Logic for applying game rules. 
+    /// Returns true if Flexibility broke limits (-3), signaling a penalty point.
+    public bool ServerApplyRoundResult(int pointsToAdd, int burnoutToAdd, int flexToAdd)
     {
-        if (AccommodationTokens.Value > 0)
-        {
-            AccommodationTokens.Value -= 1;
-            tokenUsed = true;
-        }
-    }
+        if (!IsServer) return false;
 
-    // Called by GameManager to apply results
-    public void ServerApplyRoundResult(int pointsToAdd, int burnoutToAdd, int flexToAdd)
-    {
-        if (!IsServer) return;
+        bool opponentGainsPoint = false;
 
+        // 1. Apply Points
         Points.Value += pointsToAdd;
-        
-        // Apply Burnout Change (Ensure it doesn't go below 0 if that's a rule, otherwise just add)
-        Burnout.Value += burnoutToAdd;
-        if (Burnout.Value < 0) Burnout.Value = 0; // Optional safety clamp
 
-        // Apply Flexibility Change
-        Flexibility.Value += flexToAdd;
-        // if (Flexibility.Value < 0) Flexibility.Value = 0; // Optional safety clamp
+        // 2. Flexibility Logic
+        int currentFlex = Flexibility.Value + flexToAdd;
+
+        // Rule: Flex >= 3 -> Gain Burnout
+        if (currentFlex >= 3)
+        {
+            currentFlex = 3; 
+            burnoutToAdd += 1; 
+        }
+        // Rule: Flex <= -3 -> Forced Token Usage
+        else if (currentFlex <= -3)
+        {
+            if (AccommodationTokens.Value > 0)
+            {
+                AccommodationTokens.Value -= 1; 
+                currentFlex = 0; // Reset
+                opponentGainsPoint = true; // Signal penalty
+                DrawExtraCardClientRpc();
+            }
+            else
+            {
+                currentFlex = -3; // Cap at -3 if no tokens
+            }
+        }
+        Flexibility.Value = currentFlex;
+
+        // 3. Burnout Logic (Clamped -3 to 3)
+        int currentBurnout = Burnout.Value + burnoutToAdd;
+        if (currentBurnout > 3) currentBurnout = 3;
+        if (currentBurnout < -3) currentBurnout = -3;
+        Burnout.Value = currentBurnout;
 
         IsReady = false;
         tokenUsed = false;
-    }
-	public void SubmitDecision(bool accepted)
-    {
-        // Hide buttons immediately so they can't spam click
-        if (uIHandRenderer != null) uIHandRenderer.ToggleDecisionUI(false);
 
-        // Tell Server
+        return opponentGainsPoint;
+    }
+
+    // --- DECISION PHASE RPCs ---
+
+    public void SubmitDecision(bool accepted)
+    {
+        if (uIHandRenderer != null) uIHandRenderer.ToggleDecisionUI(false);
         SubmitDecisionServerRpc(accepted);
     }
 
     [ServerRpc]
     private void SubmitDecisionServerRpc(bool accepted)
     {
-        Debug.Log($"Player {OwnerClientId} decision: {(accepted ? "Accept" : "Refuse")}");
         GameManager.Instance.PlayerMadeDecision(OwnerClientId, accepted);
     }
 
-    // Called by GameManager when it's time to decide
     [ClientRpc]
     public void EnableDecisionPhaseClientRpc()
     {
-        // Only show buttons for the owner of this player object
-        if (IsOwner && uIHandRenderer != null)
-        {
-            uIHandRenderer.ToggleDecisionUI(true);
-        }
+        if (IsOwner && uIHandRenderer != null) uIHandRenderer.ToggleDecisionUI(true);
     }
 
-    // Called by GameManager when round is fully over
     [ClientRpc]
     public void CleanupRoundClientRpc()
     {
         if (IsOwner && uIHandRenderer != null)
         {
             uIHandRenderer.ClearMiddleCards();
-            uIHandRenderer.ToggleDecisionUI(false); // Safety hide
+            uIHandRenderer.ToggleDecisionUI(false); 
         }
-        
-        // Reset state for next turn
         IsReady = false;
         tokenUsed = false;
     }
-	[ClientRpc]
+
+    [ClientRpc]
     public void RevealOpponentCardClientRpc(long cardId, string suit, int points)
     {
         if (!IsOwner) return;
-        
-        if (uIHandRenderer != null)
-        {
-            uIHandRenderer.DisplayOpponentSuit(suit);
-        }
+        if (uIHandRenderer != null) uIHandRenderer.DisplayOpponentSuit(suit);
     }
 }
