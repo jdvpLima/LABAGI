@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Assets\Scripts\Main Menu\MeResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopApiClient.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\PortoCardSpawner.cs" />
+    <Compile Include="Assets\Scripts\CameraController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

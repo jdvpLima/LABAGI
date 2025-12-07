@@ -7,11 +7,11 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject playScenePanel;
 
+   
     public static bool workshop = false;
 
     [SerializeField] private GameObject video;
-
-
+    
     void Update()
     {
         if(workshop == true)

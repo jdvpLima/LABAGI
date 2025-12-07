@@ -1684,55 +1684,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738658141}
   m_CullTransparentMesh: 1
---- !u!1 &766143614
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 766143616}
-  - component: {fileID: 766143615}
-  m_Layer: 0
-  m_Name: Global Volume
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &766143615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766143614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 550e4430fb6734e0d9618432d671972d, type: 2}
---- !u!4 &766143616
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766143614}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 507.05612, y: 381.50043, z: 13.909788}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927055183
 GameObject:
   m_ObjectHideFlags: 0
@@ -3170,6 +3121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1795244323}
   - component: {fileID: 1795244322}
+  - component: {fileID: 1795244324}
   m_Layer: 0
   m_Name: AuthManager
   m_TagString: Untagged
@@ -3209,6 +3161,23 @@ Transform:
   - {fileID: 1497694807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1795244324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795244321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 550e4430fb6734e0d9618432d671972d, type: 2}
 --- !u!1 &1816067181
 GameObject:
   m_ObjectHideFlags: 0
@@ -3222,6 +3191,7 @@ GameObject:
   - component: {fileID: 1816067183}
   - component: {fileID: 1816067182}
   - component: {fileID: 1816067186}
+  - component: {fileID: 1816067187}
   m_Layer: 5
   m_Name: Main Menu
   m_TagString: Untagged
@@ -3279,7 +3249,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 1964922687}
+  m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -3330,6 +3300,18 @@ MonoBehaviour:
   shopPanel: {fileID: 738658141}
   playScenePanel: {fileID: 1029716219}
   video: {fileID: 376211352}
+--- !u!114 &1816067187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816067181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3df0ce4bbb32948ab89f81052b1627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.AttachCanvasToMainCamera
 --- !u!1 &1819273881
 GameObject:
   m_ObjectHideFlags: 0
@@ -3667,12 +3649,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!20 &1964922687 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 975172586681411514, guid: cc6f8bec658ea5a499f843b141c5298f,
-    type: 3}
-  m_PrefabInstance: {fileID: 4875824719452381686}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1969035466
 GameObject:
   m_ObjectHideFlags: 0
@@ -4603,4 +4579,3 @@ SceneRoots:
   - {fileID: 727557458}
   - {fileID: 376211354}
   - {fileID: 198809370}
-  - {fileID: 766143616}
