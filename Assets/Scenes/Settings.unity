@@ -3602,6 +3602,7 @@ GameObject:
   - component: {fileID: 2053589205}
   - component: {fileID: 2053589204}
   - component: {fileID: 2053589203}
+  - component: {fileID: 2053589206}
   m_Layer: 5
   m_Name: SaveBtn
   m_TagString: Untagged
@@ -3685,6 +3686,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2053589206}
+        m_TargetAssemblyTypeName: Assets.Scripts.Main_Menu.UIButtonSound, Assembly-CSharp
+        m_MethodName: PlayClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2053589204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3723,6 +3736,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053589201}
   m_CullTransparentMesh: 1
+--- !u!114 &2053589206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053589201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffa57942b3f172b4396fd65a3a83027a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Main_Menu.UIButtonSound
 --- !u!1 &2063698257
 GameObject:
   m_ObjectHideFlags: 0

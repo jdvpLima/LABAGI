@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Service;
+﻿using Assets.Scripts.Main_Menu;
+using Assets.Scripts.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -201,11 +202,13 @@ namespace Assets.Scripts.Workshop
             {
                 if (_hasOffensiveContent)
                 {
+                    AudioManager.Instance.PlayUiError();
                     validationMessageText.text =
                         "This card contains offensive language. Remove any offensive words before saving or submitting.";
                 }
                 else if (_hasNonEnglishText)
                 {
+                    AudioManager.Instance.PlayUiError();
                     validationMessageText.text =
                         "This card must be written in English only. Please remove any non-English text.";
                 }
