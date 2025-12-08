@@ -74,54 +74,64 @@ public class Player : NetworkBehaviour
 			yield return null;
 		}
 
-		// B. Server Side: Register this player with the Referee (GameManager)
-		if (IsServer)
-		{
-			while (GameManager.Instance == null) yield return null;
-			GameManager.Instance.RegisterPlayer(this);
-		}
+    // B. Server Side: Register this player with the Referee
+    if (IsServer)
+    {
+        while (GameManager.Instance == null) yield return null;
+        GameManager.Instance.RegisterPlayer(this);
+    }
 
-		// Find the UI Manager
-		if (uIHandRenderer == null) uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+    // Find the UI Manager
+    if (uIHandRenderer == null) uIHandRenderer = FindObjectOfType<UIHandRenderer>();
 
-		// C. Client Side: Split Logic
-		if (IsOwner)
-		{
-			// --- I AM THE LOCAL PLAYER ---
-			// Load User ID and Deck
-			if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
-				userId = Assets.Scripts.AuthContext.UserId;
-			if (userId == 0) userId = 1;
+    // C. Client Side: Split Logic
+    if (IsOwner)
+    {
+        // --- I AM THE LOCAL PLAYER ---
 
-			_ = InitializeDeckAsync();
-		}
-		else
-		{
-			// --- I AM THE OPPONENT ---
-			// Just link the stats so the UI shows the enemy score
-			if (uIHandRenderer != null)
-			{
-				uIHandRenderer.SetOpponent(this);
-			}
-		}
-	}
+        // >>> FIX START: Connect the UI immediately! <<<
+        if (uIHandRenderer != null)
+        {
+            uIHandRenderer.SetOwner(this);
+        }
+        // >>> FIX END <<<
 
-	/// Loads cards from the API or creates a fallback deck if the DB is empty.
-	private async Task InitializeDeckAsync()
-	{
-		await Task.Delay(500); // Safety delay for UI
+        // Load User ID and Deck
+        if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
+                userId = Assets.Scripts.AuthContext.UserId; 
+        if (userId == 0) userId = 1; 
 
-		if (uIHandRenderer == null)
-		{
-			uIHandRenderer = FindObjectOfType<UIHandRenderer>();
-			if (uIHandRenderer != null) uIHandRenderer.SetOwner(this);
-		}
+        _ = InitializeDeckAsync();
+    }
+    else
+    {
+        // --- I AM THE OPPONENT ---
+        if (uIHandRenderer != null)
+        {
+            uIHandRenderer.SetOpponent(this);
+        }
+    }
+}
 
-		var selectedDeckDto = SelectedDeckHolder.SelectedDeck;
-		var fullLibrary = await cardService.GetPlayerCardCollectionAsync(userId);
+    /// Loads cards from the API or creates a fallback deck if the DB is empty.
+    private async Task InitializeDeckAsync()
+{
+    await Task.Delay(500); 
 
-		Deck.Clear();
-		if (fullLibrary == null) fullLibrary = new List<CardDto>();
+    // Remove the logic that tried to SetOwner here. 
+    // Just ensure the reference exists as a safety fallback.
+    if (uIHandRenderer == null)
+    {
+        uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+        // Only set owner if we truly lost the reference and haven't set it yet
+        if (uIHandRenderer != null && IsOwner) uIHandRenderer.SetOwner(this);
+    }
+
+    var selectedDeckDto = SelectedDeckHolder.SelectedDeck;
+    var fullLibrary = await cardService.GetPlayerCardCollectionAsync(userId);
+        
+        Deck.Clear();
+        if (fullLibrary == null) fullLibrary = new List<CardDto>();
 
 		if (selectedDeckDto != null && selectedDeckDto.cards != null)
 		{

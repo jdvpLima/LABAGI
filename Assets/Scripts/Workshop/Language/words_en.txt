@@ -8,6 +8,7 @@
 16-point
 18-point
 1st
+pomodoro
 2,4,5-t
 2,4-d
 20-point
@@ -50230,6 +50231,7 @@ breakpoints
 breakpoint's
 break-promise
 Breaks
+breaks
 breakshugh
 breakstone
 breakthrough
@@ -236434,6 +236436,7 @@ micrified
 micrifies
 micrifying
 Micro
+micro
 micro-
 microaerophile
 micro-aerophile
@@ -253003,6 +253006,10 @@ neurodermatitis
 neurodermatosis
 neurodermitis
 neurodiagnosis
+neurodivergent
+neurodiversity
+neurodynamics
+neurodivergence
 neurodynamic
 neurodynia
 neuroelectricity

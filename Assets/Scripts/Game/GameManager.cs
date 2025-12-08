@@ -29,16 +29,19 @@ public class GameManager : NetworkBehaviour
 	private bool clientDecisionReceived = false;
 	private bool clientAccepted = false;
 
-	private void Awake()
-	{
-		if (Instance != null && Instance != this) Destroy(this);
-		else Instance = this;
-	}
+    // Track Game State
+    private bool isGameOver = false;
 
-	/// Called by Player.cs when a player connects to the Game Scene.
-	public void RegisterPlayer(Player p)
-	{
-		if (!IsServer) return; // Only Server manages registration
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) Destroy(this);
+        else Instance = this;
+    }
+
+    /// Called by Player.cs when a player connects to the Game Scene.
+    public void RegisterPlayer(Player p)
+    {
+        if (!IsServer) return; 
 
 		if (p.OwnerClientId == NetworkManager.ServerClientId) hostPlayer = p;
 		else clientPlayer = p;
@@ -52,6 +55,7 @@ public class GameManager : NetworkBehaviour
 		List<string> actions = cardActions.Split(',').ToList();
 
 		if (!IsServer) return;
+		if (isGameOver) return;
 
 		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
 		{
@@ -84,9 +88,10 @@ public class GameManager : NetworkBehaviour
 		clientPlayer.EnableDecisionPhaseClientRpc();
 	}
 
-	public void PlayerMadeDecision(ulong clientId, bool accepted)
-	{
-		if (!IsServer) return;
+    public void PlayerMadeDecision(ulong clientId, bool accepted)
+    {
+        if (!IsServer) return;
+        if (isGameOver) return; 
 
 		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
 		{
@@ -103,23 +108,27 @@ public class GameManager : NetworkBehaviour
 		if (hostDecisionReceived && clientDecisionReceived) FinalizeRound();
 	}
 
-	/// Handle MANUAL token usage (Button Click).
-	/// Rule: Using a token gives the Opponent +1 Point.
-	public void PlayerUsedToken(ulong clientId)
-	{
-		if (!IsServer) return;
+    /// Handle MANUAL token usage (Button Click).
+    /// Rule: Using a token gives the Opponent +1 Point.
+    public void PlayerUsedToken(ulong clientId)
+    {
+        if (!IsServer) return;
+        if (isGameOver) return; 
 
-		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
-		{
-			clientPlayer.Points.Value += 1;
-			UpdateStatusClientRpc("Host used Token! Client +1 Point.");
-		}
-		else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
-		{
-			hostPlayer.Points.Value += 1;
-			UpdateStatusClientRpc("Client used Token! Host +1 Point.");
-		}
-	}
+        if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
+        {
+            clientPlayer.Points.Value += 1; 
+            UpdateStatusClientRpc("Host used Token! Client +1 Point.");
+        }
+        else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
+        {
+            hostPlayer.Points.Value += 1; 
+            UpdateStatusClientRpc("Client used Token! Host +1 Point.");
+        }
+
+        // Check if this token usage ended the game
+        CheckGameOver();
+    }
 
 	/// Calculates scores based on Acceptance/Refusal rules.
 	private void FinalizeRound()
@@ -200,18 +209,47 @@ public class GameManager : NetworkBehaviour
 			UpdateStatusClientRpc("Client Flexibility Break! Host +1 Point.");
 		}
 
-		// Cleanup visuals
-		hostPlayer.CleanupRoundClientRpc();
-		clientPlayer.CleanupRoundClientRpc();
+		// --- Check Win Condition ---
+		if (CheckGameOver()) return; 
+
+        // Cleanup visuals
+        hostPlayer.CleanupRoundClientRpc();
+        clientPlayer.CleanupRoundClientRpc();
 
 		// Reset variables
 		hostCard = null; clientCard = null;
 		hostDecisionReceived = false; clientDecisionReceived = false;
 	}
 
-	[ClientRpc]
-	private void UpdateStatusClientRpc(string msg)
-	{
-		if (statusText != null) statusText.text = msg;
-	}
+    // --- Win Condition Helper ---
+    private bool CheckGameOver()
+    {
+        if (hostPlayer == null || clientPlayer == null) return false;
+
+        bool hostWins = hostPlayer.Points.Value >= 15;
+        bool clientWins = clientPlayer.Points.Value >= 15;
+
+        if (hostWins || clientWins)
+        {
+            isGameOver = true;
+
+            // >>> CHANGE IS HERE <<<
+            if (hostWins && clientWins) 
+                UpdateStatusClientRpc("GAME OVER: BOTH OF YOU WIN!");
+            else if (hostWins) 
+                UpdateStatusClientRpc("GAME OVER: HOST WINS!");
+            else 
+                UpdateStatusClientRpc("GAME OVER: CLIENT WINS!");
+
+            return true;
+        }
+
+        return false;
+    }
+
+    [ClientRpc]
+    private void UpdateStatusClientRpc(string msg)
+    {
+        if (statusText != null) statusText.text = msg;
+    }
 }

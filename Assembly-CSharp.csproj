@@ -61,6 +61,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Main Menu\UIButtonSound.cs" />
     <Compile Include="Assets\Scripts\Game\InGame\Player.cs" />
     <Compile Include="Assets\Scripts\Main Menu\ShopUIManager.cs" />
     <Compile Include="Assets\Scripts\Settings\ColorblindManager.cs" />
@@ -82,20 +83,24 @@
     <Compile Include="Assets\Scripts\CreateDeck\DeckCards.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\SelectedDeckHolder.cs" />
     <Compile Include="Assets\Scripts\Workshop\LocalContentFilter.cs" />
+    <Compile Include="Assets\Scripts\QuitScene.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonBuilder.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\GPSLocationService.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckService.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\DontDestroy.cs" />
     <Compile Include="Assets\Ar\ARManipulateUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\MarkerResize.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityTextBuilder.cs" />
     <Compile Include="Assets\Scripts\AuthContext.cs" />
+    <Compile Include="Assets\Scripts\Game\CardLogic.cs" />
     <Compile Include="Assets\Native GPS Plugin (iOSAndroid)\Scripts\NativeGPSPlugin.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ToCreateDeckButtton.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopManager.cs" />
@@ -125,6 +130,7 @@
     <Compile Include="Assets\Scripts\Main Menu\MeResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopApiClient.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\PortoCardSpawner.cs" />
+    <Compile Include="Assets\Scripts\CameraController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -674,14 +680,6 @@
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">

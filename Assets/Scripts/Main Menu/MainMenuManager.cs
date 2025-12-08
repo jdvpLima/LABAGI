@@ -1,23 +1,32 @@
+using SOHNE.Accessibility.Colorblindness;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class MainMenuManager : MonoBehaviour
 {
+
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject playScenePanel;
 
-    public static bool workshop = false;
+    public VideoPlayer videoPlayer;
+    public VideoClip videoClip;
 
-    [SerializeField] private GameObject video;
+    public static MainMenuManager Instance { get; private set; }
 
-
-    void Update()
+    private void Awake()
     {
-        if(workshop == true)
-            video.SetActive(false);
-        else
-            video.SetActive(true);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     public void Play()
@@ -44,7 +53,6 @@ public class MainMenuManager : MonoBehaviour
     public void Workshop()
     {
         SceneManager.LoadScene("Workshop", LoadSceneMode.Additive);
-        workshop = true;
     }
 
     public void Shop()

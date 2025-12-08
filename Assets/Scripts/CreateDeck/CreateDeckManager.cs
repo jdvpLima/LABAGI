@@ -17,6 +17,8 @@ public class CreateDeckManager : MonoBehaviour
 
     public GameObject cardPrefab;
 
+    public GameObject cardPref; 
+
     public Transform cardCollectionView;
 
     public Transform cardOfDeckView;
@@ -57,7 +59,9 @@ public class CreateDeckManager : MonoBehaviour
         foreach (CardDto card in collection) {
             for (int i = 0; i < card.quantity; i++)
             {
-                SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
+                //Debug.Log(card.cardId + " " + card.name + " " + card.suit + " " + card.flavorText);
+                //SpawnCard(card.cardId, cardCollectionView, cardOfDeckView);
+                SpawnNewCard(card, cardCollectionView, cardOfDeckView);
             }
 
         }
@@ -124,6 +128,14 @@ public class CreateDeckManager : MonoBehaviour
         card.GetComponent<CardView>().Initialize(id,parentUI,secondParentUI);
     }
 
+    void SpawnNewCard(CardDto cardDto, Transform parentUI, Transform secondParentUI)
+    {
+        Card card = Card.FromDto(cardDto);
+        GameObject cardObj = Instantiate(cardPref, parentUI);
+        cardObj.GetComponent<CardView>().Init(card, parentUI, secondParentUI);
+        //action.Init(card, parentUI, secondParentUI);
+    }
+
     public void CreateDeck()
     {
         List<DeckCards> cards = GetItems();
@@ -142,6 +154,7 @@ public class CreateDeckManager : MonoBehaviour
         // percorre todas as children
         foreach (Transform child in cardOfDeckView)
         {
+
             var item = child.GetComponent<CardView>(); // script com id
 
             if (item == null)
@@ -182,7 +195,8 @@ public class CreateDeckManager : MonoBehaviour
         foreach (Transform child in cardCollectionView)
         {
             // tenta obter o componente Button
-            Button btn = child.GetComponent<Button>();
+            Button btn = child.GetComponentInChildren<Button>();
+
 
             if (btn != null)
                 btn.interactable = active; // ativa/desativa

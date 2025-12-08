@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 namespace Assets.Scripts.Workshop
 {
@@ -14,7 +17,10 @@ namespace Assets.Scripts.Workshop
         [Header("Panels")]
         [SerializeField] private CardFormUI formPanel;
         [SerializeField] private CardPreviewUI previewPanel;
-        [SerializeField] private WorkshopDraftManager draftPanel; 
+        [SerializeField] private WorkshopDraftManager draftPanel;
+
+        [SerializeField] private VideoClip videoClip;
+
 
         private CardService _cardService;
 
@@ -23,11 +29,12 @@ namespace Assets.Scripts.Workshop
             Debug.Log("[CardWorkshopManager] Awake - scene = " + SceneManager.GetActiveScene().name);
 
             _cardService = new CardService();
+            MainMenuManager.Instance.videoPlayer.clip = videoClip;
         }
 
         private void OnEnable()
         {
-            Debug.Log("[CardWorkshopManager] OnEnable - scene = " + SceneManager.GetActiveScene().name);
+            Debug.Log("[CardWogirkshopManager] OnEnable - scene = " + SceneManager.GetActiveScene().name);
 
             formPanel.OnFormChanged += OnFormChanged;
             formPanel.OnSubmitClicked += HandleSubmitAsync;
@@ -123,7 +130,6 @@ namespace Assets.Scripts.Workshop
 
         public void ReturnToMenu()
         {
-            MainMenuManager.workshop = false;
             SceneManager.UnloadSceneAsync("Workshop");
         }
     }
