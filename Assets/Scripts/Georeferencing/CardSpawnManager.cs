@@ -67,15 +67,12 @@ public class CardSpawnManager : MonoBehaviour
             arcGISMap = FindFirstObjectByType<ArcGISMapComponent>();
         }
 
-        if (arcGISMap != null)
-        {
-            // Subscribe to location updates if available
-            //playerLocation.OnLocationUpdated += OnLocationUpdated;
-        }
+        StartCoroutine(WaitForMapReady());
 
         loadingInformation.SetActive(true);
-
         UpdateNearbySpawns();
+
+
     }
 
     private void Update()
@@ -98,6 +95,24 @@ public class CardSpawnManager : MonoBehaviour
         currentLongitude = newLon;
         UpdateNearbySpawns();
     }
+
+    public bool IsMapReady()
+    {
+        if (arcGISMap == null || arcGISMap.Map == null)
+            return false;
+
+        return arcGISMap.Map.LoadStatus == Esri.GameEngine.ArcGISLoadStatus.Loaded;
+    }
+
+    private IEnumerator WaitForMapReady()
+    {
+        while (!IsMapReady())
+            yield return null;
+
+        Debug.Log("ArcGIS Map is ready!");
+    }
+
+
 
     private void UpdateNearbySpawns()
     {

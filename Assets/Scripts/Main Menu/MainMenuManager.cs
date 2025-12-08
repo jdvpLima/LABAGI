@@ -13,6 +13,10 @@ public class MainMenuManager : MonoBehaviour
     public VideoPlayer videoPlayer;
     public VideoClip videoClip;
 
+    public Camera camera;
+
+    public bool mainMenuAudioListener;
+
     public static MainMenuManager Instance { get; private set; }
 
     private void Awake()
@@ -27,6 +31,8 @@ public class MainMenuManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        mainMenuAudioListener = true;
     }
 
     public void Play()
@@ -43,6 +49,13 @@ public class MainMenuManager : MonoBehaviour
     public void Map()
     {
         SceneManager.LoadScene("Georeferencing");
+
+        /*if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Georeferencing");
+        }
+        else
+            SceneManager.LoadScene("Georeferencing", LoadSceneMode.Additive);*/
     }
 
     public void Settings()
@@ -78,6 +91,16 @@ public class MainMenuManager : MonoBehaviour
         playScenePanel.SetActive(false);
         shopPanel.SetActive(true);
 
+    }
+
+    public void OnButtonPressed()
+    {
+        Haptics.Vibrate();
+    }
+
+    public void ToggleAudioListener(bool audioListener)
+    {
+        camera.GetComponent<AudioListener>().gameObject.SetActive(audioListener);
     }
 
     public void Quit()
