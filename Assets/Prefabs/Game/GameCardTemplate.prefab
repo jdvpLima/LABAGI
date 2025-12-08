@@ -94,12 +94,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardViewGame
   titleText: {fileID: 8880953858008880095}
+  suit: {fileID: 5158896146631360310}
+  rarity: {fileID: 8390167583081040029}
+  points: {fileID: 5023888542262333942}
   subText: {fileID: 8761395311863566618}
   flavourText: {fileID: 7390254466242463603}
   actionsText: {fileID: 8722341591871253374}
   button: {fileID: 5479233379356807821}
   videoPlayer: {fileID: 8195319075533195866}
-  suit: {fileID: 5158896146631360310}
   suitRatioFitter: {fileID: 4509097397102675873}
   suitClips:
   - {fileID: 32900000, guid: b571eea40f5e177478d6cb2bcde6fdf3, type: 3}
@@ -107,6 +109,7 @@ MonoBehaviour:
   - {fileID: 32900000, guid: fe79fbcf8fab9f14a81f7c31b162124a, type: 3}
   - {fileID: 32900000, guid: d0e7bf7f5bc31f94a8b81cf5c03b1243, type: 3}
   - {fileID: 32900000, guid: 50193b6688a74b644ae8f75dfae3fb9b, type: 3}
+  suitImage: {fileID: 5873825609326050505}
 --- !u!1 &985122585701442867
 GameObject:
   m_ObjectHideFlags: 0

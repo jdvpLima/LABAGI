@@ -34,6 +34,8 @@ public class CreateDeckManager : MonoBehaviour
 
     private bool deckFull = false;
 
+    public TMP_Dropdown dropdown;
+
 
     private long userID;
     public GameObject SaveWarning;
@@ -124,11 +126,6 @@ public class CreateDeckManager : MonoBehaviour
 
     }
 
-    void SpawnCard(long id, Transform parentUI, Transform secondParentUI)
-    {
-        GameObject card = Instantiate(cardPrefab, parentUI);
-        card.GetComponent<CardView>().Initialize(id,parentUI,secondParentUI);
-    }
 
     void SpawnNewCard(CardDto cardDto, Transform parentUI, Transform secondParentUI)
     {
@@ -207,6 +204,38 @@ public class CreateDeckManager : MonoBehaviour
             if (btn != null)
                 btn.interactable = active; // ativa/desativa
         }
+    }
+
+
+    public void OnFilter()
+    {
+        int indice = dropdown.value;
+        string name = dropdown.options[indice].text;
+        Debug.Log(name);
+
+        foreach (Transform child in cardCollectionView)
+        {
+            // tenta obter o componente Button
+            CardView script = child.GetComponentInChildren<CardView>();
+
+            if (name.Equals(dropdown.options[0].text))
+            {
+                child.gameObject.SetActive(true);
+            }
+            else { 
+                if (script.card.Suit.Equals(name))
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
+            
+            }
+        }
+
+
     }
 
     private DecksDto defaultDeck()
