@@ -1,23 +1,27 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class ARManipulateUI : MonoBehaviour
 {
-    public ARPlaceUI placeUI;
-    public Transform scaleHandle;
+    //public ARPlaceUI placeUI;
+
+    public GameObject scene;
+
+    public ScaleHandle scaleHandle;
     public DragHandle dragHandle;
 
-    private bool isScalingWithHandle = false;
 
     private Quaternion baseRotation;     // rotação paralela à parede
     private float tiltAmount = 0.5f;    // intensidade do “virar” (0.0 a 1.0)
     private float tiltSpeed = 10f;        // suavidade da inclinação
 
-    public ARSceneLoader loader; 
 
     [Header("Scale")]
     public float scaleSpeed = 0.0005f;
-    public float minScale = 0.1f;
+    public float minScale = 0.0005f;
     public float maxScale = 3f;
 
     private Vector3 initialScale;
@@ -25,34 +29,32 @@ public class ARManipulateUI : MonoBehaviour
 
 
 
-    private void Awake()
+    private void OnEnable()
     {
+        EnhancedTouchSupport.Enable();
+    }
 
-        if (loader == null)
-        {
-            loader = FindFirstObjectByType<ARSceneLoader>();
-        }
-        if (placeUI == null)
-        {
-            placeUI = FindFirstObjectByType<ARPlaceUI>();
-        }
-        else
-        {
-            baseRotation = placeUI.spawnedUI.transform.rotation;
-        }
-
+    private void OnDisable()
+    {
+        EnhancedTouchSupport.Disable();
     }
 
     void Update()
     {
-        Debug.Log("Update em ARManipulateUI");
+        //Debug.Log("Update em ARManipulateUI");
 
-        if (placeUI.spawnedUI == null)
+
+        if (scene != null)
         {
-            Debug.Log("spawnedUI é nulo, retornando");
+            scaleHandle = scene.GetComponentInChildren<ScaleHandle>();
+            dragHandle = scene.GetComponentInChildren<DragHandle>();
+            baseRotation = scene.transform.rotation;
+
+        }
+        else {
+            
             return;
         }
-        else { Debug.Log("não é nullo"); }
 
 #if UNITY_EDITOR || UNITY_STANDALONE
             HandleMouseDrag();
@@ -68,59 +70,76 @@ public class ARManipulateUI : MonoBehaviour
 
     void HandleTouchDrag()
     {
-        if (Input.touchCount == 2)
+        if (scene == null) return;
+
+        // 1. Só permite se a handle (barra inferior) estiver a ser arrastada
+        if (dragHandle == null || !dragHandle.IsDragging) return;
+
+        // 2. Verifica se há pelo menos um toque
+        if (Touch.activeTouches.Count == 0) return;
+
+        var touch = Touch.activeTouches[0];
+
+        // 3. Verifica UI (Mantendo a mesma lógica do rato)
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.touchId))
+            return;
+
+        // 4. Raycast e Movimento (igual ao HandleMouseDrag)
+        Ray ray = Camera.main.ScreenPointToRay(touch.screenPosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Touch t0 = Input.GetTouch(0);
-            Touch t1 = Input.GetTouch(1);
+            Vector3 targetPos = hit.point;
 
-            Vector2 mid = (t0.position + t1.position) / 2;
-
-            if (EventSystem.current != null &&
-               (EventSystem.current.IsPointerOverGameObject(t0.fingerId) ||
-                EventSystem.current.IsPointerOverGameObject(t1.fingerId))) return;
-
-            Ray ray = Camera.main.ScreenPointToRay(mid);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                placeUI.spawnedUI.transform.position = hit.point;
-            }
+            // Movimento suavizado (Lerp)
+            float smoothSpeed = 10f;
+            scene.transform.position =
+                Vector3.Lerp(
+                    scene.transform.position,
+                    targetPos,
+                    Time.deltaTime * smoothSpeed
+                );
         }
+
+        // 5. Aplica a inclinação suave
+        ApplyTiltTowardsCamera();
     }
 
     void HandlePinchScale()
     {
-        if (Input.touchCount == 2)
+        if (Touch.activeTouches.Count == 2)
         {
-            Touch t0 = Input.GetTouch(0);
-            Touch t1 = Input.GetTouch(1);
+            var t0 = Touch.activeTouches[0];
+            var t1 = Touch.activeTouches[1];
 
+            // delta substitui deltaPosition
             float prevDist =
-                (t0.position - t0.deltaPosition - (t1.position - t1.deltaPosition)).magnitude;
+                (t0.screenPosition - t0.delta - (t1.screenPosition - t1.delta)).magnitude;
             float currDist =
-                (t0.position - t1.position).magnitude;
+                (t0.screenPosition - t1.screenPosition).magnitude;
 
             float diff = currDist - prevDist;
 
-            placeUI.spawnedUI.transform.localScale += Vector3.one * diff * 0.001f;
+            scene.transform.localScale += Vector3.one * diff * 0.001f;
         }
     }
 
     void HandleHandleScale()
     {
-        if (isScalingWithHandle && Input.touchCount > 0)
+        if (scaleHandle.isScalingWithHandle && Touch.activeTouches.Count > 0)
         {
-            Touch t = Input.GetTouch(0);
-            Ray ray = Camera.main.ScreenPointToRay(t.position);
+            var t = Touch.activeTouches[0];
+            Ray ray = Camera.main.ScreenPointToRay(t.screenPosition);
 
             Plane plane = new Plane(
-                -placeUI.spawnedUI.transform.forward,
-                placeUI.spawnedUI.transform.position);
+                -scene.transform.forward,
+                scene.transform.position);
 
             if (plane.Raycast(ray, out float enter))
             {
                 Vector3 hitPoint = ray.GetPoint(enter);
-                float dist = Vector3.Distance(placeUI.spawnedUI.transform.position, hitPoint);
-                placeUI.spawnedUI.transform.localScale = Vector3.one * dist;
+                float dist = Vector3.Distance(scene.transform.position, hitPoint);
+                scene.transform.localScale = Vector3.one * dist;
             }
         }
     }
@@ -129,55 +148,11 @@ public class ARManipulateUI : MonoBehaviour
 
     void HandleMouseDrag()
     {
-        /*
-        if (Input.GetMouseButton(0))
-        {
-            if (EventSystem.current != null &&
-                EventSystem.current.IsPointerOverGameObject())
-                return;
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                placeUI.spawnedUI.transform.position = hit.point;
-            }
-        }*/
-
-        // Só permite movimento quando ALT + botão esquerdo estiverem pressionados
-        /*
-        if (!(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
+       
+        if (scene == null)
             return;
 
-        if (!Input.GetMouseButton(0))
-            return;
-
-        if (placeUI.spawnedUI == null)
-            return;
-
-        // Não arrastar se estiver clicando em UI (botões, etc.)
-        if (EventSystem.current != null &&
-            EventSystem.current.IsPointerOverGameObject())
-            return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            // Posição alvo
-            Vector3 targetPos = hit.point;
-
-            // Movimento suavizado
-            float smoothSpeed = 10f;
-            placeUI.spawnedUI.transform.position =
-                Vector3.Lerp(
-                    placeUI.spawnedUI.transform.position,
-                    targetPos,
-                    Time.deltaTime * smoothSpeed
-                );
-        }*/
-
-        if (placeUI.spawnedUI == null)
-            return;
+        if (Mouse.current == null) return;
 
         // Só arrasta se clicou na barra inferior
         if (dragHandle == null || !dragHandle.IsDragging)
@@ -188,10 +163,11 @@ public class ARManipulateUI : MonoBehaviour
             EventSystem.current.IsPointerOverGameObject())
             return;
 
-        if (!Input.GetMouseButton(0))
+        // Substitui Input.GetMouseButton(0)
+        if (!Mouse.current.leftButton.isPressed)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -199,9 +175,9 @@ public class ARManipulateUI : MonoBehaviour
 
             // Movimento mais suave
             float smoothSpeed = 10f;
-            placeUI.spawnedUI.transform.position =
+            scene.transform.position =
                 Vector3.Lerp(
-                    placeUI.spawnedUI.transform.position,
+                    scene.transform.position,
                     targetPos,
                     Time.deltaTime * smoothSpeed
                 );
@@ -212,42 +188,41 @@ public class ARManipulateUI : MonoBehaviour
     
     void HandleMouseScale()
     {
-        float scroll = Input.mouseScrollDelta.y;
-        Debug.Log("Scroll: " + scroll);
+        if (Mouse.current == null) return;
+
+        float scroll = Mouse.current.scroll.ReadValue().y;
+        // Debug.Log("Scroll: " + scroll);
 
         if (Mathf.Abs(scroll) > 0.01f)
         {
-            placeUI.spawnedUI.transform.localScale += Vector3.one * scroll * 0.0005f;
+
+            float currentScale = scene.transform.localScale.x;
+
+
+            float nextScale = currentScale + (scroll * scaleSpeed);
+
+            
+            if (nextScale < 0.0020)
+            {
+                scene.transform.localScale = Vector3.one * 0.0020f;
+
+            } else
+            if (nextScale > 0.004)
+            {
+                scene.transform.localScale = Vector3.one * 0.004f;
+
+            }
+            else
+            {
+                //nextScale = Mathf.Clamp(nextScale, minScale, maxScale);
+                scene.transform.localScale = Vector3.one * nextScale;
+            }  
         }
     }
 
-
-
-
-    /* ------------------ SETA / HANDLE ------------------ */
-
-    public void StartHandleScale()
-    {
-        Debug.Log("Iniciando escala com handle");
-        isScalingWithHandle = true;
-    }
-
-    public void EndHandleScale()
-    {
-        Debug.Log("Terminando escala com handle");
-        isScalingWithHandle = false;
-    }
-
-    public void Button()
-    {
-        Debug.Log("Botão pressionado na UI AR");
-        loader.LoadSceneAtPosition("MainMenu", placeUI.spawnedUI.transform.position, placeUI.spawnedUI.transform.rotation);
-    }
-
-
     void ApplyTiltTowardsCamera()
     {
-        Transform ui = placeUI.spawnedUI.transform;
+        Transform ui = scene.transform;
         Transform cam = Camera.main.transform;
 
         // direção da UI para a câmara

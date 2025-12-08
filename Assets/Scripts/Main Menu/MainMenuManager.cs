@@ -31,7 +31,12 @@ public class MainMenuManager : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene("PreGame");
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("PreGame");
+        }
+        else
+            SceneManager.LoadScene("PreGame");
         //SceneManager.LoadScene("Game");
     }
 
@@ -42,17 +47,30 @@ public class MainMenuManager : MonoBehaviour
 
     public void Settings()
     {
-        SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active) {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Settings");
+        } else
+            SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
     }
 
     public void Rules()
     {
-        SceneManager.LoadScene("Rules", LoadSceneMode.Additive);
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Rules");
+        }
+        else
+            SceneManager.LoadScene("Rules", LoadSceneMode.Additive);
     }
 
     public void Workshop()
     {
-        SceneManager.LoadScene("Workshop", LoadSceneMode.Additive);
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Workshop");
+        }
+        else
+            SceneManager.LoadScene("Workshop", LoadSceneMode.Additive);
     }
 
     public void Shop()
