@@ -36,6 +36,7 @@ public class CreateDeckManager : MonoBehaviour
 
 
     private long userID;
+    public GameObject SaveWarning;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,7 +46,7 @@ public class CreateDeckManager : MonoBehaviour
         //verifyEventSystem();
         totalCardUi.text = totalCards.ToString();
         endPanel.SetActive(false);
-        
+        SaveWarning.SetActive(false);
 
         userID = AuthBootstrapper.CurrentUserId != 0 ? AuthBootstrapper.CurrentUserId : 12 ;
 
@@ -144,6 +145,10 @@ public class CreateDeckManager : MonoBehaviour
         {
             Debug.Log("creating deck with name: " + deckName.text);
             createDeck(deckName.text, GetItems()); // Descomentar quando estiver tudo integrado
+        } else
+        {
+            SaveWarning.SetActive(true);
+            return;
         }
     }
 
@@ -223,6 +228,11 @@ public class CreateDeckManager : MonoBehaviour
                 new DeckCards { cardId = 10, qty = 1 }
             }
         };
+    }
+
+    public void SaveWarningButton()
+    {
+        SaveWarning.SetActive(false);
     }
 
     public void OkButton()
