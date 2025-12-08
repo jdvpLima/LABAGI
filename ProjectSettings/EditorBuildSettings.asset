@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Georeferencing.unity
     guid: cd81c8fecabd7c344898f53634ddbbbe
+  - enabled: 1
+    path: Assets/Scenes/GameResults.unity
+    guid: 74eae619c49dbf94e93efd76bf6daf71
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: f0c96eb138c82484e9093cfc6b56e15b,
       type: 2}

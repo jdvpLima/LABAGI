@@ -201,7 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1735337594}
   m_HandleRect: {fileID: 1735337593}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1378,9 +1378,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1906221301}
-        m_TargetAssemblyTypeName: MenuButtons, Assembly-CSharp
-        m_MethodName: QuitPreGame
+      - m_Target: {fileID: 1906221302}
+        m_TargetAssemblyTypeName: DeckListUI, Assembly-CSharp
+        m_MethodName: OnBackButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2194,7 +2194,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1906221300}
-  - component: {fileID: 1906221301}
   - component: {fileID: 1906221302}
   m_Layer: 0
   m_Name: DeckManager
@@ -2218,18 +2217,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1906221301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1906221296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b1df43ce2588564d8020873865c3987, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuButtons
 --- !u!114 &1906221302
 MonoBehaviour:
   m_ObjectHideFlags: 0

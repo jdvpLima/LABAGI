@@ -5,6 +5,7 @@ using Assets.Scripts.CreateDeck;
 using Assets.Scripts; 
 using Unity.Netcode; // IMPORT NETCODE
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class DeckListUI : MonoBehaviour
 {
@@ -149,5 +150,11 @@ public class DeckListUI : MonoBehaviour
         // Store deck for the next scene
         SelectedDeckHolder.SelectedDeck = selectedDeck;
         return true;
+    }
+
+    public void OnBackButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
+        SceneManager.UnloadSceneAsync("DeckList");
     }
 }

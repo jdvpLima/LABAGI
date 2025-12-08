@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Game\InGame\UIHandRenderer.cs" />
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\ExpansionApiDTO.cs" />
+    <Compile Include="Assets\Scripts\Game\GameResults\GameResultsUI.cs" />
     <Compile Include="Assets\Scripts\Rules\GroupSwitcher.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\CardSpawnManager.cs" />
     <Compile Include="Assets\Scripts\DeckViewer\DeckViewer.cs" />
@@ -89,6 +90,9 @@
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
+    <Compile Include="Assets\Ar\ARModeSwitcher.cs" />
+    <Compile Include="Assets\Ar\XRModeManager.cs" />
+    <Compile Include="Assets\Scripts\Game\GameResults\MatchResultsStorage.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Workshop\WorkshopDraftManager.cs" />
     <Compile Include="Assets\Scripts\Game\PreGame\DeckItemUI.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="Assets\Scripts\Main Menu\DontDestroy.cs" />
     <Compile Include="Assets\Ar\ARManipulateUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
+    <Compile Include="Assets\Ar\SimpleButton.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\MarkerResize.cs" />
     <Compile Include="Assets\Scripts\Workshop\AbilityTextBuilder.cs" />
     <Compile Include="Assets\Scripts\AuthContext.cs" />
@@ -115,6 +120,7 @@
     <Compile Include="Assets\Scripts\Rules\BackToMenu.cs" />
     <Compile Include="Assets\Scripts\Game\InGame\Card.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DeviceStartResponseDTO.cs" />
+    <Compile Include="Assets\Ar\ScaleHandle.cs" />
     <Compile Include="Assets\Ar\DragHandle.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardFormUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
@@ -122,11 +128,13 @@
     <Compile Include="Assets\Ar\ARSceneLoader.cs" />
     <Compile Include="Assets\Scripts\Rules\MenuButtonsRules.cs" />
     <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
+    <Compile Include="Assets\Scripts\Settings\PersistentSettingsManager.cs" />
     <Compile Include="Assets\Scripts\Settings\SettingsManager.cs" />
     <Compile Include="Assets\Scripts\Game\CardViewGame.cs" />
     <Compile Include="Assets\Ar\ARPlaceUI.cs" />
     <Compile Include="Assets\Scripts\Model\Card.cs" />
     <Compile Include="Assets\Scripts\Main Menu\AuthApiClient.cs" />
+    <Compile Include="Assets\Ar\SceneHelper.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MeResponseDTO.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardWorkshopApiClient.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\PortoCardSpawner.cs" />

@@ -41,7 +41,8 @@ public class CreateDeckManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     async void Start()
     {
-        verifyEventSystem();
+        // DONT CALL THIS
+        //verifyEventSystem();
         totalCardUi.text = totalCards.ToString();
         endPanel.SetActive(false);
         
