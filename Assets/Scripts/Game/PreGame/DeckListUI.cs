@@ -6,6 +6,7 @@ using Assets.Scripts;
 using Unity.Netcode; // IMPORT NETCODE
 using TMPro;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.Service;
 
 public class DeckListUI : MonoBehaviour
 {
@@ -18,17 +19,20 @@ public class DeckListUI : MonoBehaviour
     public Button hostBtn;
     public Button joinBtn;
     
-    public Text statusText; // Use standard Text or TextMeshProUGUI based on your setup
+    public Text statusText;
 
     // Runtime
     private DeckService deckService;
     private List<DecksDto> decks;
     private DeckItemUI selectedItemUI;
     private DecksDto selectedDeck;
+    private MmrService mmrService;
+    private long playerMMR;
 
     private void Awake()
     {
         deckService = new DeckService();
+        mmrService = new MmrService();
 
         // Hide buttons until a deck is picked
         if (hostBtn != null) hostBtn.gameObject.SetActive(false);
@@ -46,26 +50,27 @@ public class DeckListUI : MonoBehaviour
 
     private async void Start()
 {
-    // 1. Get ID (Fallback to a debug ID if AuthContext is 0 in Editor)
-    long idToUse = AuthContext.UserId;
+    long idToUse = AuthBootstrapper.CurrentUserId;
     if (idToUse == 0) 
     {
         Debug.Log("AuthContext is 0, using Debug ID 1");
-        idToUse = 1; // CHANGE THIS to a valid ID from your database for testing
+        idToUse = 1; 
     }
+        // To be used to DDA
+        playerMMR = await mmrService.GetPlayerMMRAsync(idToUse); 
+        Debug.Log("Player MMR is: " + playerMMR);
 
-    // 2. Call the CORRECT method name (GetDecksAsync)
-    decks = await deckService.GetDecksAsync(idToUse); 
+        decks = await deckService.GetDecksAsync(idToUse);
 
-    // 3. Clear old list
-    foreach (Transform child in content)
-    {
-        if (child.gameObject != deckItemTemplate)
-            Destroy(child.gameObject);
-    }
+        // Clear old list
+        foreach (Transform child in content)
+        {
+            if (child.gameObject != deckItemTemplate)
+                Destroy(child.gameObject);
+        }
 
-    // 4. Populate List
-    if (decks == null || decks.Count == 0)
+        // Populate List
+        if (decks == null || decks.Count == 0)
     {
         if (statusText != null) statusText.text = "No decks found.";
         Debug.LogWarning("Deck list is empty or null.");
@@ -103,15 +108,14 @@ public class DeckListUI : MonoBehaviour
     {
         if (!ConfirmSelection()) return;
 
-        // 1. Start the Host (Server + Player)
+        // Start the Host (Server + Player)
         bool started = NetworkManager.Singleton.StartHost();
         
         if (started)
         {
             Debug.Log("Host Started! Loading Game Scene...");
-            // 2. Load Scene using NetworkSceneManager
-            // This tells all connected clients to switch scenes automatically
-            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            // Load Scene using NetworkSceneManager
+            NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         }
         else
         {
@@ -123,9 +127,9 @@ public class DeckListUI : MonoBehaviour
     {
         if (!ConfirmSelection()) return;
 
-        // 1. Start Client
+        // Start Client
         // Note: For localhost, this connects to 127.0.0.1 immediately.
-        // For real online play, you'd need an InputField to type the Host's IP.
+
         bool started = NetworkManager.Singleton.StartClient();
         
         if (started)
@@ -155,6 +159,5 @@ public class DeckListUI : MonoBehaviour
     public void OnBackButtonClicked()
     {
         SceneManager.LoadScene("MainMenu");
-        SceneManager.UnloadSceneAsync("DeckList");
     }
 }

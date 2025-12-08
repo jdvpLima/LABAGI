@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\Workshop\AbilityJsonBuilder.cs" />
     <Compile Include="Assets\Scripts\Georeferencing\GPSLocationService.cs" />
     <Compile Include="Assets\Scripts\Workshop\CardPreviewUI.cs" />
+    <Compile Include="Assets\Scripts\Service\MMR\MmrDTO.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcItemUI.cs" />
     <Compile Include="Assets\Ar\ARModeSwitcher.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Assets\Scripts\Main Menu\registerUIManager.cs" />
     <Compile Include="Assets\Native GPS Plugin (iOSAndroid)\Scripts\NativeGPSUI.cs" />
     <Compile Include="Assets\Ar\ARSceneLoader.cs" />
+    <Compile Include="Assets\Scripts\Service\MMR\MmrService.cs" />
     <Compile Include="Assets\Scripts\Rules\MenuButtonsRules.cs" />
     <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
     <Compile Include="Assets\Scripts\Settings\PersistentSettingsManager.cs" />
@@ -688,6 +690,14 @@
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Types">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Gradle">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">
