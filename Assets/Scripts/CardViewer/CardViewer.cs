@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;                        // <- dėl ToDictionary
 using UnityEngine;
 using UnityEngine.UI;
-using Assets.Scripts.CreateDeck;
-using Assets.Scripts; // dėl AuthBootstrapper, SelectedDeckHolder
-using Assets.Scripts.Service;
 using UnityEngine.SceneManagement;
 
+using Assets.Scripts.CreateDeck;
+using Assets.Scripts;                    // AuthBootstrapper, SelectedDeckHolder
+using Assets.Scripts.Service;
+using Assets.Scripts.Model;              // <- dėl CardDto
 
 public class CardViewer : MonoBehaviour
 {
@@ -14,14 +16,28 @@ public class CardViewer : MonoBehaviour
     public RectTransform fullscreenParent;
 
     private DeckService deckService = new DeckService();
+    private CardService cardService = new CardService();
 
-    [SerializeField] private long targetDeckId = 25; // fallback, jei neateina SelectedDeckHolder
-
-    private long userId;
+    private Dictionary<long, CardDto> cardLookup;
 
     async void Start()
     {
-        // 1) Jei DeckListUI jau nustatė pasirinktą deck'ą, naudok jį tiesiogiai.
+        long userId = AuthBootstrapper.CurrentUserId != 0
+            ? AuthBootstrapper.CurrentUserId
+            : 12;
+
+        // 1) užsikraunam visas žaidėjo kortas
+        var collection = await cardService.GetPlayerCardCollectionAsync(userId);
+
+        if (collection == null)
+        {
+            Debug.LogError("CardViewer: Could not load card collection");
+            return;
+        }
+
+        cardLookup = collection.ToDictionary(c => c.cardId, c => c);
+
+        // 2) naudojam pasirinktą decką
         if (SelectedDeckHolder.SelectedDeck != null)
         {
             var deckFromHolder = SelectedDeckHolder.SelectedDeck;
@@ -30,59 +46,7 @@ public class CardViewer : MonoBehaviour
             return;
         }
 
-        // 2) Jei SelectedDeckHolder tuščias, bandome surasti decką pagal ID ir galimus userId.
-        var possibleUserIds = new List<long>();
-
-        // realus prisijungęs useris, jei yra
-        if (AuthBootstrapper.CurrentUserId != 0)
-        {
-            possibleUserIds.Add(AuthBootstrapper.CurrentUserId);
-        }
-
-        // debug fallback’ai, kurie jau egzistuoja kituose scriptuose
-        if (!possibleUserIds.Contains(12)) possibleUserIds.Add(12); // CreateDeckManager fallback
-        if (!possibleUserIds.Contains(1))  possibleUserIds.Add(1);  // DeckListUI fallback
-
-        DecksDto foundDeck = null;
-        long foundUserId = 0;
-
-        foreach (var uid in possibleUserIds)
-        {
-            Debug.Log($"CardViewer: trying to fetch decks for user {uid}");
-            List<DecksDto> decks = await deckService.GetDecksAsync(uid);
-
-            if (decks == null || decks.Count == 0)
-            {
-                Debug.LogWarning($"CardViewer: user {uid} has NO decks.");
-                continue;
-            }
-
-            foreach (var d in decks)
-            {
-                Debug.Log($"CardViewer: found deck {d.id} ({d.name}) for user {uid}");
-            }
-
-            var deck = decks.Find(d => d.id == targetDeckId);
-            if (deck != null)
-            {
-                foundDeck = deck;
-                foundUserId = uid;
-                break;
-            }
-        }
-
-        if (foundDeck == null)
-        {
-            Debug.LogWarning(
-                $"CardViewer: deck {targetDeckId} NOT FOUND for any of userIds: " +
-                string.Join(", ", possibleUserIds)
-            );
-            return;
-        }
-
-        userId = foundUserId;
-        Debug.Log($"CardViewer: LOADING deck {foundDeck.id} ({foundDeck.name}) for user {userId}");
-        LoadDeckFromDto(foundDeck);
+        Debug.LogError("CardViewer: No deck found in SelectedDeckHolder.");
     }
 
     private void LoadDeckFromDto(DecksDto deck)
@@ -93,23 +57,22 @@ public class CardViewer : MonoBehaviour
             return;
         }
 
-        // Tik pasirinkto deck'o kortos
-        foreach (DeckCards card in deck.cards)
+        foreach (DeckCards deckCard in deck.cards)
         {
-            for (int i = 0; i < card.qty; i++)
+            if (!cardLookup.TryGetValue(deckCard.cardId, out CardDto dto))
             {
-                SpawnCard(card.cardId, cardCollectionView);
+                Debug.LogWarning($"CardViewer: card {deckCard.cardId} not found in player collection.");
+                continue;
+            }
+
+            for (int i = 0; i < deckCard.qty; i++)
+            {
+                SpawnCard(dto, cardCollectionView);
             }
         }
     }
 
-    public void BackButton()
-    {
-        Debug.Log("BACK2BACK2BACK");
-        SceneManager.LoadScene("PreGame");
-    }
-
-    void SpawnCard(long id, Transform parentUI)
+    void SpawnCard(CardDto dto, Transform parentUI)
     {
         if (cardPrefab == null)
         {
@@ -119,10 +82,13 @@ public class CardViewer : MonoBehaviour
 
         GameObject card = Instantiate(cardPrefab, parentUI);
 
+        // tas pats pattern kaip CreateDeckManager
+        Card data = Card.FromDto(dto);
+
         var view = card.GetComponent<CardView>();
         if (view != null)
         {
-            view.Initialize(id, parentUI, null);
+            view.Init(data, parentUI, null);   // naudok tą patį metodą kaip ten (Init, ne Initialize, jei toks pas tave)
         }
 
         var fs = card.GetComponent<CardFullscreenToggle>();
@@ -138,5 +104,10 @@ public class CardViewer : MonoBehaviour
             btn.interactable = true;
             btn.onClick.AddListener(fs.ToggleFullscreen);
         }
+    }
+
+    public void BackButton()
+    {
+        SceneManager.LoadScene("PreGame");
     }
 }
