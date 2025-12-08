@@ -125,6 +125,7 @@ public class GPSLocationService : MonoBehaviour
             }
         }
 #endif
+ yield break;
     }
 
 
