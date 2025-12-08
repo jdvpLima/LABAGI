@@ -54,6 +54,9 @@ public class CardSpawnManager : MonoBehaviour
 
     public Dictionary<int, GameObject> activeSpawns = new Dictionary<int, GameObject>();
     public ArcGISMapComponent arcGISMap; // Reference to ArcGIS component
+    //public GPSLocationService playerLocation;
+
+    private bool isLoadingSpawns = false;
 
     [SerializeField] private GameObject loadingInformation;
 
@@ -67,12 +70,17 @@ public class CardSpawnManager : MonoBehaviour
         if (arcGISMap != null)
         {
             // Subscribe to location updates if available
-            // arcGISMap.OnLocationUpdated += OnLocationUpdated;
+            //playerLocation.OnLocationUpdated += OnLocationUpdated;
         }
 
         loadingInformation.SetActive(true);
 
         UpdateNearbySpawns();
+    }
+
+    private void Update()
+    {
+        loadingInformation.SetActive(isLoadingSpawns);
     }
 
     void OnDestroy()
@@ -91,26 +99,18 @@ public class CardSpawnManager : MonoBehaviour
         UpdateNearbySpawns();
     }
 
-    private IEnumerator UpdateNearbySpawns()
+    private void UpdateNearbySpawns()
     {
-        yield return StartCoroutine(FetchNearbySpawns());
-        ToggleLoading();
-    }
-
-    private void ToggleLoading()
-    {
-        if (loadingInformation.activeInHierarchy)
-        {
-            loadingInformation.SetActive(false);
-        }
+        Debug.Log("Updating nearbyt spawns...");
+        StartCoroutine(FetchNearbySpawns());
     }
 
     private IEnumerator FetchNearbySpawns()
     {
         //yield return new WaitForSeconds(30);
-        string url = $"{apiBaseUrl}/spawns/nearby?lat=41.1495&lon=-8.6108&radiusM=50000";
+        string url = $"{apiBaseUrl}/spawns/nearby?lat=41.1495&lon=-8.6108&radiusM=500000";
 
-        
+
         //string url = $"{apiBaseUrl}/spawns/nearby?lat={currentLatitude}&lon={currentLongitude}&radiusM={spawnRadiusMeters}";
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
@@ -186,6 +186,8 @@ public class CardSpawnManager : MonoBehaviour
         // Remove expired spawns
         CleanupExpiredSpawns(spawns);
 
+        isLoadingSpawns = true;
+
         // Create new spawns
         foreach (var spawn in spawns)
         {
@@ -199,6 +201,8 @@ public class CardSpawnManager : MonoBehaviour
                 Debug.Log($"Skipping spawn {spawn.id}, Already exists: {activeSpawns.ContainsKey(spawn.id)}");
             }
         }
+
+        isLoadingSpawns = false;
     }
 
     private void CreateCardInWorld(SpawnData spawn)
@@ -211,8 +215,6 @@ public class CardSpawnManager : MonoBehaviour
 
         // Convert geographic coordinates to Unity world coordinates
         Vector3 worldPosition = ConvertGeoToWorldPosition(spawn.lat, spawn.lon);
-
-        worldPosition.y += 5f;
 
         GameObject cardObject = Instantiate(cardPrefab, worldPosition, cardPrefab.transform.rotation, cardContainer);
 
@@ -238,6 +240,7 @@ public class CardSpawnManager : MonoBehaviour
         // Convert to Unity Vector3 and transform to world space
         Vector3 localPosition = new Vector3(worldPoint.x, (float)worldPoint.y, (float)worldPoint.z);
         Vector3 worldPosition = arcGISMap.transform.TransformPoint(localPosition);
+        worldPosition.y += 5f;
 
         Debug.Log($"Unity World Position: {worldPosition}");
         return worldPosition;
