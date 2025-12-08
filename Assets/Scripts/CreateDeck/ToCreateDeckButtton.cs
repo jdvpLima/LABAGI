@@ -18,6 +18,12 @@ public class ToCreateDeckButtton : MonoBehaviour
 
     private void GoToCreateDeck()
     {
-        SceneManager.LoadScene("DeckCreation",LoadSceneMode.Additive);
+        if (ARModeSwitcher.ar_active) {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("DeckCreation");
+        }
+        else
+        {
+            SceneManager.LoadScene("DeckCreation", LoadSceneMode.Additive);
+        }
     }
 }

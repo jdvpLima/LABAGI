@@ -1,21 +1,29 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.ARFoundation;
 
 public class ARSceneLoader : MonoBehaviour
 {
     [Header("Configuração AR")]
-    private Transform arCanvasParent; // Canvas ou empty object AR
+    //private Transform arCanvasParent; // Canvas ou empty object AR
     public Camera arCamera;          // Câmera AR do XR Origin
-    public float worldScale = 0.005f; // Escala para reduzir o Canvas
+    public float worldScale = 0.0025f; // Escala para reduzir o Canvas
+
+
+    public ARManipulateUI manipulateUI;
 
     private GameObject sceneBefore;
 
     private GameObject pref;
 
-    private GameObject dragBarPref;
+    public GameObject dragBarPref;
+    public GameObject scalePref;
 
     void Update()
     {
+        if (sceneBefore != null && manipulateUI.scene == null)
+            manipulateUI.scene = sceneBefore;
+
         if (pref == null)
         {
             pref = GameObject.FindWithTag("CanvaPref");
@@ -36,21 +44,13 @@ public class ARSceneLoader : MonoBehaviour
             else
             {
                 pref.SetActive(true);
-                if(FindFirstObjectByType<ARPlaceUI>().spawnedUI != pref)
+                if(FindFirstObjectByType<ARManipulateUI>().scene != pref)
                 {
-                   FindFirstObjectByType<ARPlaceUI>().spawnedUI = pref;
-                    Debug.Log("Atualizou spawnedUI no ARPlaceUI");
+                    FindFirstObjectByType<ARManipulateUI>().scene = pref;
+                    Debug.Log("Atualizou Scene no ARManipulate");
                 }
             }
         }
-
-        if(dragBarPref == null && pref != null)
-        {
-            dragBarPref = pref.transform.Find("dragger").gameObject;
-        }
-
-
-
     }
 
     /// <summary>
@@ -59,73 +59,65 @@ public class ARSceneLoader : MonoBehaviour
     /// <param name="sceneName">Nome da cena a carregar</param>
     /// <param name="spawnPosition">Posição do prefab clicado</param>
     /// <param name="spawnRotation">Rotação do prefab clicado</param>
-    public void LoadSceneAtPosition(string sceneName, Vector3 spawnPosition, Quaternion spawnRotation)
+    public void LoadSceneAtPosition(string sceneName)
     {
-        arCanvasParent = GameObject.FindWithTag("CanvaPref").transform;
-        Debug.Log("Parent " + arCanvasParent);
-
-
+        sceneBefore = manipulateUI.scene;
         SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive).completed += (op) =>
         {
             Scene loadedScene = SceneManager.GetSceneByName(sceneName);
             Debug.Log("Cena carregada: " + loadedScene.name);
-
-            foreach (GameObject rootObj in loadedScene.GetRootGameObjects())
-            {
-                Canvas[] canvases = rootObj.GetComponentsInChildren<Canvas>(true);
-                foreach (Canvas canvas in canvases)
-                {
-#if UNITY_EDITOR
-                    if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(canvas)) continue;
-#endif
-                    // Converte para World Space
-                    canvas.renderMode = RenderMode.WorldSpace;
-                    canvas.worldCamera = arCamera;
-
-                    // Faz filho do empty object AR
-                    //canvas.transform.SetParent(arCanvasParent, true);
-
-                    // Define posição/rotação exata do prefab
-                    canvas.transform.position = spawnPosition;
-                    canvas.transform.rotation = spawnRotation;
-
-                    // Ajusta escala para AR
-                    canvas.transform.localScale = Vector3.one * worldScale;
-
-                    // Rotaciona levemente para o usuário
-                    canvas.transform.LookAt(arCamera.transform);
-                    canvas.transform.Rotate(0, 180f, 0);
-
-                    // Atualiza scripts de manipulação, se existirem
-                    ARManipulateUI manipulateScript = canvas.GetComponent<ARManipulateUI>();
-
-                    if (manipulateScript == null)
-                    {
-                        manipulateScript = canvas.gameObject.AddComponent<ARManipulateUI>();
-                    }
-
-                    
-                    manipulateScript.placeUI = FindFirstObjectByType<ARPlaceUI>(); ;
-                    manipulateScript.placeUI.spawnedUI = canvas.gameObject;
-                    //manipulateScript.arCamera = arCamera;
-                    AddDragBarBelowCanvas(canvas.gameObject, dragBarPref);
-                    //manipulateScript.dragHandle = canvas.transform.Find("dragger")?.GetComponent<DragHandle>();
-                    manipulateScript.scaleHandle = canvas.transform.Find("scaleBtn")?.transform;
-
-                }
-            }
+            transformIntoAR(loadedScene.GetRootGameObjects());
+            
         };
     }
 
-    /// <summary>
-    /// Descarrega uma cena additiva
-    /// </summary>
-    /// <param name="sceneName"></param>
-    public void UnloadScene(string sceneName)
+
+
+    public void transformIntoAR(GameObject[] loadedSceneObjects)
     {
-        if (SceneManager.GetSceneByName(sceneName).isLoaded)
+        Vector3 spawnPosition = manipulateUI.scene.transform.position;
+        Quaternion spawnRotation = manipulateUI.scene.transform.rotation;
+
+        foreach (GameObject rootObj in loadedSceneObjects)
         {
-            SceneManager.UnloadSceneAsync(sceneName);
+            turnToAR(rootObj, spawnPosition, spawnRotation);
+        }
+    }
+
+    public void turnToAR(GameObject rootObj, Vector3 spawnPosition, Quaternion spawnRotation)
+    {
+        Canvas[] canvases = rootObj.GetComponentsInChildren<Canvas>(true);
+        foreach (Canvas canvas in canvases)
+        {
+#if UNITY_EDITOR
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(canvas)) continue;
+#endif
+
+            if (canvas.sortingOrder > 32700) continue;
+            // Converte para World Space
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = arCamera;
+
+
+            // Define posição/rotação exata do prefab
+            canvas.transform.position = spawnPosition;
+            canvas.transform.rotation = spawnRotation;
+
+            // Ajusta escala para AR
+            canvas.transform.localScale = Vector3.one * worldScale;
+
+            // Rotaciona levemente para o usuário
+            canvas.transform.LookAt(arCamera.transform);
+            canvas.transform.Rotate(0, 180f, 0);
+
+
+            manipulateUI.scene = canvas.gameObject;
+
+
+            AddDragBarBelowCanvas(canvas.gameObject, dragBarPref);
+            //manipulateScript.dragHandle = canvas.transform.Find("dragger")?.GetComponent<DragHandle>();
+            //manipulateScript.scaleHandle = canvas.transform.Find("scaleBtn")?.transform;
+
         }
     }
 
@@ -160,16 +152,38 @@ public class ARSceneLoader : MonoBehaviour
         GameObject dragBarCopy = Instantiate(dragBarPrefab, newCanvas.transform);
 
         // Posiciona ligeiramente abaixo do Canvas
-        Vector3 dragBarPosition = new Vector3(0, -canvasRect.rect.height / 2 - 20f, 0);
+        Vector3 dragBarPosition = new Vector3(0, -canvasRect.rect.height / 2 - 30f, 0);
         dragBarCopy.transform.localPosition = dragBarPosition;
         dragBarCopy.transform.localRotation = Quaternion.identity;
-        dragBarCopy.transform.localScale = Vector3.one;
+        dragBarCopy.transform.localScale = Vector3.one * 1.5f;
 
+        /*
         // Atualiza ARManipulateUI
         ARManipulateUI manipulateScript = newCanvas.GetComponent<ARManipulateUI>();
         if (manipulateScript != null)
         {
             manipulateScript.dragHandle = dragBarCopy.GetComponent<DragHandle>();
+        }*/
+    }
+
+
+    public void generateFirstAR(GameObject[] loadedSceneObjects)
+    {
+
+    }
+
+
+    /// <summary>
+    /// Descarrega uma cena additiva
+    /// </summary>
+    /// <param name="sceneName"></param>
+    public void UnloadScene(string sceneName)
+    {
+        if (SceneManager.GetSceneByName(sceneName).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(sceneName);
         }
     }
+
+
 }

@@ -2,10 +2,13 @@ using Assets.Scripts.Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
+    
+
     [Header("Audio")]
     public AudioMixer audioMixer;
 
@@ -17,136 +20,163 @@ public class SettingsManager : MonoBehaviour
     public Toggle enableHaptics;
     public Button backButton;
 
-    [Header("Accessibility")]
-    public TMP_Dropdown colorblindModeDropdown;
-
     public float musicVolume = 1.0f;
     public float sfxVolume = 1.0f;
     public bool lowSensoryModeEnabled = false;
     public bool hapticsEnabled = true;
     public int colorblindMode = 0;
 
-    private const string MUSIC_VOL_KEY = "MusicVolume";
-    private const string SFX_VOL_KEY = "SfxVolume";
-    private const string LOW_SENSORY_MODE_KEY = "LowSensoryModeEnabled";
-    private const string ENABLE_HAPTCIS_KEY = "HapticsEnabled";
+    private float old_musicVolume = 1.0f;
+    private float old_sfxVolume = 1.0f;
+    private bool old_lowSensoryModeEnabled = false;
+    private bool old_hapticsEnabled = true;
+    private int old_colorblindMode = 0;
+
+    private PersistentSettingsManager persistentSettings;
+
+    [Header("Accessibility")]
+    public TMP_Dropdown colorblindModeDropdown;
+
     private const string COLORBLIND_MODE_KEY = "Accessibility.ColorblindType";
-
-    private const string MUSIC_VOL_MIXER_VARIABLE = "MusicVolume";
-    private const string SFX_VOL_MIXER_VARIABLE = "SfxVolume";
-
-    //public static SettingsManager Instance;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        LoadSettings();
-        /*
+        // Find PersistentSettingsManager and attach corresponding listeners to sliders/toggles/dropdown
+        persistentSettings = PersistentSettingsManager.Instance;
 
-         if (Instance != null && Instance != this)
-         {
-             Destroy(gameObject);
-             return;
-         }
+        if (persistentSettings == null)
+        {
+            Debug.LogError("PersistentSettingsManager instance not found in the scene.");
+            return;
+        }
 
-         // Registrar esta instância
-         Instance = this;
-
-         // Fazer persistir entre cenas
-         DontDestroyOnLoad(gameObject);*/
+        LoadSettings(persistentSettings);
         musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
         sfxVolumeSlider.onValueChanged.AddListener(SetSfxVolume);
+        lowSensoryMode.onValueChanged.AddListener(SetLowSensoryMode);
+        enableHaptics.onValueChanged.AddListener(SetHaptics);
+        if (colorblindModeDropdown != null)
+        {
+            colorblindModeDropdown.onValueChanged.AddListener(SetColorblindMode);
+        }
     }
 
     public void OnBackButtonPressed()
     {
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Settings");
+        // Only restore previous settings
+        // Unloading the scene is handled by QuitScene script
+        if (this.persistentSettings == null)
+        {
+            Debug.LogError("PersistentSettingsManager instance not found in the scene.");
+            return;
+        }
+        RestorePreviousSettings(this.persistentSettings);
+    }
+
+    private void RestorePreviousSettings(PersistentSettingsManager persistentSettings)
+    {
+        musicVolume = old_musicVolume;
+        sfxVolume = old_sfxVolume;
+        lowSensoryModeEnabled = old_lowSensoryModeEnabled;
+        hapticsEnabled = old_hapticsEnabled;
+        colorblindMode = old_colorblindMode;
+        SaveSettingsToPersistent(persistentSettings);
+    }
+
+    private void SaveSettingsToPersistent(PersistentSettingsManager persistentSettings)
+    {
+        persistentSettings.SetMusicVolume(musicVolume);
+        persistentSettings.SetSfxVolume(sfxVolume);
+        persistentSettings.SetLowSensoryMode(lowSensoryModeEnabled);
+        persistentSettings.SetHaptics(hapticsEnabled);
+        persistentSettings.SetColorblindMode(colorblindMode);
+        PlayerPrefs.Save();
+
     }
 
     public void OnSaveButtonPressed()
     {
-        SetMusicVolume(musicVolumeSlider.value);
-        SetSfxVolume(sfxVolumeSlider.value);
-        SetLowSensoryMode(lowSensoryMode.isOn);
-        SetHaptics(enableHaptics.isOn);
-        SetColorblindMode(colorblindModeDropdown.value);
-
-        PlayerPrefs.Save();
-        OnBackButtonPressed();
+        if (persistentSettings == null)
+        {
+            Debug.LogError("PersistentSettingsManager instance not found in the scene.");
+            return;
+        }
+        
+        SaveSettingsToPersistent(persistentSettings);
+        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Settings");
     }
     public void SetColorblindMode(int modeIndex)
     {
         colorblindMode = modeIndex;
-        PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, modeIndex);
+        this.persistentSettings.SetColorblindMode(modeIndex);
     }
 
     public void SetMusicVolume(float volume)
     {
         this.musicVolume = volume;
-        audioMixer.SetFloat(MUSIC_VOL_MIXER_VARIABLE, Mathf.Log10(volume) * 20f);
-        PlayerPrefs.SetFloat(MUSIC_VOL_KEY, volume);
+        this.persistentSettings.SetMusicVolume(volume);
     }
 
     public void SetSfxVolume(float volume)
     {
         this.sfxVolume = volume;
-        audioMixer.SetFloat(SFX_VOL_MIXER_VARIABLE, Mathf.Log10(volume) * 20f);
-        PlayerPrefs.SetFloat(SFX_VOL_KEY, volume);
+        this.persistentSettings.SetSfxVolume(volume);
     }
 
     public void SetHaptics(bool isEnabled)
     {
         this.hapticsEnabled = isEnabled;
-        PlayerPrefs.SetInt(ENABLE_HAPTCIS_KEY, isEnabled ? 1 : 0);
+        this.persistentSettings.SetHaptics(isEnabled);
     }
 
     public void SetLowSensoryMode(bool isEnabled)
     {
         this.lowSensoryModeEnabled = isEnabled;
-        PlayerPrefs.SetInt(LOW_SENSORY_MODE_KEY, isEnabled ? 1 : 0);
+        this.persistentSettings.SetLowSensoryMode(isEnabled);
     }
 
 
-    private void LoadSettings()
+    private void LoadSettings(PersistentSettingsManager persistentSettings)
     {
         // Load Volume
-        float musicVol = PlayerPrefs.GetFloat(MUSIC_VOL_KEY, 1f);
-        float sfxVol = PlayerPrefs.GetFloat(SFX_VOL_KEY, 1f);
 
-        musicVolumeSlider.value = musicVol;
-        sfxVolumeSlider.value = sfxVol;
+        musicVolumeSlider.value = persistentSettings.musicVolume;
+        sfxVolumeSlider.value = persistentSettings.sfxVolume;
 
         // Load Toggles
-        bool hapticsEnabled = PlayerPrefs.GetInt(ENABLE_HAPTCIS_KEY, 1) == 1;
-        bool lowSensoryModeEnabled = PlayerPrefs.GetInt(LOW_SENSORY_MODE_KEY, 0) == 1;
-        int savedColorblindMode = PlayerPrefs.GetInt(COLORBLIND_MODE_KEY, 0);
-
-        enableHaptics.isOn = hapticsEnabled;
-        lowSensoryMode.isOn = lowSensoryModeEnabled;
+        enableHaptics.isOn = persistentSettings.hapticsEnabled;
+        lowSensoryMode.isOn = persistentSettings.lowSensoryModeEnabled;
 
         if (colorblindModeDropdown != null)
         {
-            colorblindModeDropdown.value = savedColorblindMode;
+            colorblindModeDropdown.value = persistentSettings.colorblindMode;
             colorblindModeDropdown.RefreshShownValue();
         }
 
-        SetMusicVolume(musicVolumeSlider.value);
-        SetSfxVolume(sfxVolumeSlider.value);
-        SetLowSensoryMode(lowSensoryMode.isOn);
-        SetHaptics(enableHaptics.isOn);
+        this.musicVolume = persistentSettings.musicVolume;
+        this.sfxVolume = persistentSettings.sfxVolume;
+        this.lowSensoryModeEnabled = persistentSettings.lowSensoryModeEnabled;
+        this.hapticsEnabled = persistentSettings.hapticsEnabled;
+        this.colorblindMode = persistentSettings.colorblindMode;
 
-        PlayerPrefs.Save();
+        // Store old values to allow restoring on cancel
+        old_musicVolume = this.musicVolume;
+        old_sfxVolume = this.sfxVolume;
+        old_lowSensoryModeEnabled = this.lowSensoryModeEnabled;
+        old_hapticsEnabled = this.hapticsEnabled;
+        old_colorblindMode = this.colorblindMode;
     }
-    public void OnColorblindModeChanged(int index)
-    {
-        // guardar na mesma key que o plugin usa
-        PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, index);
-        PlayerPrefs.Save();
+    //public void OnColorblindModeChanged(int index)
+    //{
+    //    // guardar na mesma key que o plugin usa
+    //    PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, index);
+    //    PlayerPrefs.Save();
 
-        // chamar diretamente o SOHNE.Colorblindness
-        if (SOHNE.Accessibility.Colorblindness.Colorblindness.Instance != null)
-        {
-            SOHNE.Accessibility.Colorblindness.Colorblindness.Instance.Change(index);
-        }
-    }
+    //    // chamar diretamente o SOHNE.Colorblindness
+    //    if (SOHNE.Accessibility.Colorblindness.Colorblindness.Instance != null)
+    //    {
+    //        SOHNE.Accessibility.Colorblindness.Colorblindness.Instance.Change(index);
+    //    }
+    //}
 }
