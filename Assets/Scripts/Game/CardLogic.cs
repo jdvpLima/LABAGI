@@ -16,8 +16,16 @@ public static class CardLogic
 		foreach (string rule in currentCard.Actions)
 		{
 			string[] split = rule.Split('?');
-			string condition = split[0];
-			string result = split[1];
+
+        // 2. SAFETY CHECK: If the format is wrong, skip this rule
+        if (split.Length < 2) 
+        {
+            UnityEngine.Debug.LogWarning($"Skipping malformed card action: '{rule}'. format must be 'Condition?Result'");
+            continue; 
+        }
+
+        string condition = split[0];
+        string result = split[1];
 
 			bool trigger = true;
 

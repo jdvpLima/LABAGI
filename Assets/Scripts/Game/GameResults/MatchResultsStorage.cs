@@ -23,7 +23,7 @@ public static class MatchResultsStorage
 
             if (hScore >= 15 && cScore >= 15) GameOutcome = "Both Player's Won!";
             else if (hScore >= 15) GameOutcome = "You won!";
-            else GameOutcome = "You lost!";
+            else GameOutcome = "A failure is a step closer to victory!";
         }
         else
         {
@@ -36,7 +36,7 @@ public static class MatchResultsStorage
 
             if (hScore >= 15 && cScore >= 15) GameOutcome = "Both Player's Won!";
             else if (cScore >= 15) GameOutcome = "Victory!";
-            else GameOutcome = "Defeat...";
+            else GameOutcome = "A failure is a step closer to victory!";
         }
     }
 }
