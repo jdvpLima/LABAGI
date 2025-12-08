@@ -16,8 +16,9 @@ namespace Assets.Scripts.Main_Menu
         [SerializeField] private AudioMixer audioMixer;
 
         [Header("Sources")]
-        [SerializeField] private AudioSource uiAudioSource;
-        [SerializeField] private AudioSource sfxAudioSource;
+        [SerializeField] private AudioSource sfxSource;   // single SFX source routed to SFX group
+        [SerializeField] private AudioSource musicSource; // routed to MUSIC group
+
 
         [Header("UI Clips")]
         [SerializeField] private AudioClip uiClickClip;
@@ -43,27 +44,27 @@ namespace Assets.Scripts.Main_Menu
 
         public void PlayUiClick()
         {
-            PlayOneShot(uiAudioSource, uiClickClip);
+            PlayOneShot(sfxSource, uiClickClip);
         }
 
         public void PlayUiHover()
         {
-            PlayOneShot(uiAudioSource, uiHoverClip);
+            PlayOneShot(sfxSource, uiHoverClip);
         }
 
         public void PlayUiError()
         {
-            PlayOneShot(uiAudioSource, uiErrorClip);
+            PlayOneShot(sfxSource, uiErrorClip);
         }
 
         public void PlayCardSubmit()
         {
-            PlayOneShot(sfxAudioSource, cardSubmitClip);
+            PlayOneShot(sfxSource, cardSubmitClip);
         }
 
         public void PlayCardRejected()
         {
-            PlayOneShot(sfxAudioSource, cardRejectedClip);
+            PlayOneShot(sfxSource, cardRejectedClip);
         }
 
         private void PlayOneShot(AudioSource source, AudioClip clip)

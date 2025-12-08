@@ -61,28 +61,65 @@ namespace Assets.Scripts.Workshop
         }
         private void UpdateSuitVideo(string suit)
         {
-            if (suitImg.texture != null)
-            {
-                //float w = suitImg.texture.width;
-                //float h = suitImg.texture.height;
-                //suitRatioFitter.aspectRatio = w / h;
-            }
             if (string.IsNullOrWhiteSpace(suit) || _clipBySuit == null)
             {
                 suitVideo.clip = null;
                 return;
             }
 
-            if (_clipBySuit.TryGetValue(suit, out var clip))
+            // tentar com suit e também com ToLower só para garantir
+            if (!_clipBySuit.TryGetValue(suit, out var clip) &&
+                !_clipBySuit.TryGetValue(suit.ToLower(), out clip))
             {
-                suitVideo.clip = clip;
-                suitVideo.isLooping = true; // opcional
-                suitVideo.Play();
+                suitVideo.clip = null;
+                return;
+            }
+
+            suitVideo.clip = clip;
+
+            var settings = PersistentSettingsManager.Instance;
+            bool lowSensory = settings != null && settings.lowSensoryModeEnabled;
+
+            if (lowSensory)
+            {
+                // mostrar só a primeira frame, sem loop
+                suitVideo.playOnAwake = false;
+                suitVideo.isLooping = false;
+
+                // corrutina para preparar e “captar” o primeiro frame
+                StartCoroutine(ShowFirstFrameStatic());
             }
             else
             {
-                suitVideo.clip = null;
+                // modo normal: vídeo em loop
+                suitVideo.isLooping = true;
+                suitVideo.Play();
             }
         }
+
+        private System.Collections.IEnumerator ShowFirstFrameStatic()
+        {
+            if (suitVideo.clip == null)
+                yield break;
+
+            suitVideo.Prepare();
+
+            // espera até o vídeo estar preparado
+            while (!suitVideo.isPrepared)
+                yield return null;
+
+            // toca um pouco para renderizar o primeiro frame
+            suitVideo.Play();
+            yield return null; // 1 frame
+            suitVideo.Pause();
+
+            // opcional: tentar garantir que está no frame 0
+            try
+            {
+                suitVideo.frame = 0;
+            }
+            catch { }
+        }
+
     }
 }

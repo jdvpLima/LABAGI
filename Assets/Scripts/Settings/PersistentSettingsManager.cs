@@ -1,3 +1,4 @@
+﻿using Assets.Scripts.Settings;
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -17,17 +18,20 @@ public class PersistentSettingsManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
     }
 
     [Header("Audio")]
     public AudioMixer audioMixer;
 
+    // Volumes "do utilizador" (0..1) – estes é que ficam em PlayerPrefs
     public float musicVolume = 1.0f;
     public float sfxVolume = 1.0f;
+
     public bool lowSensoryModeEnabled = false;
     public bool hapticsEnabled = true;
     public int colorblindMode = 0;
+
+    public event Action<bool> OnLowSensoryModeChanged;
 
     private const string MUSIC_VOL_KEY = "MusicVolume";
     private const string SFX_VOL_KEY = "SfxVolume";
@@ -38,30 +42,52 @@ public class PersistentSettingsManager : MonoBehaviour
     private const string MUSIC_VOL_MIXER_VARIABLE = "MusicVolume";
     private const string SFX_VOL_MIXER_VARIABLE = "SfxVolume";
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         LoadSettings();
     }
 
     private void LoadSettings()
     {
-        // Load Volume
-        float musicVol = PlayerPrefs.GetFloat(MUSIC_VOL_KEY, 1f);
-        float sfxVol = PlayerPrefs.GetFloat(SFX_VOL_KEY, 1f);
+        // Lê valores de utilizador
+        musicVolume = PlayerPrefs.GetFloat(MUSIC_VOL_KEY, 1f);
+        sfxVolume = PlayerPrefs.GetFloat(SFX_VOL_KEY, 1f);
+        hapticsEnabled = PlayerPrefs.GetInt(ENABLE_HAPTCIS_KEY, 1) == 1;
+        lowSensoryModeEnabled = PlayerPrefs.GetInt(LOW_SENSORY_MODE_KEY, 0) == 1;
+        colorblindMode = PlayerPrefs.GetInt(COLORBLIND_MODE_KEY, 0);
 
-        // Load Toggles
-        bool hapticsEnabled = PlayerPrefs.GetInt(ENABLE_HAPTCIS_KEY, 1) == 1;
-        bool lowSensoryModeEnabled = PlayerPrefs.GetInt(LOW_SENSORY_MODE_KEY, 0) == 1;
-        int savedColorblindMode = PlayerPrefs.GetInt(COLORBLIND_MODE_KEY, 0);
-
-        SetMusicVolume(musicVol);
-        SetSfxVolume(sfxVol);
-        SetLowSensoryMode(lowSensoryModeEnabled);
+        ApplyVolumesToMixer();
         SetHaptics(hapticsEnabled);
-        SetColorblindMode(savedColorblindMode);
+        SetColorblindMode(colorblindMode);
+
+        // Garante que o mute de LowSensory é aplicado por cima
+        ApplyLowSensoryMuteToMixer();
 
         PlayerPrefs.Save();
+    }
+
+    // Helper para converter [0..1] para dB
+    private float VolumeToDb(float volume)
+    {
+        if (volume <= 0.0001f)
+            return -80f; // mute "forte"
+        return Mathf.Log10(volume) * 20f;
+    }
+
+    private void ApplyVolumesToMixer()
+    {
+        // Se lowSensory ativo → mixer usa 0 (mute); se não → usa volumes guardados
+        float effectiveMusic = lowSensoryModeEnabled ? 0f : musicVolume;
+        float effectiveSfx = lowSensoryModeEnabled ? 0f : sfxVolume;
+
+        audioMixer.SetFloat(MUSIC_VOL_MIXER_VARIABLE, VolumeToDb(effectiveMusic));
+        audioMixer.SetFloat(SFX_VOL_MIXER_VARIABLE, VolumeToDb(effectiveSfx));
+    }
+
+    private void ApplyLowSensoryMuteToMixer()
+    {
+        // Reusa mesma lógica
+        ApplyVolumesToMixer();
     }
 
     public void SetColorblindMode(int modeIndex)
@@ -69,7 +95,6 @@ public class PersistentSettingsManager : MonoBehaviour
         colorblindMode = modeIndex;
         PlayerPrefs.SetInt(COLORBLIND_MODE_KEY, modeIndex);
 
-        // chamar diretamente o SOHNE.Colorblindness
         if (SOHNE.Accessibility.Colorblindness.Colorblindness.Instance != null)
         {
             SOHNE.Accessibility.Colorblindness.Colorblindness.Instance.Change(modeIndex);
@@ -78,27 +103,37 @@ public class PersistentSettingsManager : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
-        this.musicVolume = volume;
-        audioMixer.SetFloat(MUSIC_VOL_MIXER_VARIABLE, Mathf.Log10(volume) * 20f);
-        PlayerPrefs.SetFloat(MUSIC_VOL_KEY, volume);
+        musicVolume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(MUSIC_VOL_KEY, musicVolume);
+        ApplyVolumesToMixer();
     }
 
     public void SetSfxVolume(float volume)
     {
-        this.sfxVolume = volume;
-        audioMixer.SetFloat(SFX_VOL_MIXER_VARIABLE, Mathf.Log10(volume) * 20f);
-        PlayerPrefs.SetFloat(SFX_VOL_KEY, volume);
+        sfxVolume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(SFX_VOL_KEY, sfxVolume);
+        ApplyVolumesToMixer();
     }
 
     public void SetHaptics(bool isEnabled)
     {
-        this.hapticsEnabled = isEnabled;
+        hapticsEnabled = isEnabled;
         PlayerPrefs.SetInt(ENABLE_HAPTCIS_KEY, isEnabled ? 1 : 0);
+
+        if (HapticsManager.Instance != null)
+        {
+            HapticsManager.Instance.hapticsEnabled = isEnabled;
+        }
     }
 
     public void SetLowSensoryMode(bool isEnabled)
     {
-        this.lowSensoryModeEnabled = isEnabled;
+        lowSensoryModeEnabled = isEnabled;
         PlayerPrefs.SetInt(LOW_SENSORY_MODE_KEY, isEnabled ? 1 : 0);
+
+        // Atualiza mixer de acordo com o novo estado
+        ApplyVolumesToMixer();
+
+        OnLowSensoryModeChanged?.Invoke(isEnabled);
     }
 }

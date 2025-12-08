@@ -4607,8 +4607,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 528246429}
   m_HandleRect: {fileID: 528246428}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13168,6 +13168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2226966806587349473}
   - component: {fileID: 8195319076098081823}
+  - component: {fileID: 8195319076098081824}
   m_Layer: 0
   m_Name: Video Player Suits
   m_TagString: Untagged
@@ -14443,6 +14444,18 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &8195319076098081824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4044862129162912467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c9b3772c4fe564991a7b45be80900b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Settings.LowSensoryVideoController
 --- !u!222 &8295742334997467090
 CanvasRenderer:
   m_ObjectHideFlags: 0

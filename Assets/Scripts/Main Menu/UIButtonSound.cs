@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Assets.Scripts.Main_Menu
         {
             if (AudioManager.Instance == null) return;
             AudioManager.Instance.PlayUiClick();
+            HapticsManager.Instance?.PlayClickHaptic();
         }
 
         public void PlayHover()
@@ -26,6 +28,8 @@ namespace Assets.Scripts.Main_Menu
         {
             if (AudioManager.Instance == null) return;
             AudioManager.Instance.PlayUiError();
+            HapticsManager.Instance?.PlayClickHaptic();
+
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
