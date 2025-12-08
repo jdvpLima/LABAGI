@@ -1,9 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -31,6 +34,10 @@ public class ARPlaceUI : MonoBehaviour
     private float detectionTimer = 0f;
     private bool isScanning = false;
 
+    public GameObject loadingPanel;
+    public TextMeshProUGUI loadingText;
+
+
     private void OnEnable() { EnhancedTouchSupport.Enable(); }
     private void OnDisable() { EnhancedTouchSupport.Disable(); }
 
@@ -39,6 +46,8 @@ public class ARPlaceUI : MonoBehaviour
     /// </summary>
     public void IniciarProcuraAR()
     {
+        StartCoroutine(RotinaDePontos());
+        loadingPanel.SetActive(true);
         // 1. Procurar o Canvas ativo na cena pela TAG
         currentCanvas = GameObject.FindGameObjectWithTag(canvasTag);
 
@@ -82,7 +91,9 @@ public class ARPlaceUI : MonoBehaviour
 
     void Update()
     {
-        if (!isScanning) return;
+        if (!isScanning) {
+            loadingPanel.SetActive(false);
+                return; }
         if (spawnedUI != null) return;
 
         CheckForWallInFront();
@@ -96,23 +107,26 @@ public class ARPlaceUI : MonoBehaviour
 
         if (raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon))
         {
-            Pose hitPose = hits[0].pose;
-            ARPlane plane = planeManager.GetPlane(hits[0].trackableId);
-
-            if (plane != null &&
-                plane.alignment == PlaneAlignment.Vertical &&
-                (plane.size.x >= minWallSize.x && plane.size.y >= minWallSize.y))
+            if (hits.Count > 0)
             {
-                detectionTimer += Time.deltaTime;
+                Pose hitPose = hits[0].pose;
+                ARPlane plane = planeManager.GetPlane(hits[0].trackableId);
 
-                if (detectionTimer >= timeToWait)
+                if (plane != null &&
+                    plane.alignment == PlaneAlignment.Vertical &&
+                    (plane.size.x >= minWallSize.x && plane.size.y >= minWallSize.y))
                 {
-                    SpawnNewUI(hitPose);
+                    detectionTimer += Time.deltaTime;
+
+                    if (detectionTimer >= timeToWait)
+                    {
+                        SpawnNewUI(hitPose);
+                    }
                 }
-            }
-            else
-            {
-                detectionTimer = 0f;
+                else
+                {
+                    detectionTimer = 0f;
+                }
             }
         }
         else
@@ -140,6 +154,8 @@ public class ARPlaceUI : MonoBehaviour
         {
             // Envia especificamente o objeto que encontrámos
             loader.turnToAR(currentCanvas, wallPose.position, wallPose.rotation);
+            
+            
         }
 
         // Se preferires converter TODOS os roots da cena (como tinhas antes):
@@ -251,18 +267,45 @@ public class ARPlaceUI : MonoBehaviour
             }
         }
     }
-/*
-    void AlignCanvasToPlane(Transform canvas, ARRaycastHit hit)
-    {
-        // Obtém a normal do plano
-        var plane = hit.trackable as ARPlane;
-        if (plane == null) return;
+    /*
+        void AlignCanvasToPlane(Transform canvas, ARRaycastHit hit)
+        {
+            // Obtém a normal do plano
+            var plane = hit.trackable as ARPlane;
+            if (plane == null) return;
 
-        // Rotaciona o canvas para ficar paralelo ao plano
-        canvas.rotation = Quaternion.LookRotation(plane.normal, Vector3.up);
-    }*/
+            // Rotaciona o canvas para ficar paralelo ao plano
+            canvas.rotation = Quaternion.LookRotation(plane.normal, Vector3.up);
+        }*/
 
     
+    public string textoBase = "Looking for suitable planes for AR";
+    public float tempoEntrePontos = 0.5f;
+
+    IEnumerator RotinaDePontos()
+    {
+        int numeroDePontos = 0;
+
+        while (true) 
+        {
+
+            string pontos = new string('.', numeroDePontos);
+
+
+            loadingText.text = textoBase + pontos;
+
+            yield return new WaitForSeconds(tempoEntrePontos);
+
+            numeroDePontos++;
+
+            if (numeroDePontos > 3)
+            {
+                numeroDePontos = 0;
+            }
+        }
     }
+
+
+}
     
 

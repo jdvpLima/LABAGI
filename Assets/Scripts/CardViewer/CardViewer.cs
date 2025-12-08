@@ -108,6 +108,11 @@ public class CardViewer : MonoBehaviour
 
     public void BackButton()
     {
-        SceneManager.LoadScene("PreGame");
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            SceneManager.UnloadSceneAsync("CardViewer2");
+        }
+        else
+            SceneManager.LoadScene("PreGame");
     }
 }

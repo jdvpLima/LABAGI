@@ -421,7 +421,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 250858615}
   m_HandleRect: {fileID: 250858614}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1647,7 +1647,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 7
   m_TargetDisplay: 0
 --- !u!224 &707343804
 RectTransform:
@@ -1944,7 +1944,6 @@ MonoBehaviour:
   cardPrefab: {fileID: 1036060452}
   cardCollectionView: {fileID: 8758763}
   fullscreenParent: {fileID: 987714635}
-  targetDeckId: 25
 --- !u!1 &987714634
 GameObject:
   m_ObjectHideFlags: 0

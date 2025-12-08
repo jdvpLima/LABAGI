@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 
 public class ARSceneLoader : MonoBehaviour
@@ -7,7 +10,7 @@ public class ARSceneLoader : MonoBehaviour
     [Header("Configuração AR")]
     //private Transform arCanvasParent; // Canvas ou empty object AR
     public Camera arCamera;          // Câmera AR do XR Origin
-    public float worldScale = 0.0025f; // Escala para reduzir o Canvas
+    public float worldScale = 0.00000000005f; // Escala para reduzir o Canvas
 
 
     public ARManipulateUI manipulateUI;
@@ -19,6 +22,20 @@ public class ARSceneLoader : MonoBehaviour
     public GameObject dragBarPref;
     public GameObject scalePref;
 
+    [SerializeField]
+    private List<GameObject> activeCanvasStack = new List<GameObject>();
+
+
+    private void Start()
+    {
+    }
+
+    private void OnDestroy()
+    {
+        // Boa prática limpar eventos ao destruir o objeto
+       
+    }
+
     void Update()
     {
         if (sceneBefore != null && manipulateUI.scene == null)
@@ -28,7 +45,7 @@ public class ARSceneLoader : MonoBehaviour
         {
             pref = GameObject.FindWithTag("CanvaPref");
         }
-        
+        /*
         if (pref != null)
         {
             if (
@@ -50,7 +67,7 @@ public class ARSceneLoader : MonoBehaviour
                     Debug.Log("Atualizou Scene no ARManipulate");
                 }
             }
-        }
+        }*/
     }
 
     /// <summary>
@@ -71,6 +88,13 @@ public class ARSceneLoader : MonoBehaviour
         };
     }
 
+    public void LoadNetworkScenes(Scene loadedScene)
+    {
+        sceneBefore = manipulateUI.scene;
+        Debug.Log("Cena carregada: " + loadedScene.name);
+        transformIntoAR(loadedScene.GetRootGameObjects());
+    }
+
 
 
     public void transformIntoAR(GameObject[] loadedSceneObjects)
@@ -87,6 +111,29 @@ public class ARSceneLoader : MonoBehaviour
     public void turnToAR(GameObject rootObj, Vector3 spawnPosition, Quaternion spawnRotation)
     {
         Canvas[] canvases = rootObj.GetComponentsInChildren<Canvas>(true);
+
+        // Variável para guardar a largura da cena anterior (se existir)
+        float baseWidth = 0f;
+        bool hasBaseScene = false;
+        if (manipulateUI.scene != null)
+        {
+            CanvasScaler baseScaler = manipulateUI.scene.GetComponent<CanvasScaler>();
+            if (baseScaler != null)
+            {
+                baseWidth = baseScaler.referenceResolution.x;
+                hasBaseScene = true;
+            }
+            else
+            {
+                RectTransform baseRect = manipulateUI.scene.GetComponent<RectTransform>();
+                if (baseRect != null)
+                {
+                    baseWidth = baseRect.rect.width;
+                    hasBaseScene = true;
+                }
+            }
+        }
+
         foreach (Canvas canvas in canvases)
         {
 #if UNITY_EDITOR
@@ -94,6 +141,34 @@ public class ARSceneLoader : MonoBehaviour
 #endif
 
             if (canvas.sortingOrder > 32700) continue;
+
+
+            // --- CÁLCULO DO FATOR DE ESCALA ---
+            float correctionFactor = 1f;
+
+            // Só calculamos correção se tivermos uma cena base para comparar
+            if (hasBaseScene)
+            {
+                CanvasScaler currentScaler = canvas.GetComponent<CanvasScaler>();
+                if (currentScaler != null && currentScaler.referenceResolution.x > 0)
+                {
+                    // Fórmula: Largura da Cena 1 / Largura da Cena 2
+                    // Exemplo: Se Cena 1 (1920) e Cena 2 (3840) -> 1920/3840 = 0.5 (reduz para metade)
+                    correctionFactor = baseWidth / currentScaler.referenceResolution.x;
+                }
+                else
+                {
+                    // Fallback para RectTransform se o novo objeto não tiver Scaler
+                    RectTransform currentRect = canvas.GetComponent<RectTransform>();
+                    if (currentRect != null && currentRect.rect.width > 0)
+                    {
+                        correctionFactor = baseWidth / currentRect.rect.width;
+                    }
+                }
+            }
+            // ----------------------------------
+
+
             // Converte para World Space
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.worldCamera = arCamera;
@@ -104,16 +179,19 @@ public class ARSceneLoader : MonoBehaviour
             canvas.transform.rotation = spawnRotation;
 
             // Ajusta escala para AR
-            canvas.transform.localScale = Vector3.one * worldScale;
+            canvas.transform.localScale = Vector3.one * worldScale * correctionFactor;
 
-            // Rotaciona levemente para o usuário
-            canvas.transform.LookAt(arCamera.transform);
-            canvas.transform.Rotate(0, 180f, 0);
+            if (manipulateUI.scene == null)
+            {
+                // Rotaciona levemente para o usuário
+                canvas.transform.LookAt(arCamera.transform);
+                canvas.transform.Rotate(0, 180f, 0);
+            }
 
 
             manipulateUI.scene = canvas.gameObject;
 
-
+            activeCanvasStack.Add(canvas.gameObject);
             AddDragBarBelowCanvas(canvas.gameObject, dragBarPref);
             //manipulateScript.dragHandle = canvas.transform.Find("dragger")?.GetComponent<DragHandle>();
             //manipulateScript.scaleHandle = canvas.transform.Find("scaleBtn")?.transform;
@@ -183,6 +261,47 @@ public class ARSceneLoader : MonoBehaviour
         {
             SceneManager.UnloadSceneAsync(sceneName);
         }
+    }
+
+    public void OnSceneLoadedAndReady(Scene scene, LoadSceneMode mode)
+    {
+        // Verifica se a cena carregada é uma das cenas de jogo AR permitidas
+        if (scene.name == "Game" || scene.name == "GameResults")
+        {
+            if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer)
+            {
+                Debug.Log($"Cena de Jogo detetada: {scene.name}. Transformando em AR...");
+                LoadNetworkScenes(scene);
+            }
+            if (SceneManager.GetSceneByName("PreGame").isLoaded && scene.name != "CardViewer2")
+            {
+                SceneManager.UnloadSceneAsync("PreGame");
+            }
+        }
+        else
+        {
+            Debug.Log($"Cena {scene.name} carregada.");
+        }
+    }
+
+    public void OnSceneUnload(Scene scene)
+    {
+        Debug.Log("WHYYYYY");
+        if (activeCanvasStack.Contains(manipulateUI.scene))
+        {
+            if (activeCanvasStack.Remove(manipulateUI.scene))
+                sceneBefore = GetTopScene();
+        }
+      
+    }
+
+    public GameObject GetTopScene()
+    {
+        if (activeCanvasStack.Count > 0)
+        {
+            return activeCanvasStack[activeCanvasStack.Count - 1];
+        }
+        return null;
     }
 
 

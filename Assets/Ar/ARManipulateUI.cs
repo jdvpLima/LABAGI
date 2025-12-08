@@ -120,7 +120,7 @@ public class ARManipulateUI : MonoBehaviour
 
             float diff = currDist - prevDist;
 
-            scene.transform.localScale += Vector3.one * diff * 0.001f;
+            scene.transform.localScale += Vector3.one * diff * 0.0000000001f;
         }
     }
 
@@ -202,9 +202,9 @@ public class ARManipulateUI : MonoBehaviour
             float nextScale = currentScale + (scroll * scaleSpeed);
 
             
-            if (nextScale < 0.0020)
+            if (nextScale < 0.0010)
             {
-                scene.transform.localScale = Vector3.one * 0.0020f;
+                scene.transform.localScale = Vector3.one * 0.0010f;
 
             } else
             if (nextScale > 0.004)

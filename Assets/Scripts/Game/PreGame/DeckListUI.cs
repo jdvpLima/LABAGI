@@ -85,6 +85,8 @@ public class DeckListUI : MonoBehaviour
             GameObject go = Instantiate(deckItemTemplate, content);
             go.SetActive(true);
             go.name = $"DeckItem_{deck.id}";
+            TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
+            text.text = deck.name;
 
             var item = go.GetComponent<DeckItemUI>();
             if (item != null)
@@ -109,6 +111,9 @@ public class DeckListUI : MonoBehaviour
         if (hostBtn != null) hostBtn.gameObject.SetActive(true);
         if (joinBtn != null) joinBtn.gameObject.SetActive(true);
         if (viewDeck != null) viewDeck.gameObject.SetActive(true);
+
+    
+
     }
 
     // --- MULTIPLAYER LOGIC ---
@@ -162,7 +167,13 @@ public class DeckListUI : MonoBehaviour
 
     public void OnBackButtonClicked()
     {
-        SceneManager.LoadScene("MainMenu");
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            SceneManager.UnloadSceneAsync("PreGame");
+        }
+        else
+            SceneManager.LoadScene("MainMenu");
+
     }
 
     /// <summary>
@@ -179,7 +190,13 @@ public class DeckListUI : MonoBehaviour
 
         Debug.Log("Selected deck id (ViewDeck button): " + selectedDeck.id);
 
-        // Atidarom sceną, kur veikia CardViewer
-        SceneManager.LoadScene("CardViewer2");
+        
+        if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
+        {
+            FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("CardViewer2"); 
+        }
+        else
+            // Atidarom sceną, kur veikia CardViewer
+            SceneManager.LoadScene("CardViewer2");
     }
 }

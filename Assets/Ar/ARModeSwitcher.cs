@@ -139,6 +139,10 @@ public class ARModeSwitcher : MonoBehaviour
         }
 
         Debug.Log("Modo AR Desativado.");
+
+        SceneManager.sceneLoaded -= FindAnyObjectByType<ARSceneLoader>().OnSceneLoadedAndReady;
+        SceneManager.sceneUnloaded -= FindAnyObjectByType<ARSceneLoader>().OnSceneUnload;
+
     }
 
 
@@ -167,6 +171,12 @@ public class ARModeSwitcher : MonoBehaviour
         {
             RestoreLastPosition(manipulateUI.scene);
         }
+
+        
+        SceneManager.sceneLoaded += FindAnyObjectByType<ARSceneLoader>().OnSceneLoadedAndReady;
+        SceneManager.sceneUnloaded += FindAnyObjectByType<ARSceneLoader>().OnSceneUnload;
+
+
     }
 
 
