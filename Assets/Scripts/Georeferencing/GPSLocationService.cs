@@ -1,3 +1,5 @@
+using Esri.ArcGISMapsSDK.Components;
+using Esri.GameEngine.Geometry;
 using System;
 using System.Collections;
 using TMPro;
@@ -15,7 +17,7 @@ public class GPSLocationService : MonoBehaviour
     private char unit = 'K';
 
     [SerializeField]
-    private GameObject player;
+    private GameObject playerPrefab;
 
     public float checkDistance = 0.1f; // 100 meters
 
@@ -30,6 +32,8 @@ public class GPSLocationService : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerLatitude;
     [SerializeField] private TextMeshProUGUI playerLongitude;
 
+    private ArcGISLocationComponent locationComponent;
+
     public string apiBaseUrl = "https://lagabi-group2-backend.onrender.com/api";
 
     bool measureDistance = false;
@@ -37,7 +41,10 @@ public class GPSLocationService : MonoBehaviour
     IEnumerator Start()
     {
         spawnManager = FindFirstObjectByType<CardSpawnManager>();
-        player = new GameObject();
+
+#if UNITY_ANDROID
+        yield return StartCoroutine(RequestLocationPermission());
+#endif
 
         // Check if the user has location service enabled.
         if (!Input.location.isEnabledByUser)
@@ -45,7 +52,7 @@ public class GPSLocationService : MonoBehaviour
             Debug.Log("Location not enabled on device or app does not have permission to access location");
         }
         // Starts the location service.
-        Input.location.Start();
+        Input.location.Start(0.5f, 0.5f);
 
         // Waits until the location service initializes
         int maxWait = 20;
@@ -75,6 +82,11 @@ public class GPSLocationService : MonoBehaviour
 
         }
 
+        GameObject player = Instantiate(playerPrefab);
+
+        locationComponent = player.GetComponent<ArcGISLocationComponent>();
+
+
         yield return gps_ok;
     }
 
@@ -88,7 +100,8 @@ public class GPSLocationService : MonoBehaviour
             playerLatitude.text = "Latitude: " + Input.location.lastData.latitude;
             playerLongitude.text = "Longitude: " + Input.location.lastData.longitude;
 
-            UpdatePlayerPosition(currLoc.lat, currLoc.lon);
+            locationComponent.Position = new ArcGISPoint(currLoc.lon, currLoc.lat, 50, ArcGISSpatialReference.WGS84());
+
             CheckSpawnProximity();
         }
         else
@@ -98,12 +111,22 @@ public class GPSLocationService : MonoBehaviour
         }
     }
 
-    private void UpdatePlayerPosition(double lat, double lon)
+    private IEnumerator RequestLocationPermission()
     {
-        Vector3 playerPosition = spawnManager.ConvertGeoToWorldPosition(currLoc.lat, currLoc.lon);
+#if UNITY_ANDROID
+        if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.FineLocation))
+        {
+            UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.FineLocation);
 
-        player.transform.position = playerPosition;
+            // Espera ate o utilizador responder
+            while (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.FineLocation))
+            {
+                yield return null;
+            }
+        }
+#endif
     }
+
 
     private void CheckSpawnProximity()
     {
@@ -227,7 +250,6 @@ public class GPSLocationService : MonoBehaviour
         measureDistance = true;
     }
 
-    //https://www.geodatasource.com/resources/tutorials/how-to-calculate-the-distance-between-2-locations-using-c/
     private double distance(double lat1, double lon1, double lat2, double lon2, char unit)
     {
         if ((lat1 == lat2) && (lon1 == lon2))
