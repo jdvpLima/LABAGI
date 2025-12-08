@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts.CreateDeck;
-using Assets.Scripts; 
-using Unity.Netcode; // IMPORT NETCODE
+using Assets.Scripts;
+using Unity.Netcode;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Assets.Scripts.Service;
@@ -13,12 +13,12 @@ public class DeckListUI : MonoBehaviour
     [Header("References")]
     public Transform content;
     public GameObject deckItemTemplate;
-    
-    // CHANGED: We now have two buttons instead of just "Confirm"
+
     [Header("Multiplayer Controls")]
     public Button hostBtn;
     public Button joinBtn;
-    
+    public Button viewDeck;
+
     public Text statusText;
 
     // Runtime
@@ -37,6 +37,7 @@ public class DeckListUI : MonoBehaviour
         // Hide buttons until a deck is picked
         if (hostBtn != null) hostBtn.gameObject.SetActive(false);
         if (joinBtn != null) joinBtn.gameObject.SetActive(false);
+        if (viewDeck != null) viewDeck.gameObject.SetActive(false);
 
         if (deckItemTemplate == null)
             Debug.LogError("DeckItemTemplate not assigned.");
@@ -46,18 +47,20 @@ public class DeckListUI : MonoBehaviour
         // Setup Button Listeners
         if (hostBtn != null) hostBtn.onClick.AddListener(OnHostClicked);
         if (joinBtn != null) joinBtn.onClick.AddListener(OnJoinClicked);
+        if (viewDeck != null) viewDeck.onClick.AddListener(OnViewDeckClicked);
     }
 
     private async void Start()
-{
-    long idToUse = AuthBootstrapper.CurrentUserId;
-    if (idToUse == 0) 
     {
-        Debug.Log("AuthContext is 0, using Debug ID 1");
-        idToUse = 1; 
-    }
+        long idToUse = AuthBootstrapper.CurrentUserId;
+        if (idToUse == 0)
+        {
+            Debug.Log("AuthContext is 0, using Debug ID 1");
+            idToUse = 1;
+        }
+
         // To be used to DDA
-        playerMMR = await mmrService.GetPlayerMMRAsync(idToUse); 
+        playerMMR = await mmrService.GetPlayerMMRAsync(idToUse);
         Debug.Log("Player MMR is: " + playerMMR);
 
         decks = await deckService.GetDecksAsync(idToUse);
@@ -71,25 +74,28 @@ public class DeckListUI : MonoBehaviour
 
         // Populate List
         if (decks == null || decks.Count == 0)
-    {
-        if (statusText != null) statusText.text = "No decks found.";
-        Debug.LogWarning("Deck list is empty or null.");
-        return;
+        {
+            if (statusText != null) statusText.text = "No decks found.";
+            Debug.LogWarning("Deck list is empty or null.");
+            return;
+        }
+
+        foreach (var deck in decks)
+        {
+            GameObject go = Instantiate(deckItemTemplate, content);
+            go.SetActive(true);
+            go.name = $"DeckItem_{deck.id}";
+
+            var item = go.GetComponent<DeckItemUI>();
+            if (item != null)
+                item.Bind(deck, OnDeckSelected); // čia pririšam callback su konkrečiu deck
+        }
     }
 
-    foreach (var deck in decks)
-    {
-        GameObject go = Instantiate(deckItemTemplate, content);
-        go.SetActive(true);
-        go.name = $"DeckItem_{deck.id}";
-        
-        var item = go.GetComponent<DeckItemUI>();
-        if (item != null)
-            item.Bind(deck, OnDeckClicked);
-    }
-}
-
-    private void OnDeckClicked(DecksDto deck, DeckItemUI itemUI)
+    /// <summary>
+    /// Callback iš DeckItemUI – čia ateina būtent tas deck, ant kurio buvo paspausta.
+    /// </summary>
+    private void OnDeckSelected(DecksDto deck, DeckItemUI itemUI)
     {
         if (selectedItemUI != null) selectedItemUI.SetSelected(false);
 
@@ -97,9 +103,12 @@ public class DeckListUI : MonoBehaviour
         selectedItemUI = itemUI;
         selectedItemUI.SetSelected(true);
 
-        // Show the Host/Join buttons now that a deck is ready
+        Debug.Log("Clicked deck id: " + deck.id);
+
+        // Show the Host/Join/View buttons now that a deck is ready
         if (hostBtn != null) hostBtn.gameObject.SetActive(true);
         if (joinBtn != null) joinBtn.gameObject.SetActive(true);
+        if (viewDeck != null) viewDeck.gameObject.SetActive(true);
     }
 
     // --- MULTIPLAYER LOGIC ---
@@ -108,13 +117,11 @@ public class DeckListUI : MonoBehaviour
     {
         if (!ConfirmSelection()) return;
 
-        // Start the Host (Server + Player)
         bool started = NetworkManager.Singleton.StartHost();
-        
+
         if (started)
         {
             Debug.Log("Host Started! Loading Game Scene...");
-            // Load Scene using NetworkSceneManager
             NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         }
         else
@@ -127,11 +134,8 @@ public class DeckListUI : MonoBehaviour
     {
         if (!ConfirmSelection()) return;
 
-        // Start Client
-        // Note: For localhost, this connects to 127.0.0.1 immediately.
-
         bool started = NetworkManager.Singleton.StartClient();
-        
+
         if (started)
         {
             Debug.Log("Client Started! Waiting for Host to switch scenes...");
@@ -145,10 +149,10 @@ public class DeckListUI : MonoBehaviour
 
     private bool ConfirmSelection()
     {
-        if (selectedDeck == null) 
-        { 
-            Debug.LogWarning("No deck selected"); 
-            return false; 
+        if (selectedDeck == null)
+        {
+            Debug.LogWarning("No deck selected");
+            return false;
         }
 
         // Store deck for the next scene
@@ -159,5 +163,23 @@ public class DeckListUI : MonoBehaviour
     public void OnBackButtonClicked()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+
+    /// <summary>
+    /// Mygtukas "View Deck" – naudoja jau pasirinktą deck ir permeta jį į CardViewer sceną.
+    /// </summary>
+    public void OnViewDeckClicked()
+    {
+        // Čia ir turi būti užpildytas SelectedDeckHolder
+        if (!ConfirmSelection())
+        {
+            Debug.LogWarning("OnViewDeckClicked: no deck selected.");
+            return;
+        }
+
+        Debug.Log("Selected deck id (ViewDeck button): " + selectedDeck.id);
+
+        // Atidarom sceną, kur veikia CardViewer
+        SceneManager.LoadScene("CardViewer2");
     }
 }
