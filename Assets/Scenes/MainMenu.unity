@@ -2631,6 +2631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1525445687}
   - component: {fileID: 1525445686}
+  - component: {fileID: 1525445688}
   m_Layer: 0
   m_Name: PersistentSettingsManager
   m_TagString: Untagged
@@ -2671,6 +2672,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1525445688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525445685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 806f613005c6aef41a74a6a6f07d74d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroy
 --- !u!1 &1551304330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,6 +3281,8 @@ MonoBehaviour:
   playScenePanel: {fileID: 1029716219}
   videoPlayer: {fileID: 1837894692288323437}
   videoClip: {fileID: 32900000, guid: 5d5b38147271a1944bc9273f9bb143b7, type: 3}
+  camera: {fileID: 0}
+  mainMenuAudioListener: 0
 --- !u!114 &1816067187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4582,8 +4597,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Main_Menu.AudioManager
   audioMixer: {fileID: 24100000, guid: ce7dd18fea0868542ab11571195ba9b4, type: 2}
-  uiAudioSource: {fileID: 3041863285440930052}
-  sfxAudioSource: {fileID: 8220320117834455352}
+  sfxSource: {fileID: 0}
+  musicSource: {fileID: 0}
   uiClickClip: {fileID: 8300000, guid: 279e533a9a592834686652293ade78e4, type: 3}
   uiHoverClip: {fileID: 8300000, guid: 9d74f21e1eda9184cba1867f217a5f8b, type: 3}
   uiErrorClip: {fileID: 8300000, guid: a5b7dc81da14ce14da15ced5eacde994, type: 3}
@@ -5144,6 +5159,7 @@ GameObject:
   - component: {fileID: 3262838325123714347}
   - component: {fileID: 1837894692288323437}
   - component: {fileID: 5410934965639940390}
+  - component: {fileID: 5410934965639940391}
   m_Layer: 0
   m_Name: Video Player
   m_TagString: Untagged
@@ -5246,6 +5262,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f613005c6aef41a74a6a6f07d74d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DontDestroy
+--- !u!114 &5410934965639940391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4253362455925210568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c9b3772c4fe564991a7b45be80900b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Settings.LowSensoryVideoController
 --- !u!4 &5609146471158799378
 Transform:
   m_ObjectHideFlags: 0
