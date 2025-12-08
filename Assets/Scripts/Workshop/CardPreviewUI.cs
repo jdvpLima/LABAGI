@@ -21,7 +21,7 @@ namespace Assets.Scripts.Workshop
         [SerializeField] private TMP_Text abilityText;
         [SerializeField] private TMP_Text flavorText;
         [SerializeField] private RawImage suitImg;
-        [SerializeField] private AspectRatioFitter suitRatioFitter;
+        //[SerializeField] private AspectRatioFitter suitRatioFitter;
         [SerializeField] private VideoPlayer suitVideo;
 
         [Header("Suit videos")]
@@ -63,9 +63,9 @@ namespace Assets.Scripts.Workshop
         {
             if (suitImg.texture != null)
             {
-                float w = suitImg.texture.width;
-                float h = suitImg.texture.height;
-                suitRatioFitter.aspectRatio = w / h;
+                //float w = suitImg.texture.width;
+                //float h = suitImg.texture.height;
+                //suitRatioFitter.aspectRatio = w / h;
             }
             if (string.IsNullOrWhiteSpace(suit) || _clipBySuit == null)
             {
