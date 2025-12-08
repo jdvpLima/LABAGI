@@ -87,16 +87,62 @@ public class CardView : MonoBehaviour
 
     public void setVideo()
     {
+        // Criar RenderTexture (podes otimizar isto no futuro para não criar sempre uma nova)
         RenderTexture rt = new RenderTexture(300, 300, 24);
         rt.Create();
 
         videoPlayer.targetTexture = rt;
         suitImage.texture = rt;
 
-        videoPlayer.clip = _clipBySuit.ContainsKey(card.Suit.ToLower()) ? _clipBySuit[card.Suit.ToLower()] : null;
+        if (!_clipBySuit.TryGetValue(card.Suit.ToLower(), out var clip))
+        {
+            videoPlayer.clip = null;
+            return;
+        }
+
+        videoPlayer.clip = clip;
+
+        var settings = PersistentSettingsManager.Instance;
+        bool lowSensory = settings != null && settings.lowSensoryModeEnabled;
+
+        if (lowSensory)
+        {
+            // só primeira frame, sem loop
+            videoPlayer.playOnAwake = false;
+            videoPlayer.isLooping = false;
+            StartCoroutine(ShowFirstFrameStatic());
+        }
+        else
+        {
+            // modo normal
+            videoPlayer.isLooping = true;
+            videoPlayer.Play();
+        }
     }
 
-    
+    private IEnumerator ShowFirstFrameStatic()
+    {
+        if (videoPlayer.clip == null)
+            yield break;
+
+        videoPlayer.Prepare();
+        while (!videoPlayer.isPrepared)
+            yield return null;
+
+        // toca 1 frame
+        videoPlayer.Play();
+        yield return null; // 1 frame
+        videoPlayer.Pause();
+
+        // opcional: tenta garantir frame 0
+        try
+        {
+            videoPlayer.frame = 0;
+        }
+        catch { }
+    }
+
+
 
 
     // Chame pelo botão ou clique
