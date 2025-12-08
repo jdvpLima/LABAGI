@@ -128,6 +128,8 @@ public class SettingsManager : MonoBehaviour
     {
         this.hapticsEnabled = isEnabled;
         this.persistentSettings.SetHaptics(isEnabled);
+
+        Haptics.SetEnabled(isEnabled);
     }
 
     public void SetLowSensoryMode(bool isEnabled)
