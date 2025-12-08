@@ -1379,8 +1379,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 943822091}
-        m_TargetAssemblyTypeName: CreateDeckManager, Assembly-CSharp
+      - m_Target: {fileID: 943822093}
+        m_TargetAssemblyTypeName: CardViewer, Assembly-CSharp
         m_MethodName: BackButton
         m_Mode: 1
         m_Arguments:

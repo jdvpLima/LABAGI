@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using Assets.Scripts.CreateDeck;
 using Assets.Scripts; // dėl AuthBootstrapper, SelectedDeckHolder
 using Assets.Scripts.Service;
+using UnityEngine.SceneManagement;
+
 
 public class CardViewer : MonoBehaviour
 {
@@ -99,6 +101,12 @@ public class CardViewer : MonoBehaviour
                 SpawnCard(card.cardId, cardCollectionView);
             }
         }
+    }
+
+    public void BackButton()
+    {
+        Debug.Log("BACK2BACK2BACK");
+        SceneManager.LoadScene("PreGame");
     }
 
     void SpawnCard(long id, Transform parentUI)
