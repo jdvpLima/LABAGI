@@ -42,13 +42,13 @@ public class MainMenuManager : MonoBehaviour
             FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("PreGame");
         }
         else
-            SceneManager.LoadScene("PreGame");
+            SceneManager.LoadScene("PreGame", LoadSceneMode.Additive);
         //SceneManager.LoadScene("Game");
     }
 
     public void Map()
     {
-        SceneManager.LoadScene("Georeferencing");
+        SceneManager.LoadScene("Georeferencing", LoadSceneMode.Additive);
 
         /*if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
         {
@@ -93,10 +93,10 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
-    public void OnButtonPressed()
-    {
-        Haptics.Vibrate();
-    }
+    //public void OnButtonPressed()
+    //{
+    //    Haptics.Vibrate();
+    //}
 
     public void ToggleAudioListener(bool audioListener)
     {
