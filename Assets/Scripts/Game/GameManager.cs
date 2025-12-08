@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 /// The Server-Side Referee.
 /// Manages turn states, resolves scoring rules, and coordinates clients.
@@ -221,13 +222,22 @@ public class GameManager : NetworkBehaviour
         {
             isGameOver = true;
 
-            // >>> CHANGE IS HERE <<<
-            if (hostWins && clientWins) 
-                UpdateStatusClientRpc("GAME OVER: BOTH OF YOU WIN!");
-            else if (hostWins) 
-                UpdateStatusClientRpc("GAME OVER: HOST WINS!");
-            else 
-                UpdateStatusClientRpc("GAME OVER: CLIENT WINS!");
+            // 1. Gather all stats
+            int hScore = hostPlayer.Points.Value;
+            int hFlex = hostPlayer.Flexibility.Value;
+            int hBurn = hostPlayer.Burnout.Value;
+            int hTok = hostPlayer.AccommodationTokens.Value;
+
+            int cScore = clientPlayer.Points.Value;
+            int cFlex = clientPlayer.Flexibility.Value;
+            int cBurn = clientPlayer.Burnout.Value;
+            int cTok = clientPlayer.AccommodationTokens.Value;
+
+            // 2. Send data to all clients so they can save it locally
+            EndGameDataClientRpc(hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
+
+            // 3. Start Coroutine to switch scene after a delay
+            StartCoroutine(EndGameRoutine());
 
             return true;
         }
@@ -236,8 +246,26 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
+    private void EndGameDataClientRpc(int hScore, int hFlex, int hBurn, int hTok, int cScore, int cFlex, int cBurn, int cTok)
+    {
+        // "IsHost" tells the storage whether to show me the Host stats or Client stats
+        MatchResultsStorage.SetData(IsHost, hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
+        
+        UpdateStatusClientRpc("Match Finished! Loading Results...");
+    }
+
+    [ClientRpc]
     private void UpdateStatusClientRpc(string msg)
     {
         if (statusText != null) statusText.text = msg;
+    }
+
+    private IEnumerator EndGameRoutine()
+    {
+        // Wait 3 seconds so players see the final card result
+        yield return new WaitForSeconds(3.0f);
+
+        // Tell NetworkManager to switch scenes for everyone
+        NetworkManager.Singleton.SceneManager.LoadScene("GameResults", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 }
