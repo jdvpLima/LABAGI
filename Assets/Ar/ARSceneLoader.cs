@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,7 @@ public class ARSceneLoader : MonoBehaviour
 
     public ARManipulateUI manipulateUI;
 
-    private GameObject sceneBefore;
+    public GameObject sceneBefore;
 
     private GameObject pref;
 
@@ -286,13 +287,32 @@ public class ARSceneLoader : MonoBehaviour
 
     public void OnSceneUnload(Scene scene)
     {
-        Debug.Log("WHYYYYY");
-        if (activeCanvasStack.Contains(manipulateUI.scene))
+        Debug.Log("WHYYYYY  " + scene.name);
+        /*
+        if (scene.name == "MainMenu" || scene.name == "MainMenuAR")
         {
-            if (activeCanvasStack.Remove(manipulateUI.scene))
-                sceneBefore = GetTopScene();
+            // Se a NOVA cena é o MainMenu, apenas atualizamos a referência
+            sceneBefore = GetTopScene();
         }
-      
+        else
+        {
+            // Se a NOVA cena NÃO é o MainMenu...
+            if (activeCanvasStack.Contains(manipulateUI.scene))
+            {
+                if (manipulateUI.scene.name != "Main Menu" && manipulateUI.scene.name != "Main Menu")
+                {
+                    activeCanvasStack.RemoveAll(item => item == null);
+
+                    sceneBefore = GetTopScene();
+                    
+                }
+            }
+        }*/
+
+        activeCanvasStack.RemoveAll(item => item == null);
+
+        sceneBefore = GetTopScene();
+
     }
 
     public GameObject GetTopScene()
