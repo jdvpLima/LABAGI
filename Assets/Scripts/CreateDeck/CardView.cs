@@ -1,8 +1,13 @@
+using Assets.Scripts.Service;
+using Assets.Scripts.Workshop;
+using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -35,6 +40,21 @@ public class CardView : MonoBehaviour
     [Header("Suit videos")]
     [SerializeField] private List<VideoClip> suitClips = new();
     private Dictionary<string, VideoClip> _clipBySuit;
+
+    [Serializable]
+    private class ParsedCardActions
+    {
+        // C# field names must match the JSON keys exactly.
+
+        public int amount;
+        public string effect;
+        public string target;
+        public string trigger;
+
+        // Note: JsonUtility is case-sensitive! 
+        // If the JSON key is "oncePerGame", the C# field must also be "oncePerGame".
+        public bool oncePerGame;
+    }
 
     void Awake()
     {
@@ -72,7 +92,34 @@ public class CardView : MonoBehaviour
         // --- FIX: Check for Null Actions ---
         if (card.Actions != null && card.Actions.Count > 0)
         {
-            actionsText.text = string.Join("\n", card.Actions);
+            // Join all of the strings from actions to form a valid JSON object
+            // And use the AbilityTextBuilder from Workshop to parse it
+            var actionsJsonString = string.Join(", ", card.Actions);
+
+            var parsedJsonActions = JsonUtility.FromJson<ParsedCardActions>(actionsJsonString);
+            // Construir um CardDto temporário só para alimentar os builders
+            var cardForAbility = new WorkshopCardDTO
+            {
+                id = 0,
+                name = "",
+                suit = "",
+                rarity = "",
+                points = 2,
+                ability = null, // vai ser preenchido pelos builders
+                trigger = parsedJsonActions.trigger,
+                effect = parsedJsonActions.effect,
+                amount = parsedJsonActions.amount,
+                target = parsedJsonActions.target,
+                oncePerGame = parsedJsonActions.oncePerGame,
+                abilityJson = null,
+                expansionCode = "wks",
+                flavorText = "",
+                status = "",
+            };
+
+            string humanReadableAbility = AbilityTextBuilder.Build(cardForAbility);
+            actionsText.text = humanReadableAbility;
+            //actionsText.text = string.Join("\n", card.Actions);
         }
         else
         {
