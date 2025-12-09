@@ -93,7 +93,9 @@ public class ARPlaceUI : MonoBehaviour
     {
         if (!isScanning) {
             loadingPanel.SetActive(false);
-                return; }
+            SetPlanesVisible(false);
+    
+        return; }
         if (spawnedUI != null) return;
 
         CheckForWallInFront();
@@ -303,6 +305,32 @@ public class ARPlaceUI : MonoBehaviour
                 numeroDePontos = 0;
             }
         }
+    }
+
+    // Chama esta função com 'false' para esconder, 'true' para mostrar
+    public void SetPlanesVisible(bool visible)
+    {
+        // Percorre todos os planos que o AR Foundation já detetou
+        foreach (var plane in planeManager.trackables)
+        {
+            SetPlaneVisibility(plane, visible);
+        }
+
+        // Se quiseres que os NOVOS planos detetados já nasçam invisíveis,
+        // tens de subscrever eventos ou correr isto no Update. 
+        // Mas geralmente, basta esconder os existentes.
+
+        // Dica: Para parar de mostrar novos planos visualmente mas continuar a trackear,
+        // podes desligar o planeManager.enabled = false? NÃO!
+        // Isso para o tracking. Tens de manter o manager ligado.
+    }
+
+    private void SetPlaneVisibility(ARPlane plane, bool visible)
+    {
+        // Controla o Mesh Renderer (o preenchimento amarelo)
+        ARPlaneMeshVisualizer meshRenderer = plane.GetComponent<ARPlaneMeshVisualizer>();
+        if (meshRenderer != null) meshRenderer.enabled = visible;
+
     }
 
 
