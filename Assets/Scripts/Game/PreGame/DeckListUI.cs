@@ -19,8 +19,6 @@ public class DeckListUI : MonoBehaviour
     public Button joinBtn;
     public Button viewDeck;
 
-    public Text statusText;
-
     // Runtime
     private DeckService deckService;
     private List<DecksDto> decks;
@@ -72,14 +70,6 @@ public class DeckListUI : MonoBehaviour
                 Destroy(child.gameObject);
         }
 
-        // Populate List
-        if (decks == null || decks.Count == 0)
-        {
-            if (statusText != null) statusText.text = "No decks found.";
-            Debug.LogWarning("Deck list is empty or null.");
-            return;
-        }
-
         foreach (var deck in decks)
         {
             GameObject go = Instantiate(deckItemTemplate, content);
@@ -88,13 +78,10 @@ public class DeckListUI : MonoBehaviour
 
             var item = go.GetComponent<DeckItemUI>();
             if (item != null)
-                item.Bind(deck, OnDeckSelected); // čia pririšam callback su konkrečiu deck
+                item.Bind(deck, OnDeckSelected);
         }
     }
 
-    /// <summary>
-    /// Callback iš DeckItemUI – čia ateina būtent tas deck, ant kurio buvo paspausta.
-    /// </summary>
     private void OnDeckSelected(DecksDto deck, DeckItemUI itemUI)
     {
         if (selectedItemUI != null) selectedItemUI.SetSelected(false);
@@ -113,38 +100,65 @@ public class DeckListUI : MonoBehaviour
 
     // --- MULTIPLAYER LOGIC ---
 
+    [SerializeField] private GameObject waitingRoomUI;
+
     public void OnHostClicked()
     {
         if (!ConfirmSelection()) return;
 
-        bool started = NetworkManager.Singleton.StartHost();
-
-        if (started)
+        var nm = NetworkManager.Singleton;
+        if (nm == null)
         {
-            Debug.Log("Host Started! Loading Game Scene...");
-            NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+            Debug.LogError("No NetworkManager found in scene!");
+            return;
         }
-        else
+
+        if (nm.IsListening)
+            nm.Shutdown();
+
+        bool started = nm.StartHost();
+
+        if (!started)
         {
             Debug.LogError("Failed to start Host.");
+            return;
         }
+
+        Debug.Log("Host started. Showing waiting room UI...");
+        ShowWaitingRoom();
     }
 
     public void OnJoinClicked()
     {
         if (!ConfirmSelection()) return;
 
-        bool started = NetworkManager.Singleton.StartClient();
-
-        if (started)
+        var nm = NetworkManager.Singleton;
+        if (nm == null)
         {
-            Debug.Log("Client Started! Waiting for Host to switch scenes...");
-            if (statusText != null) statusText.text = "Connecting...";
+            Debug.LogError("No NetworkManager found in scene!");
+            return;
         }
-        else
+
+        if (nm.IsListening)
+            nm.Shutdown();
+
+        bool started = nm.StartClient();
+
+        if (!started)
         {
             Debug.LogError("Failed to start Client.");
+            return;
         }
+
+        Debug.Log("Client started. Showing waiting room UI...");
+        ShowWaitingRoom();
+    }
+
+    // --- Show the waiting room ---
+    private void ShowWaitingRoom()
+    {
+        if (waitingRoomUI != null)
+            waitingRoomUI.SetActive(true);
     }
 
     private bool ConfirmSelection()
@@ -165,12 +179,8 @@ public class DeckListUI : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    /// <summary>
-    /// Mygtukas "View Deck" – naudoja jau pasirinktą deck ir permeta jį į CardViewer sceną.
-    /// </summary>
     public void OnViewDeckClicked()
     {
-        // Čia ir turi būti užpildytas SelectedDeckHolder
         if (!ConfirmSelection())
         {
             Debug.LogWarning("OnViewDeckClicked: no deck selected.");
@@ -179,7 +189,6 @@ public class DeckListUI : MonoBehaviour
 
         Debug.Log("Selected deck id (ViewDeck button): " + selectedDeck.id);
 
-        // Atidarom sceną, kur veikia CardViewer
         SceneManager.LoadScene("CardViewer2");
     }
 }

@@ -38,6 +38,9 @@ public class GameManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this) Destroy(this);
         else Instance = this;
+
+        // Find and Destroy the GameObject with the tag "VideoPlayer"
+        Destroy(GameObject.FindWithTag("VideoPlayer"));
     }
 
     /// Called by Player.cs when a player connects to the Game Scene.
