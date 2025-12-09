@@ -1,13 +1,10 @@
 using Assets.Scripts.Service;
 using Assets.Scripts.Workshop;
-using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.Linq;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -28,6 +25,9 @@ public class CardView : MonoBehaviour
     public TextMeshProUGUI subText;
     public TextMeshProUGUI flavourText;
     public TextMeshProUGUI actionsText;
+    public Image rarityBackgroundImage;
+    public Image pointsBackgroundImage;
+    public Image suitBackgroundImage;
     public VideoPlayer videoPlayer;
 
     [SerializeField] private RawImage suitImage;
@@ -85,6 +85,10 @@ public class CardView : MonoBehaviour
         points.text = card.Points.ToString();
         
         flavourText.text = card.FlavourText;
+
+        if(rarityBackgroundImage != null) rarityBackgroundImage.color = CardColorUtil.GetRarityColor(card.Points);
+        if (pointsBackgroundImage != null) pointsBackgroundImage.color = CardColorUtil.GetRarityColor(card.Points);
+        if (suitBackgroundImage != null) suitBackgroundImage.color = CardColorUtil.GetSuitColor(card.Suit);
 
 
         setVideo();

@@ -2221,6 +2221,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1036060451}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1036060453 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4479273634799774916, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &1036060454 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8722341591871253374, guid: 1c3124a8a9bc12543b430153cd21ad62,
@@ -2233,6 +2245,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &1036060455 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1879727242639210492, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &1036060456 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2602886516012638727, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &1036060457 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8880953858008880095, guid: 1c3124a8a9bc12543b430153cd21ad62,
@@ -2434,9 +2470,25 @@ MonoBehaviour:
   subText: {fileID: 1389167183}
   flavourText: {fileID: 1715703404}
   actionsText: {fileID: 1036060454}
+  rarityBackgroundImage: {fileID: 1036060456}
+  pointsBackgroundImage: {fileID: 1036060453}
+  suitBackgroundImage: {fileID: 1036060455}
   videoPlayer: {fileID: 1445405104}
   suitImage: {fileID: 53011500}
   button: {fileID: 1826674267}
+  card:
+    CardId: 0
+    Name: 
+    Suit: 
+    Points: 0
+    Rarity: 
+    FlavourText: 
+    Action:
+      trigger: 
+      effect: 
+      amount: 0
+      target: 
+      oncePerGame: 0
   suitClips:
   - {fileID: 32900000, guid: b571eea40f5e177478d6cb2bcde6fdf3, type: 3}
   - {fileID: 32900000, guid: 3a00f0c68ae665d409ec623b099789a5, type: 3}

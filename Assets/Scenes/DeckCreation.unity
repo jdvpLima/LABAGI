@@ -4186,6 +4186,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 768730365}
   m_CullTransparentMesh: 1
+--- !u!114 &798181153 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2602886516012638727, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &837906696
 GameObject:
   m_ObjectHideFlags: 0
@@ -4516,6 +4528,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961739082 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4479273634799774916, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1005060425
 GameObject:
   m_ObjectHideFlags: 0
@@ -5421,9 +5445,25 @@ MonoBehaviour:
   subText: {fileID: 1389167183}
   flavourText: {fileID: 1715703404}
   actionsText: {fileID: 1036060454}
+  rarityBackgroundImage: {fileID: 798181153}
+  pointsBackgroundImage: {fileID: 961739082}
+  suitBackgroundImage: {fileID: 2063905698}
   videoPlayer: {fileID: 1445405104}
   suitImage: {fileID: 53011500}
   button: {fileID: 1826674267}
+  card:
+    CardId: 0
+    Name: 
+    Suit: 
+    Points: 0
+    Rarity: 
+    FlavourText: 
+    Action:
+      trigger: 
+      effect: 
+      amount: 0
+      target: 
+      oncePerGame: 0
   suitClips:
   - {fileID: 32900000, guid: b571eea40f5e177478d6cb2bcde6fdf3, type: 3}
   - {fileID: 32900000, guid: 3a00f0c68ae665d409ec623b099789a5, type: 3}
@@ -5913,7 +5953,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 476513931}
   m_HandleRect: {fileID: 476513930}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7317,6 +7357,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2063905698 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1879727242639210492, guid: 1c3124a8a9bc12543b430153cd21ad62,
+    type: 3}
+  m_PrefabInstance: {fileID: 1036060451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &2074214815
 GameObject:
   m_ObjectHideFlags: 0
