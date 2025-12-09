@@ -1,3 +1,5 @@
+using Assets.Scripts.Service;
+using Assets.Scripts.Workshop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,16 +61,18 @@ public class CardViewGame : MonoBehaviour
 
 		setVideo();
 
-		//// --- FIX: Check for Null Actions ---
-		//if (card.Actions != null && card.Actions.Count > 0)
-		//{
-		//	actionsText.text = string.Join("\n", card.Actions);
-		//}
-		//else
-		//{
-		//	actionsText.text = ""; // Empty string if null
-		//}
-		//// -----------------------------------
+		actionsText.text = "";
+		if (card.Action != null)
+		{
+			WorkshopCardDTO auxCardObj = new WorkshopCardDTO();
+			auxCardObj.trigger = card.Action.trigger;
+			auxCardObj.effect = card.Action.effect;
+			auxCardObj.amount = card.Action.amount;
+			auxCardObj.target = card.Action.target;
+			auxCardObj.oncePerGame = card.Action.oncePerGame;
+
+			actionsText.text = AbilityTextBuilder.Build(auxCardObj);
+		}
 
 		button.onClick.RemoveAllListeners();
 		button.onClick.AddListener(() =>
