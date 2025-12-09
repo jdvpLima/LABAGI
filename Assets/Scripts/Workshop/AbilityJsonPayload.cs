@@ -1,6 +1,7 @@
 ﻿namespace Assets.Scripts.Workshop
 {
-    public class AbilityJsonPayload
+	[System.Serializable]
+	public class AbilityJsonPayload
     {
         public string trigger;
         public string effect;
