@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Main_Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,12 +22,16 @@ namespace Assets.Scripts
 
             if (SceneManager.sceneCount > 1)
             {
+                if (MainMenuManager.Instance.uiZoom != null)
+                    MainMenuManager.Instance.uiZoom.ResetZoom();
                 SceneManager.UnloadSceneAsync(thisScene);
                 return;
             }
 
             if (!string.IsNullOrEmpty(fallbackSceneName))
             {
+                if (MainMenuManager.Instance.uiZoom != null)
+                    MainMenuManager.Instance.uiZoom.ResetZoom();
                 SceneManager.LoadScene(fallbackSceneName);
             }
             else

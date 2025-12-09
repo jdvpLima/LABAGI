@@ -1,3 +1,4 @@
+using Assets.Scripts.Main_Menu;
 using SOHNE.Accessibility.Colorblindness;
 using System;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class MainMenuManager : MonoBehaviour
 
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject playScenePanel;
+    public UIZoom uiZoom;
 
     public VideoPlayer videoPlayer;
     public VideoClip videoClip;
@@ -37,6 +39,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Play()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
         {
             FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("PreGame");
@@ -48,6 +53,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Map()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         SceneManager.LoadScene("Georeferencing", LoadSceneMode.Additive);
 
         /*if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
@@ -60,6 +68,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Settings()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active) {
             FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Settings");
         } else
@@ -68,6 +79,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Rules()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
         {
             FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Rules");
@@ -78,6 +92,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Workshop()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         if (ARModeSwitcher.Instance != null && ARModeSwitcher.ar_active)
         {
             FindAnyObjectByType<ARSceneLoader>().LoadSceneAtPosition("Workshop");
@@ -88,6 +105,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void Shop()
     {
+        if (uiZoom != null)
+            uiZoom.ResetZoom();
+
         playScenePanel.SetActive(false);
         shopPanel.SetActive(true);
 

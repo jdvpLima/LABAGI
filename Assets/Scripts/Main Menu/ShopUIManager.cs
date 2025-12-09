@@ -1,4 +1,5 @@
 using Assets.Scripts.CreateDeck;
+using Assets.Scripts.Main_Menu;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -135,6 +136,9 @@ public class ShopUIManager : MonoBehaviour
 
     public void CloseShop()
     {
+        if (MainMenuManager.Instance.uiZoom != null)
+            MainMenuManager.Instance.uiZoom.ResetZoom();
+
         gameObject.SetActive(false);
         if (playScenePanel != null)
             playScenePanel.SetActive(true);

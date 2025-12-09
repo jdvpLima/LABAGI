@@ -10,24 +10,20 @@ namespace Assets.Scripts
     public class CameraController : MonoBehaviour
     {
 
-        private static bool retainCamera;
+        private static CameraController instance;
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
-            DontDestroyOnLoad(transform.gameObject);
-
-            //Retain on Load of New Scene
-            if (!retainCamera)
-            {
-                retainCamera = true;
-                DontDestroyOnLoad(transform.gameObject);
-                Debug.Log("Camera Loaded");
-            }
-            else
+            if (instance != null && instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            Debug.Log("Main Camera Loaded");
+
         }
     }
 }
