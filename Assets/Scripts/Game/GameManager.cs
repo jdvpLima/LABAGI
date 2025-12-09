@@ -31,22 +31,22 @@ public class GameManager : NetworkBehaviour
 	private bool clientDecisionReceived = false;
 	private bool clientAccepted = false;
 
-    // Track Game State
-    private bool isGameOver = false;
+	// Track Game State
+	private bool isGameOver = false;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this) Destroy(this);
-        else Instance = this;
+	private void Awake()
+	{
+		if (Instance != null && Instance != this) Destroy(this);
+		else Instance = this;
 
-        // Find and Destroy the GameObject with the tag "VideoPlayer"
-        Destroy(GameObject.FindWithTag("VideoPlayer"));
-    }
+		// Find and Destroy the GameObject with the tag "VideoPlayer"
+		Destroy(GameObject.FindWithTag("VideoPlayer"));
+	}
 
-    /// Called by Player.cs when a player connects to the Game Scene.
-    public void RegisterPlayer(Player p)
-    {
-        if (!IsServer) return; 
+	/// Called by Player.cs when a player connects to the Game Scene.
+	public void RegisterPlayer(Player p)
+	{
+		if (!IsServer) return;
 
 		if (p.OwnerClientId == NetworkManager.ServerClientId) hostPlayer = p;
 		else clientPlayer = p;
@@ -55,20 +55,20 @@ public class GameManager : NetworkBehaviour
 	}
 
 	/// Called when a player locks in a card. Stores data and checks if round can proceed.
-	public void PlayerSubmittedCard(ulong clientId, long cardId, int cardPoints, string cardSuit, string cardActions)
+	public void PlayerSubmittedCard(ulong clientId, string cardJson)
 	{
-		List<string> actions = cardActions.Split(',').ToList();
+		Card restoredCard = JsonUtility.FromJson<Card>(cardJson);
 
 		if (!IsServer) return;
 		if (isGameOver) return;
 
 		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
 		{
-			hostCard = new Card(cardId, cardSuit, cardPoints, actions);
+			hostCard = restoredCard;
 		}
 		else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
 		{
-			clientCard = new Card(cardId, cardSuit, cardPoints, actions);
+			clientCard = restoredCard;
 		}
 
 		CheckTurnResolution();
@@ -93,10 +93,10 @@ public class GameManager : NetworkBehaviour
 		clientPlayer.EnableDecisionPhaseClientRpc();
 	}
 
-    public void PlayerMadeDecision(ulong clientId, bool accepted)
-    {
-        if (!IsServer) return;
-        if (isGameOver) return; 
+	public void PlayerMadeDecision(ulong clientId, bool accepted)
+	{
+		if (!IsServer) return;
+		if (isGameOver) return;
 
 		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
 		{
@@ -113,33 +113,41 @@ public class GameManager : NetworkBehaviour
 		if (hostDecisionReceived && clientDecisionReceived) FinalizeRound();
 	}
 
-    /// Handle MANUAL token usage (Button Click).
-    /// Rule: Using a token gives the Opponent +1 Point.
-    public void PlayerUsedToken(ulong clientId)
-    {
-        if (!IsServer) return;
-        if (isGameOver) return; 
+	/// Handle MANUAL token usage (Button Click).
+	/// Rule: Using a token gives the Opponent +1 Point.
+	public void PlayerUsedToken(ulong clientId)
+	{
+		if (!IsServer) return;
+		if (isGameOver) return;
 
-        if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
-        {
-            clientPlayer.Points.Value += 1; 
-            UpdateStatusClientRpc("Host used Token! Client +1 Point.");
-        }
-        else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
-        {
-            hostPlayer.Points.Value += 1; 
-            UpdateStatusClientRpc("Client used Token! Host +1 Point.");
-        }
+		if (hostPlayer != null && clientId == hostPlayer.OwnerClientId)
+		{
+			clientPlayer.Points.Value += 1;
+			UpdateStatusClientRpc("Host used Token! Client +1 Point.");
+		}
+		else if (clientPlayer != null && clientId == clientPlayer.OwnerClientId)
+		{
+			hostPlayer.Points.Value += 1;
+			UpdateStatusClientRpc("Client used Token! Host +1 Point.");
+		}
 
-        // Check if this token usage ended the game
-        CheckGameOver();
-    }
+		// Check if this token usage ended the game
+		CheckGameOver();
+	}
 
 	/// Calculates scores based on Acceptance/Refusal rules.
 	private void FinalizeRound()
 	{
 		var hostGains = (Points: 0, Burnout: 0, Flex: 0, Tokens: 0);
 		var clientGains = (Points: 0, Burnout: 0, Flex: 0, Tokens: 0);
+
+		// Manage Flexibility (Rules => Accept: Flex +1, Refuse: Flex -1)
+		hostGains.Flex += hostAccepted ? 1 : -1;
+		clientGains.Flex += clientAccepted ? 1 : -1;
+
+		// Manage Burnout (Rules => Accept+ Burnout -1, Refuse: Burnout +1)
+		hostGains.Burnout += hostAccepted ? -1 : 1;
+		clientGains.Burnout += clientAccepted ? -1 : 1;
 
 		// Manage Proposal result (handle points, synergy bonus, and execute cards' actions)
 		if (hostAccepted && clientAccepted)
@@ -189,14 +197,6 @@ public class GameManager : NetworkBehaviour
 			UpdateStatusClientRpc("Both Refused!");
 		}
 
-		// Manage Flexibility (Rules => Accept: Flex +1, Refuse: Flex -1)
-		hostGains.Flex += hostAccepted ? 1 : -1;
-		clientGains.Flex += clientAccepted ? 1 : -1;
-
-		// Manage Burnout (Rules => Accept+ Burnout -1, Refuse: Burnout +1)
-		hostGains.Burnout += hostAccepted ? -1 : 1;
-		clientGains.Burnout += clientAccepted ? -1 : 1;
-
 		// 3. Apply Results to Players
 		// Capture return value to see if Flexibility limit was broken
 		bool hostReset = hostPlayer.ServerApplyRoundResult(hostGains.Points, hostGains.Burnout, hostGains.Flex);
@@ -215,73 +215,73 @@ public class GameManager : NetworkBehaviour
 		}
 
 		// --- Check Win Condition ---
-		if (CheckGameOver()) return; 
+		if (CheckGameOver()) return;
 
-        // Cleanup visuals
-        hostPlayer.CleanupRoundClientRpc();
-        clientPlayer.CleanupRoundClientRpc();
+		// Cleanup visuals
+		hostPlayer.CleanupRoundClientRpc();
+		clientPlayer.CleanupRoundClientRpc();
 
 		// Reset variables
 		hostCard = null; clientCard = null;
 		hostDecisionReceived = false; clientDecisionReceived = false;
 	}
 
-    // --- Win Condition Helper ---
-    private bool CheckGameOver()
-    {
-        if (hostPlayer == null || clientPlayer == null) return false;
+	// --- Win Condition Helper ---
+	private bool CheckGameOver()
+	{
+		if (hostPlayer == null || clientPlayer == null) return false;
 
-        bool hostWins = hostPlayer.Points.Value >= 15;
-        bool clientWins = clientPlayer.Points.Value >= 15;
+		bool hostWins = hostPlayer.Points.Value >= 15;
+		bool clientWins = clientPlayer.Points.Value >= 15;
 
-        if (hostWins || clientWins)
-        {
-            isGameOver = true;
+		if (hostWins || clientWins)
+		{
+			isGameOver = true;
 
-            // 1. Gather all stats
-            int hScore = hostPlayer.Points.Value;
-            int hFlex = hostPlayer.Flexibility.Value;
-            int hBurn = hostPlayer.Burnout.Value;
-            int hTok = hostPlayer.AccommodationTokens.Value;
+			// 1. Gather all stats
+			int hScore = hostPlayer.Points.Value;
+			int hFlex = hostPlayer.Flexibility.Value;
+			int hBurn = hostPlayer.Burnout.Value;
+			int hTok = hostPlayer.AccommodationTokens.Value;
 
-            int cScore = clientPlayer.Points.Value;
-            int cFlex = clientPlayer.Flexibility.Value;
-            int cBurn = clientPlayer.Burnout.Value;
-            int cTok = clientPlayer.AccommodationTokens.Value;
+			int cScore = clientPlayer.Points.Value;
+			int cFlex = clientPlayer.Flexibility.Value;
+			int cBurn = clientPlayer.Burnout.Value;
+			int cTok = clientPlayer.AccommodationTokens.Value;
 
-            // 2. Send data to all clients so they can save it locally
-            EndGameDataClientRpc(hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
+			// 2. Send data to all clients so they can save it locally
+			EndGameDataClientRpc(hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
 
-            // 3. Start Coroutine to switch scene after a delay
-            StartCoroutine(EndGameRoutine());
+			// 3. Start Coroutine to switch scene after a delay
+			StartCoroutine(EndGameRoutine());
 
-            return true;
-        }
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    [ClientRpc]
-    private void EndGameDataClientRpc(int hScore, int hFlex, int hBurn, int hTok, int cScore, int cFlex, int cBurn, int cTok)
-    {
-        // "IsHost" tells the storage whether to show me the Host stats or Client stats
-        MatchResultsStorage.SetData(IsHost, hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
-        
-        UpdateStatusClientRpc("Match Finished! Loading Results...");
-    }
+	[ClientRpc]
+	private void EndGameDataClientRpc(int hScore, int hFlex, int hBurn, int hTok, int cScore, int cFlex, int cBurn, int cTok)
+	{
+		// "IsHost" tells the storage whether to show me the Host stats or Client stats
+		MatchResultsStorage.SetData(IsHost, hScore, hFlex, hBurn, hTok, cScore, cFlex, cBurn, cTok);
 
-    [ClientRpc]
-    private void UpdateStatusClientRpc(string msg)
-    {
-        if (statusText != null) statusText.text = msg;
-    }
+		UpdateStatusClientRpc("Match Finished! Loading Results...");
+	}
 
-    private IEnumerator EndGameRoutine()
-    {
-        // Wait 3 seconds so players see the final card result
-        yield return new WaitForSeconds(3.0f);
+	[ClientRpc]
+	private void UpdateStatusClientRpc(string msg)
+	{
+		if (statusText != null) statusText.text = msg;
+	}
 
-        // Tell NetworkManager to switch scenes for everyone
-        NetworkManager.Singleton.SceneManager.LoadScene("GameResults", UnityEngine.SceneManagement.LoadSceneMode.Single);
-    }
+	private IEnumerator EndGameRoutine()
+	{
+		// Wait 3 seconds so players see the final card result
+		yield return new WaitForSeconds(3.0f);
+
+		// Tell NetworkManager to switch scenes for everyone
+		NetworkManager.Singleton.SceneManager.LoadScene("GameResults", UnityEngine.SceneManagement.LoadSceneMode.Single);
+	}
 }

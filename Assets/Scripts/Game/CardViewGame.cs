@@ -59,16 +59,16 @@ public class CardViewGame : MonoBehaviour
 
 		setVideo();
 
-		// --- FIX: Check for Null Actions ---
-		if (card.Actions != null && card.Actions.Count > 0)
-		{
-			actionsText.text = string.Join("\n", card.Actions);
-		}
-		else
-		{
-			actionsText.text = ""; // Empty string if null
-		}
-		// -----------------------------------
+		//// --- FIX: Check for Null Actions ---
+		//if (card.Actions != null && card.Actions.Count > 0)
+		//{
+		//	actionsText.text = string.Join("\n", card.Actions);
+		//}
+		//else
+		//{
+		//	actionsText.text = ""; // Empty string if null
+		//}
+		//// -----------------------------------
 
 		button.onClick.RemoveAllListeners();
 		button.onClick.AddListener(() =>

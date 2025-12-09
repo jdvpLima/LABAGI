@@ -232,7 +232,7 @@ public class Player : NetworkBehaviour
 		uIHandRenderer.DisplayCardInMiddle(selectedCard);
 		uIHandRenderer.SetProposeButtonActive(false);
 
-		SubmitCardServerRpc(selectedCard.CardId, selectedCard.Points, selectedCard.Suit, string.Join(",", selectedCard.Actions));
+		SubmitCardServerRpc(selectedCard.CardId, JsonUtility.ToJson(selectedCard));
 	}
 
 	// --- TOKEN LOGIC ---
@@ -280,11 +280,11 @@ public class Player : NetworkBehaviour
 	// --- GAME LOOP LOGIC ---
 
 	[ServerRpc]
-	private void SubmitCardServerRpc(long cardId, int cardPoints, string cardSuit, string cardActions)
+	private void SubmitCardServerRpc(long cardId, string cardJson)
 	{
 		Debug.Log($"Player {OwnerClientId} submitted card {cardId}");
 		IsReady = true;
-		GameManager.Instance.PlayerSubmittedCard(OwnerClientId, cardId, cardPoints, cardSuit, cardActions);
+		GameManager.Instance.PlayerSubmittedCard(OwnerClientId, cardJson);
 	}
 
 

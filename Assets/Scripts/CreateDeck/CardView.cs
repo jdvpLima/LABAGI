@@ -90,13 +90,13 @@ public class CardView : MonoBehaviour
         setVideo();
 
         // --- FIX: Check for Null Actions ---
-        if (card.Actions != null && card.Actions.Count > 0)
+        if (card.Action != null)
         {
-            // Join all of the strings from actions to form a valid JSON object
-            // And use the AbilityTextBuilder from Workshop to parse it
-            var actionsJsonString = string.Join(", ", card.Actions);
+            //// Join all of the strings from actions to form a valid JSON object
+            //// And use the AbilityTextBuilder from Workshop to parse it
+            //var actionsJsonString = string.Join(", ", card.Actions);
 
-            var parsedJsonActions = JsonUtility.FromJson<ParsedCardActions>(actionsJsonString);
+            //var parsedJsonActions = JsonUtility.FromJson<ParsedCardActions>(actionsJsonString);
             // Construir um CardDto temporário só para alimentar os builders
             var cardForAbility = new WorkshopCardDTO
             {
@@ -106,11 +106,11 @@ public class CardView : MonoBehaviour
                 rarity = "",
                 points = 2,
                 ability = null, // vai ser preenchido pelos builders
-                trigger = parsedJsonActions.trigger,
-                effect = parsedJsonActions.effect,
-                amount = parsedJsonActions.amount,
-                target = parsedJsonActions.target,
-                oncePerGame = parsedJsonActions.oncePerGame,
+                trigger = card.Action.trigger,
+                effect = card.Action.effect,
+                amount = card.Action.amount,
+                target = card.Action.target,
+                oncePerGame = card.Action.oncePerGame,
                 abilityJson = null,
                 expansionCode = "wks",
                 flavorText = "",
