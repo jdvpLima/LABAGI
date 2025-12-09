@@ -3187,7 +3187,7 @@ GameObject:
   - component: {fileID: 1816067187}
   m_Layer: 5
   m_Name: Main Menu
-  m_TagString: Canva
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5157,7 +5157,7 @@ GameObject:
   - component: {fileID: 5410934965639940391}
   m_Layer: 0
   m_Name: Video Player
-  m_TagString: VideoPlayer
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

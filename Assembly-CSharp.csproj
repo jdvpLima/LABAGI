@@ -103,6 +103,7 @@
     <Compile Include="Assets\Scripts\Service\CardService.cs" />
     <Compile Include="Assets\Scripts\CreateDeck\DeckService.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DontDestroy.cs" />
+    <Compile Include="Assets\Scripts\Game\PreGame\KeepManager.cs" />
     <Compile Include="Assets\Ar\ARManipulateUI.cs" />
     <Compile Include="Assets\Scripts\Main Menu\DlcData.cs" />
     <Compile Include="Assets\Ar\SimpleButton.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Assets\Scripts\Service\MMR\MmrService.cs" />
     <Compile Include="Assets\Scripts\Rules\MenuButtonsRules.cs" />
     <Compile Include="Assets\Scripts\Workshop\InventoryGrantPayload.cs" />
+    <Compile Include="Assets\Scripts\Game\PreGame\WaitingRoomController.cs" />
     <Compile Include="Assets\Scripts\Settings\PersistentSettingsManager.cs" />
     <Compile Include="Assets\Scripts\Settings\SettingsManager.cs" />
     <Compile Include="Assets\Scripts\Game\CardViewGame.cs" />

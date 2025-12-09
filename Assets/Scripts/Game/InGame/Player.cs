@@ -94,11 +94,11 @@ public class Player : NetworkBehaviour
         {
             uIHandRenderer.SetOwner(this);
         }
-        // >>> FIX END <<<
 
         // Load User ID and Deck
-        if (typeof(Assets.Scripts.AuthContext).GetField("UserId") != null)
-                userId = Assets.Scripts.AuthContext.UserId; 
+
+		userId = AuthBootstrapper.CurrentUserId; 
+			//Fallback
         if (userId == 0) userId = 1; 
 
         _ = InitializeDeckAsync();
@@ -118,11 +118,10 @@ public class Player : NetworkBehaviour
 {
     await Task.Delay(500); 
 
-    // Remove the logic that tried to SetOwner here. 
-    // Just ensure the reference exists as a safety fallback.
     if (uIHandRenderer == null)
     {
         uIHandRenderer = FindObjectOfType<UIHandRenderer>();
+
         // Only set owner if we truly lost the reference and haven't set it yet
         if (uIHandRenderer != null && IsOwner) uIHandRenderer.SetOwner(this);
     }
