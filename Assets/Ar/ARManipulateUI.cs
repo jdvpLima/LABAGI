@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem; 
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.UIElements;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class ARManipulateUI : MonoBehaviour
@@ -20,9 +21,14 @@ public class ARManipulateUI : MonoBehaviour
 
 
     [Header("Scale")]
-    public float scaleSpeed = 0.0005f;
+    [SerializeField] public float scaleSpeed = 0.0005f;
     public float minScale = 0.0005f;
     public float maxScale = 3f;
+
+    [Header("ScaleMobile")]
+    [SerializeField] public float scaleSpeedMobile = 0.0005f;
+    [SerializeField] public float minScaleMobile = 0.0005f;
+    [SerializeField] public float maxScaleMobile = 3f;
 
     private Vector3 initialScale;
     private float lastMouseY;
@@ -120,7 +126,29 @@ public class ARManipulateUI : MonoBehaviour
 
             float diff = currDist - prevDist;
 
-            scene.transform.localScale += Vector3.one * diff * 0.0000000001f;
+            
+
+            float currentScale = scene.transform.localScale.x;
+
+
+            float nextScale = currentScale + (diff * scaleSpeedMobile);
+
+            if (nextScale < 0.0001)
+            {
+                scene.transform.localScale = Vector3.one * 0.0001f;
+
+            }
+            else
+            if (nextScale > 0.001)
+            {
+                scene.transform.localScale = Vector3.one * 0.001f;
+
+            }
+            else
+            {
+                //nextScale = Mathf.Clamp(nextScale, minScale, maxScale);
+                scene.transform.localScale = Vector3.one * nextScale;
+            }
         }
     }
 
