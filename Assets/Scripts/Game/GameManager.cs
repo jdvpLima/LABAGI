@@ -165,9 +165,8 @@ public class GameManager : NetworkBehaviour
 
 			// Trigger both cards' actions
 			// Execute host card's actions
-			CardLogic.ExecuteCardActions(hostPlayer, clientPlayer, hostCard, clientCard, hostAccepted, clientAccepted, hostGains, clientGains);
-			// Execute client card's actions
-			CardLogic.ExecuteCardActions(clientPlayer, hostPlayer, clientCard, hostCard, clientAccepted, hostAccepted, clientGains, hostGains);
+			CardLogic.ExecuteCardActions(hostPlayer, clientPlayer, hostCard, clientCard, hostAccepted, clientAccepted, ref hostGains, ref clientGains);
+        CardLogic.ExecuteCardActions(clientPlayer, hostPlayer, clientCard, hostCard, clientAccepted, hostAccepted, ref clientGains, ref hostGains);
 
 			UpdateStatusClientRpc("Both Accepted!");
 		}
@@ -177,7 +176,7 @@ public class GameManager : NetworkBehaviour
 			clientGains.Points += clientCard.Points;
 
 			// Execute client card's actions
-			CardLogic.ExecuteCardActions(clientPlayer, hostPlayer, clientCard, hostCard, clientAccepted, hostAccepted, clientGains, hostGains);
+			CardLogic.ExecuteCardActions(clientPlayer, hostPlayer, clientCard, hostCard, clientAccepted, hostAccepted, ref clientGains, ref hostGains);
 
 			UpdateStatusClientRpc("Client Refused!");
 		}
@@ -187,7 +186,7 @@ public class GameManager : NetworkBehaviour
 			hostGains.Points += hostCard.Points;
 
 			// Execute host card's actions
-			CardLogic.ExecuteCardActions(hostPlayer, clientPlayer, hostCard, clientCard, hostAccepted, clientAccepted, hostGains, clientGains);
+			CardLogic.ExecuteCardActions(hostPlayer, clientPlayer, hostCard, clientCard, hostAccepted, clientAccepted, ref hostGains, ref clientGains);
 
 			UpdateStatusClientRpc("Host Refused!");
 		}

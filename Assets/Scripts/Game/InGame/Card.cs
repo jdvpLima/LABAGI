@@ -7,15 +7,15 @@ using UnityEngine;
 [System.Serializable]
 public class Card
 {
-	public long CardId { get; private set; }
-	public string Name { get; private set; } = "";
-	public string Suit { get; private set; } = "";
-	public int Points { get; private set; } = 0;
-	public string Rarity { get; private set; } = "";
-	public string FlavourText { get; private set; } = "";
+	public long CardId;
+    public string Name = "";
+    public string Suit = "";
+    public int Points = 0;
+    public string Rarity = "";
+    public string FlavourText = "";
 
 	// Initialize here to be safe
-	public AbilityJsonPayload Action { get; private set; }
+	public AbilityJsonPayload Action;
 
 	public Card(long id, string name, string suit, int points = 0, string rarity = "", string flavourText = null)
 	{

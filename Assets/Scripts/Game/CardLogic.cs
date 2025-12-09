@@ -8,15 +8,17 @@ public static class CardLogic
 	private static HashSet<string> usedOncePerGame = new();
 
 	public static void ExecuteCardActions(
-		Player currentPlayer,
-		Player opponentPlayer,
-		Card currentCard,
-		Card opponentCard,
-		bool currentAccepted,
-		bool opponentAccepted,
-		 (int Points, int Burnout, int Flex, int Tokens) currentPlayerGains,
-		 (int Points, int Burnout, int Flex, int Tokens) opponentGains
-	)
+    Player currentPlayer,
+    Player opponentPlayer,
+    Card currentCard,
+    Card opponentCard,
+    bool currentAccepted,
+    bool opponentAccepted,
+    // ADD 'ref' HERE
+    ref (int Points, int Burnout, int Flex, int Tokens) currentPlayerGains,
+    // ADD 'ref' HERE
+    ref (int Points, int Burnout, int Flex, int Tokens) opponentGains
+)
 	{
 		var action = currentCard.Action;
 		if (action == null) return;
