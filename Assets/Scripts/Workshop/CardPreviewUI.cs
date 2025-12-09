@@ -12,114 +12,135 @@ using UnityEngine.Video;
 
 namespace Assets.Scripts.Workshop
 {
-    public class CardPreviewUI : MonoBehaviour
-    {
-        [SerializeField] private TMP_Text titleText;
-        [SerializeField] private TMP_Text suitText;
-        [SerializeField] private TMP_Text rarityText;
-        [SerializeField] private TMP_Text pointsText;
-        [SerializeField] private TMP_Text abilityText;
-        [SerializeField] private TMP_Text flavorText;
-        [SerializeField] private RawImage suitImg;
-        //[SerializeField] private AspectRatioFitter suitRatioFitter;
-        [SerializeField] private VideoPlayer suitVideo;
+	public class CardPreviewUI : MonoBehaviour
+	{
+		[SerializeField] private TMP_Text titleText;
+		[SerializeField] private TMP_Text suitText;
+		[SerializeField] private TMP_Text rarityText;
+		[SerializeField] private TMP_Text pointsText;
+		[SerializeField] private TMP_Text abilityText;
+		[SerializeField] private TMP_Text flavorText;
+		[SerializeField] private Image rarityBackgroundImage;
+		[SerializeField] private Image pointsBackgroundImage;
+		[SerializeField] private Image suitBackgroundImage;
+		[SerializeField] private RawImage suitImg;
+		//[SerializeField] private AspectRatioFitter suitRatioFitter;
+		[SerializeField] private VideoPlayer suitVideo;
 
-        [Header("Suit videos")]
-        [SerializeField] private List<VideoClip> suitClips = new();
-        private Dictionary<string, VideoClip> _clipBySuit;
+		[Header("Suit videos")]
+		[SerializeField] private List<VideoClip> suitClips = new();
+		private Dictionary<string, VideoClip> _clipBySuit;
 
-        private void Awake()
-        {
-            // Mapa nome-do-clip -> VideoClip (case-insensitive)
-            _clipBySuit = suitClips
-                .Where(c => c != null)
-                .GroupBy(c => c.name, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
-        }
-        public void UpdatePreview(WorkshopCardDTO dto)
-        {
-            if (dto == null)
-            {
-                titleText.text = "";
-                suitText.text = "";
-                rarityText.text = "";
-                pointsText.text = "";
-                abilityText.text = "";
-                flavorText.text = "";
-                return;
-            }
+		private void Awake()
+		{
+			// Mapa nome-do-clip -> VideoClip (case-insensitive)
+			_clipBySuit = suitClips
+				.Where(c => c != null)
+				.GroupBy(c => c.name, StringComparer.OrdinalIgnoreCase)
+				.ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+		}
+		public void UpdatePreview(WorkshopCardDTO dto)
+		{
+			if (dto == null)
+			{
+				titleText.text = "";
+				suitText.text = "";
+				rarityText.text = "";
+				pointsText.text = "";
+				abilityText.text = "";
+				flavorText.text = "";
+				return;
+			}
 
-            titleText.text = string.IsNullOrEmpty(dto.name) ? "(no name)" : dto.name;
-            suitText.text = dto.suit;
-            rarityText.text = dto.rarity;
-            pointsText.text = dto.points.ToString();
-            abilityText.text = dto.ability;
-            flavorText.text = dto.flavorText;
+			titleText.text = string.IsNullOrEmpty(dto.name) ? "(no name)" : dto.name;
+			suitText.text = dto.suit;
+			rarityText.text = GetCardRarity(dto.points);
+			pointsText.text = dto.points.ToString();
+			abilityText.text = dto.ability;
+			flavorText.text = dto.flavorText;
 
-            UpdateSuitVideo(dto.suit);
+			// APPLY COLORS
+			Color rarityColor = CardColorUtil.GetRarityColor(dto.points);
+			if (rarityBackgroundImage != null)
+				rarityBackgroundImage.color = rarityColor;
+			if (pointsBackgroundImage != null)
+				pointsBackgroundImage.color = rarityColor;
 
-        }
-        private void UpdateSuitVideo(string suit)
-        {
-            if (string.IsNullOrWhiteSpace(suit) || _clipBySuit == null)
-            {
-                suitVideo.clip = null;
-                return;
-            }
+			Color suitColor = CardColorUtil.GetSuitColor(dto.suit);
+			if (suitBackgroundImage != null)
+				suitBackgroundImage.color = suitColor;
 
-            // tentar com suit e também com ToLower só para garantir
-            if (!_clipBySuit.TryGetValue(suit, out var clip) &&
-                !_clipBySuit.TryGetValue(suit.ToLower(), out clip))
-            {
-                suitVideo.clip = null;
-                return;
-            }
 
-            suitVideo.clip = clip;
+			UpdateSuitVideo(dto.suit);
 
-            var settings = PersistentSettingsManager.Instance;
-            bool lowSensory = settings != null && settings.lowSensoryModeEnabled;
+		}
 
-            if (lowSensory)
-            {
-                // mostrar só a primeira frame, sem loop
-                suitVideo.playOnAwake = false;
-                suitVideo.isLooping = false;
+		public static string GetCardRarity(int cardPoints)
+		{
+			return cardPoints <= 2 ? "Common" : cardPoints == 3 ? "Rare" : cardPoints == 4 ? "Unique" : "Legendary";
+		}
 
-                // corrutina para preparar e “captar” o primeiro frame
-                StartCoroutine(ShowFirstFrameStatic());
-            }
-            else
-            {
-                // modo normal: vídeo em loop
-                suitVideo.isLooping = true;
-                suitVideo.Play();
-            }
-        }
+		private void UpdateSuitVideo(string suit)
+		{
+			if (string.IsNullOrWhiteSpace(suit) || _clipBySuit == null)
+			{
+				suitVideo.clip = null;
+				return;
+			}
 
-        private System.Collections.IEnumerator ShowFirstFrameStatic()
-        {
-            if (suitVideo.clip == null)
-                yield break;
+			// tentar com suit e também com ToLower só para garantir
+			if (!_clipBySuit.TryGetValue(suit, out var clip) &&
+				!_clipBySuit.TryGetValue(suit.ToLower(), out clip))
+			{
+				suitVideo.clip = null;
+				return;
+			}
 
-            suitVideo.Prepare();
+			suitVideo.clip = clip;
 
-            // espera até o vídeo estar preparado
-            while (!suitVideo.isPrepared)
-                yield return null;
+			var settings = PersistentSettingsManager.Instance;
+			bool lowSensory = settings != null && settings.lowSensoryModeEnabled;
 
-            // toca um pouco para renderizar o primeiro frame
-            suitVideo.Play();
-            yield return null; // 1 frame
-            suitVideo.Pause();
+			if (lowSensory)
+			{
+				// mostrar só a primeira frame, sem loop
+				suitVideo.playOnAwake = false;
+				suitVideo.isLooping = false;
 
-            // opcional: tentar garantir que está no frame 0
-            try
-            {
-                suitVideo.frame = 0;
-            }
-            catch { }
-        }
+				// corrutina para preparar e “captar” o primeiro frame
+				StartCoroutine(ShowFirstFrameStatic());
+			}
+			else
+			{
+				// modo normal: vídeo em loop
+				suitVideo.isLooping = true;
+				suitVideo.Play();
+			}
+		}
 
-    }
+		private System.Collections.IEnumerator ShowFirstFrameStatic()
+		{
+			if (suitVideo.clip == null)
+				yield break;
+
+			suitVideo.Prepare();
+
+			// espera até o vídeo estar preparado
+			while (!suitVideo.isPrepared)
+				yield return null;
+
+			// toca um pouco para renderizar o primeiro frame
+			suitVideo.Play();
+			yield return null; // 1 frame
+			suitVideo.Pause();
+
+			// opcional: tentar garantir que está no frame 0
+			try
+			{
+				suitVideo.frame = 0;
+			}
+			catch { }
+		}
+
+	}
 }
